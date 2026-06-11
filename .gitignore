@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Large video source files — host on Loom/YouTube, never commit (GitHub rejects >100MB)
+*.mp4
+*.mov
+*.MOV
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

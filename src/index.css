@@ -8,3 +8,8 @@ html, body, #root {
   width: 100%;
   background-color: #0a0a0a;
 }
+
+/* Landing page resets its own background inline */
+.cm-landing {
+  background-color: #ffffff;
+}

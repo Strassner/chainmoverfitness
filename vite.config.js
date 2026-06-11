@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  base: '/bigfourcalculator/',
+  base: '/chainmoverfitness/',
   plugins: [react(), tailwindcss()],
   build: {
     rollupOptions: {

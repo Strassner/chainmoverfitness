@@ -137,6 +137,8 @@ const GLOBAL_CSS = `
   @media (max-width: 720px) { .cm-guarantee-grid { grid-template-columns: 1fr !important; } }
   @media (max-width: 520px) { .cm-method-grid { grid-template-columns: 1fr !important; } .sc-float { display: none !important; } }
   @media (max-width: 480px) { .cm-sc-float { display: none !important; } }
+  @media (max-width: 820px) { .cm-feature-grid { grid-template-columns: 1fr !important; } }
+  @media (max-width: 760px) { .cm-vids-grid { grid-template-columns: 1fr !important; max-width: 340px !important; } .cm-quotes-grid { grid-template-columns: 1fr !important; } }
 `
 
 function StyleTag() {
@@ -183,9 +185,9 @@ function Header() {
             <Link to="/quiz" className="cm-btn cm-btn-ghost cm-header-call" style={{ padding: '12px 22px', fontSize: 15 }}>
               Take the Assessment
             </Link>
-            <a href={CALENDLY_URL} target="_blank" rel="noreferrer"
+            <Link to="/apply"
               className="cm-btn cm-btn-primary"
-              style={{ padding: '12px 22px', fontSize: 15, color: 'white' }}>Book a call</a>
+              style={{ padding: '12px 22px', fontSize: 15, color: 'white' }}>Apply now</Link>
           </div>
         </div>
       </Wrap>
@@ -269,7 +271,7 @@ function Hero() {
               You've tried before. Bad labs, low energy, no real plan. The free assessment shows you exactly where your health stands — then routes you to the path built to fix it.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, marginTop: 34, alignItems: 'center' }}>
-              <a href={CALENDLY_URL} target="_blank" rel="noreferrer" className="cm-btn cm-btn-primary cm-btn-lg" style={{color: 'white'}}>Book a consultation with Luke <span className="arrow">→</span></a>
+              <Link to="/apply" className="cm-btn cm-btn-primary cm-btn-lg" style={{color: 'white'}}>Apply to work with Luke <span className="arrow">→</span></Link>
               <Link to="/quiz" className="cm-btn cm-btn-ghost cm-btn-lg">Take the Free Assessment</Link>
             </div>
             <div style={{ marginTop: 30, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
@@ -328,9 +330,9 @@ function VSL() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 32 }}>
-          <a href={CALENDLY_URL} target="_blank" rel="noreferrer" className="cm-btn cm-btn-primary cm-btn-lg" style={{ color: 'white' }}>
-            Book a consultation with Luke <span className="arrow">→</span>
-          </a>
+          <Link to="/apply" className="cm-btn cm-btn-primary cm-btn-lg" style={{ color: 'white' }}>
+            Apply to work with Luke <span className="arrow">→</span>
+          </Link>
         </div>
       </div>
     </section>
@@ -380,7 +382,7 @@ function Method() {
           <span className="cm-eyebrow cm-eyebrow-center">The Mechanism · M.R.O.I.</span>
           <h2 style={{ fontSize: 'clamp(32px,4.4vw,54px)', marginTop: 18 }}>A sequence, not a crash diet.</h2>
           <p style={{ marginTop: 20, fontSize: 'clamp(17px,1.5vw,20px)', color: T.inkSoft, lineHeight: 1.6 }}>
-            Most programs throw you straight into extreme restriction with no regard for where your metabolic health is at. The MROI Method fixes the root first, so fat loss actually holds, and stays gone.
+            Most programs throw you straight into extreme restriction with no regard for where your metabolic health is at. The MROI Method (Metabolic, Recovery, Optimize, Identity) fixes the root first, so fat loss actually holds, and stays gone.
           </p>
         </div>
         <div className="cm-method-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20 }}>
@@ -400,10 +402,16 @@ function Method() {
 }
 
 /* ─── Results / Testimonials ───────────────────────────────────────── */
-const WINS = [
-  { name: 'Daniel', duration: '', before: danielBefore, after: danielAfter, stats: [{ val: '-85', unit: 'lbs', label: 'Weight' }, ], quote: '"First program where I understood why it was working. The labs don\'t lie."' },
-  { name: 'Tim', duration: '', stats: [{ val: '-58', unit: 'lbs', label: 'Weight' }, { val: '+2', unit: 'hrs', label: 'Sleep' }, { val: '-4', unit: 'in', label: 'Waist' }], quote: '"I\'d given up on myself. Now my kids can\'t keep up with me on the trail."' },
-  { name: 'Matt, 41', duration: '11 months', stats: [{ val: '-83', unit: 'lbs', label: 'Weight' }, { val: 'Normal', unit: '', label: 'Labs' }, { val: '-5', unit: 'in', label: 'Waist' }], quote: '"The identity work is what stuck. I don\'t \'diet\' anymore — this is just me now."' },
+const QUOTES = [
+  { name: 'Daniel', stat: '−85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing." },
+  { name: 'Gabe', stat: '−25 lbs · first 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this' — it's not just a pipe dream anymore." },
+]
+
+/* Loom video testimonial share IDs (vertical clips). */
+const VIDEO_TESTIMONIALS = [
+  '700a1f79caeb4f7fa712c03e8686aeeb',
+  'a316d667a37a47459297c37290742260',
+  '18919208d0a14a59beb50f448ffca7f1',
 ]
 
 function Results() {
@@ -412,43 +420,73 @@ function Results() {
       <Wrap>
         <div style={{ maxWidth: 640 }}>
           <span className="cm-eyebrow">Client Wins</span>
-          <h2 style={{ fontSize: 'clamp(32px,4.4vw,54px)', marginTop: 18 }}>Real folks. Real pounds gone for good.</h2>
+          <h2 style={{ fontSize: 'clamp(32px,4.4vw,54px)', marginTop: 18 }}>Real men. Real pounds gone for good.</h2>
           <p style={{ marginTop: 20, fontSize: 'clamp(17px,1.5vw,20px)', color: T.inkSoft, lineHeight: 1.6 }}>
-            Before &amp; afters, stats, and the words straight from the men who did it.
+            A before &amp; after, and the words straight from the men who did it.
           </p>
         </div>
-        <div className="cm-results-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24, marginTop: 56 }}>
-          {WINS.map((w) => (
-            <article key={w.name} style={{ background: T.paper, border: `1px solid ${T.line}`, borderRadius: 16, overflow: 'hidden', boxShadow: T.shadowSm }}>
-              {/* before/after */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, background: T.line, position: 'relative', minHeight: 200 }}>
-                {w.before
-                  ? <img src={w.before} alt={`${w.name} before`} style={{ width: '100%', height: 280, objectFit: 'cover', display: 'block' }} />
-                  : <div style={{ background: T.mist, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.mono, fontSize: 11, color: T.inkFaint, letterSpacing: '.08em', textTransform: 'uppercase', minHeight: 180 }}>Before</div>}
-                {w.after
-                  ? <img src={w.after} alt={`${w.name} after`} style={{ width: '100%', height: 280, objectFit: 'cover', display: 'block' }} />
-                  : <div style={{ background: T.bone, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.mono, fontSize: 11, color: T.inkFaint, letterSpacing: '.08em', textTransform: 'uppercase' }}>After</div>}
-                <span style={{ position: 'absolute', top: 12, left: 12, fontFamily: T.mono, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', background: 'rgba(17,36,27,.72)', color: '#fff', padding: '4px 9px', borderRadius: 100 }}>Before</span>
-                <span style={{ position: 'absolute', top: 12, right: 12, fontFamily: T.mono, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', background: T.vital, color: T.forest, padding: '4px 9px', borderRadius: 100 }}>After</span>
-              </div>
-              <div style={{ padding: 22 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <b style={{ fontFamily: T.display, fontSize: 17 }}>{w.name}</b>
-                  <span style={{ fontFamily: T.mono, fontSize: 12, color: T.inkFaint }}>{w.duration}</span>
-                </div>
-                <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-                  {w.stats.map(s => (
-                    <div key={s.label} style={{ flex: 1, background: T.bone, borderRadius: 10, padding: 12, textAlign: 'center' }}>
-                      <b style={{ display: 'block', fontFamily: T.display, fontWeight: 800, fontSize: 22, color: T.forest, letterSpacing: '-0.02em' }}>
-                        {s.val}<em style={{ fontStyle: 'normal', fontSize: 13, color: T.inkFaint, fontWeight: 600 }}>{s.unit}</em>
-                      </b>
-                      <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase', color: T.inkFaint }}>{s.label}</span>
-                    </div>
-                  ))}
-                </div>
-                <p style={{ marginTop: 16, fontSize: 14.5, color: T.inkSoft, lineHeight: 1.5, fontStyle: 'italic' }}>{w.quote}</p>
-              </div>
-            </article>
+
+        {/* Featured before/after — Daniel */}
+        {/* <div className="cm-feature-grid" style={{ marginTop: 56, background: T.paper, border: `1px solid ${T.line}`, borderRadius: 20, overflow: 'hidden', boxShadow: T.shadow, display: 'grid', gridTemplateColumns: '1.1fr .9fr' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, background: T.line, position: 'relative' }}>
+            <img src={danielBefore} alt="Daniel before" style={{ width: '100%', height: '100%', minHeight: 340, objectFit: 'cover', display: 'block' }} />
+            <img src={danielAfter} alt="Daniel after" style={{ width: '100%', height: '100%', minHeight: 340, objectFit: 'cover', display: 'block' }} />
+            <span style={{ position: 'absolute', top: 14, left: 14, fontFamily: T.mono, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', background: 'rgba(17,36,27,.72)', color: '#fff', padding: '4px 9px', borderRadius: 100 }}>Before</span>
+            <span style={{ position: 'absolute', top: 14, right: 14, fontFamily: T.mono, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', background: T.vital, color: T.forest, padding: '4px 9px', borderRadius: 100 }}>After</span>
+          </div>
+          <div style={{ padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <span className="cm-eyebrow">The transformation</span>
+            <b style={{ fontFamily: T.display, fontSize: 28, marginTop: 14 }}>Daniel</b>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 16 }}>
+              <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 52, color: T.forest, letterSpacing: '-0.03em' }}>−85</span>
+              <span style={{ fontFamily: T.mono, fontSize: 14, color: T.inkFaint }}>lbs lost</span>
+            </div>
+            <p style={{ marginTop: 18, fontSize: 16, color: T.inkSoft, lineHeight: 1.6 }}>
+              Markers normalized, energy and confidence back. His words are below.
+            </p>
+          </div>
+        </div> */}
+
+        {/* Written quotes — Daniel + Gabe */}
+        <div className="cm-quotes-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 24 }}>
+          {QUOTES.map(q => (
+            <blockquote key={q.name} style={{ margin: 0, background: T.bone, border: `1px solid ${T.line}`, borderRadius: 18, padding: 'clamp(26px,3.5vw,38px)', display: 'flex', flexDirection: 'column' }}>
+              <p style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(19px,2.2vw,24px)', lineHeight: 1.45, color: T.ink, letterSpacing: '-0.01em' }}>“{q.quote}”</p>
+              <footer style={{ marginTop: 'auto', paddingTop: 20, display: 'flex', alignItems: 'baseline', gap: 12 }}>
+                <b style={{ fontFamily: T.display, fontSize: 17, color: T.ink }}>{q.name}</b>
+                <span style={{ fontFamily: T.mono, fontSize: 13, color: T.moss }}>{q.stat}</span>
+              </footer>
+            </blockquote>
+          ))}
+        </div>
+      </Wrap>
+    </section>
+  )
+}
+
+/* ─── Video testimonials (Loom) ────────────────────────────────────── */
+function VideoTestimonials() {
+  return (
+    <section style={{ background: T.bone, paddingBlock: 'clamp(72px,9vw,140px)' }}>
+      <Wrap>
+        <div style={{ maxWidth: 640, textAlign: 'center', marginInline: 'auto' }}>
+          <span className="cm-eyebrow cm-eyebrow-center">In their own words</span>
+          <h2 style={{ fontSize: 'clamp(32px,4.4vw,54px)', marginTop: 18 }}>Hear it straight from them</h2>
+          <p style={{ marginTop: 20, fontSize: 'clamp(17px,1.5vw,20px)', color: T.inkSoft, lineHeight: 1.6 }}>
+            Short, unscripted clips from men who sat exactly where you are now.
+          </p>
+        </div>
+        <div className="cm-vids-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, marginTop: 48, maxWidth: 760, marginInline: 'auto' }}>
+          {VIDEO_TESTIMONIALS.map((id, i) => (
+            <div key={id} style={{ background: '#000', border: `1px solid ${T.line}`, borderRadius: 16, overflow: 'hidden', boxShadow: T.shadow, aspectRatio: '9 / 16' }}>
+              <iframe
+                src={`https://www.loom.com/embed/${id}?${LOOM_PARAMS}`}
+                title={`Client testimonial ${i + 1}`}
+                frameBorder="0"
+                allowFullScreen
+                style={{ width: '100%', height: '100%', display: 'block' }}
+              />
+            </div>
           ))}
         </div>
       </Wrap>
@@ -482,10 +520,10 @@ function About() {
             <span className="cm-eyebrow">Meet your coach</span>
             <h2 style={{ fontSize: 'clamp(30px,4vw,48px)', marginTop: 18 }}>I coach the man who is ready to turn his health around.</h2>
             <p style={{ marginTop: 20, color: T.inkSoft }}>
-              I built the MROI Method after watching too many folks waste time and money on generic approaches, then blame themselves when it failed.
+              I built the MROI Method after watching too many men waste time and money on generic approaches, then blame themselves when it failed.
             </p>
             <p style={{ marginTop: 20, color: T.inkSoft }}>
-              Every client I take on gets high-touch, 1-on-1 coaching: direct access, lab-informed programming, and a plan that addresses your specific problems. I help folks that are done starting over.
+              Every client I take on gets high-touch, 1-on-1 coaching: direct access, lab-informed programming, and a plan that addresses your specific problems. I help men that are done starting over.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 26 }}>
               {['Lab-informed programming', '1-on-1 only', 'Specializes in 50+ lb loss'].map(c => (
@@ -521,10 +559,10 @@ function Guarantee() {
             <span className="cm-eyebrow cm-eyebrow-vital">The risk is mine</span>
             <h2 style={{ color: '#fff', fontSize: 'clamp(28px,3.8vw,46px)', marginTop: 16 }}>Lose 50 lbs by the end of your program — or I work for free until you do.</h2>
             <p style={{ marginTop: 18, color: 'rgba(255,255,255,.78)', maxWidth: 620, fontSize: 18 }}>
-              That's the whole deal. You show up and do the work; I carry the risk. If you finish the program and you haven't lost 50 pounds, I keep coaching you 1-on-1 at no cost until you get there. No fine print, no weaseling.
+              That's the whole deal. You show up and do the work; I carry the risk. If you finish the program and you haven't lost 50 pounds, I keep coaching you 1-on-1 at no cost until you get there. Fine print: 80% compliance required.
             </p>
             <div style={{ marginTop: 30 }}>
-              <a href="https://calendly.com/luke-strassner-fit/1-1-mentorship-session" className="cm-btn cm-btn-vital cm-btn-lg">Book a Call With Luke<span className="arrow">→</span></a>
+              <Link to="/apply" className="cm-btn cm-btn-vital cm-btn-lg">Apply to Work With Luke<span className="arrow">→</span></Link>
             </div>
           </div>
         </div>
@@ -545,7 +583,7 @@ function Convert() {
           <span className="cm-eyebrow cm-eyebrow-center">Two ways to start</span>
           <h2 style={{ fontSize: 'clamp(32px,4.4vw,54px)', marginTop: 18 }}>Start with the assessment.</h2>
           <p style={{ marginTop: 20, fontSize: 'clamp(17px,1.5vw,20px)', color: T.inkSoft, lineHeight: 1.6 }}>
-            Three minutes tells us where you stand and which path fits. Prefer to talk it through first? Book a call.
+            Three minutes tells us where you stand and which path fits. Ready to move now? Apply to work with me directly.
           </p>
         </div>
         <div className="cm-convert-grid" style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 28 }}>
@@ -571,11 +609,11 @@ function Convert() {
 
           {/* Call card */}
           <Stack id="call" style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 22, padding: 'clamp(32px,4vw,48px)' }} sx={{ justifyContent: 'space-between' }}>
-            <div><span className="cm-eyebrow">Or book a call</span>
+            <div><span className="cm-eyebrow">Or apply directly</span>
             <h3 style={{ fontSize: 'clamp(24px,2.6vw,32px)', marginTop: 16 }}>Talk to me 1-on-1</h3>
-            <p style={{ color: T.inkSoft, marginTop: 14 }}>We'll look at your situation and come up with a gameplan together. If it's not the right fit, I'll still point you in the right direction.</p>
+            <p style={{ color: T.inkSoft, marginTop: 14 }}>Answer a few quick questions, then book a discovery call. We'll look at your situation and come up with a gameplan together. If it's not the right fit, I'll still point you in the right direction.</p>
             </div>
-            <a href={CALENDLY_URL} target="_blank" rel="noreferrer" className="cm-btn cm-btn-primary" style={{ marginTop: 20, width: '100%', color: 'white'}}>Book on Calendly <span className="arrow">→</span></a>
+            <Link to="/apply" className="cm-btn cm-btn-primary" style={{ marginTop: 20, width: '100%', color: 'white'}}>Apply to work with Luke <span className="arrow">→</span></Link>
           </Stack>
         </div>
       </Wrap>
@@ -590,8 +628,8 @@ const FAQS = [
   { q: 'What if my labs are already bad?', a: "That's exactly who this is built for. Pre-diabetic, high blood pressure, poor sleep, low energy...those are the metabolic problems we attack first. The assessment helps flag where you stand. (This isn't medical advice; we coordinate with, not replace, your doctor.)" },
   { q: 'Is the assessment really free?', a: "Yes. No credit card, no obligation. It takes about three minutes and gives you a health score plus the right MROI path to begin on." },
   { q: 'How much time does the coaching take each week?', a: "It's built around a busy man's life. Expect a few focused training sessions and simple daily habits...not living in the gym. The 1-on-1 structure means the plan flexes to your schedule, not the other way around. Specifically, a client of mine -Karter- lost 20 lbs in the first 10 weeks while working 60-70 hours per week." },
-  { q: 'Do you only work with men who have 50+ lbs to lose?', a: "That's my specialty and where the guarantee applies. If you're close but not sure you fit, book a call and we'll figure it out honestly. Full transparency: the bulk of my clientele are men, but I don't turn away women who believe this is the right fit." },
-    { q: "How much does the coaching cost?", a: "We'll talk specifics on the call once I understand your situation, because the right structure depends on where you're starting. What I can tell you now: it's high-touch 1-on-1 coaching directly with me, backed by the guarantee that you lose 50 lbs or I work for free until you do. The risk sits with me. My 12 month program is 20% off when paid up front. That being said, my pricing is quite standard for the industry." },
+  { q: 'Do you only work with men who have 50+ lbs to lose?', a: "That's my specialty and where the guarantee applies. If you're close but not sure you fit, apply and we'll figure it out honestly. Full transparency: the bulk of my clientele are men, but I don't turn away women who believe this is the right fit." },
+    { q: "How much does the coaching cost?", a: "We'll talk specifics on the call once I understand your situation, because the right structure depends on where you're starting. What I can tell you now: it's high-touch 1-on-1 coaching directly with me, backed by the guarantee that you lose 50 lbs or I work for free until you do. The risk sits with me. That being said, my pricing is quite standard for the industry." },
 
 ]
 
@@ -649,7 +687,7 @@ function Footer() {
           <div>
             <h4 style={{ fontFamily: T.mono, fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', marginBottom: 18 }}>Start</h4>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {[['/quiz', 'Take the Assessment'], [CALENDLY_URL, 'Book a Consultation Call With Luke'], ['https://instagram.com/luke.strassner.fit', 'Instagram']].map(([href, label]) => (
+              {[['/quiz', 'Take the Assessment'], ['/apply', 'Apply to Work With Luke'], ['https://instagram.com/luke.strassner.fit', 'Instagram']].map(([href, label]) => (
                 <li key={label}>
                   {href.startsWith('/')
                     ? <Link to={href} className="cm-footer-link">{label}</Link>
@@ -662,7 +700,7 @@ function Footer() {
         <div style={{ paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>© 2026 Chainmover Fitness. All rights reserved.</span>
           <span style={{ color: 'rgba(255,255,255,.3)', fontSize: 12.5, maxWidth: 700, lineHeight: 1.55 }}>
-            Results vary. Coaching is not medical advice and does not replace your physician. The 50 lb guarantee requires full program completion and adherence to coaching.
+            Results vary. Coaching is not medical advice and does not replace your physician. The 50 lb guarantee requires full program completion and 80% adherence to coaching.
           </span>
         </div>
       </Wrap>
@@ -678,11 +716,12 @@ export default function LandingPage() {
       <StyleTag />
       <Header />
       <main>
-        <Hero />
         <VSL />
+        <Hero />
         {/* <StatsBar /> */}
         <Method />
-        {/* <Results /> */}
+        <Results />
+        <VideoTestimonials />
         <About />
         <Guarantee />
         <Convert />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
 
@@ -11,6 +11,10 @@ const LOOM_ID = '2d7655a47aa846ec86a08d2efeb8a507'
 /* "How we'll get you 50+ lbs down" — walkthrough of the four phases +
    who it's for vs not for. Paste that Loom share ID here.            */
 const METHOD_LOOM_ID = '81fcce235f974efaa6fe4c3920df79cb'
+
+/* ─── YouTube VSL — the main overview video ─────────────────────────
+   From a URL like https://youtu.be/ceAIiqaK_Kc the ID is 'ceAIiqaK_Kc'. */
+const YOUTUBE_VSL_ID = 'ceAIiqaK_Kc'
 
 /* Strips the Loom chrome — top bar, title, owner, share, and the view
    count — so the embed shows just the player. */
@@ -81,14 +85,14 @@ const EXPECT = [
 
 const FAQS = [
   { q: "I've tried programs before and they didn't work. Why would this be different?", a: "Because most programs give generic fixes. We fix the order of operations: metabolism and recovery first, so by the time you'd normally plateau or stall, your body is working with you instead of against you. Your past failures were almost always a structure and support problem." },
-  { q: "Is this just going to be a high-pressure sales call?", a: "No. I only take men I'm confident I can deliver the 50 lb guarantee for, so the call is genuinely about figuring out whether that's you. If it's not a fit, I'll tell you, and you'll still leave with a clear direction. There's no upside for either of us in forcing something that won't work. Logically, it wouldn't make sense for me to pressure folks into joining because if we're not both confident in moving forward, chances are we're not a good fit, and adherence to the program wouldn't be great, which negatively reflects on me and my business. Word gets around." },
-    { q: "How much does the coaching cost?", a: "We'll talk specifics on the call once I understand your situation, because the right structure depends on where you're starting. What I can tell you now: it's high-touch 1-on-1 coaching directly with me, backed by the guarantee that you lose 50 lbs or I work for free until you do. The risk sits with me. My 12 month program (the one the guarantee is for) is 20% off when paid up front. That being said, my pricing is quite standard for the industry." },
+  { q: "Is this just going to be a high-pressure sales call?", a: "No. I only take men I'm confident I can deliver the 50 lb guarantee for, so the call is genuinely about figuring out whether that's you. If it's not a fit, I'll tell you, and you'll still leave with a clear direction. There's no upside for either of us in forcing something that won't work. Logically, it wouldn't make sense for me to pressure men into joining because if we're not both confident in moving forward, chances are we're not a good fit, and adherence to the program wouldn't be great, which negatively reflects on me and my business. Word gets around." },
+    { q: "How much does the coaching cost?", a: "We'll talk specifics on the call once I understand your situation, because the right structure depends on where you're starting. What I can tell you now: it's high-touch 1-on-1 coaching directly with me, backed by the guarantee that you lose 50 lbs or I work for free until you do. The risk sits with me. My 12 month program (the one the guarantee is for) is cheaper when paid up front compared to monthly. That being said, my pricing is quite standard for the industry." },
   { q: "I'm busy. How much time does this actually take?", a: "It's built around a working man's schedule — a few focused training sessions and simple daily habits, not hours in the gym. The 1-on-1 structure means the plan bends to your life, not the other way around. We'll map it to your actual week on the call." },
   { q: "What if my labs are already bad or I'm on medication?", a: "That's exactly who this is built for. Pre-diabetic, high blood pressure, low testosterone, already on metformin or a GLP-1 — we work with your doctor, not around them, and build the system underneath the medication so the result holds. Bring your latest labs to the call if you have them." },
   { q: "What do I need to do before the call?", a: "Nothing complicated. Watch the software demo above so you can see how the day-to-day actually works, and pull up your most recent bloodwork if you have it. Show up honest about what's been going on. That's it." },
   { q: "Do you offer refunds?", a: "On a case by case basis. Typically, if you're wanting a refund, it's not working out well for both of us — and I value my time and energy more than keeping money from a client that isn't cooperating." },
   { q: "How long does the program last?", a: "The program is designed to be a 12-month commitment, which gives us enough time to build the habits and systems that will support your long-term success. The guarantee is tied to this 12-month period." },
-  { q: "How long will it take for me to lose the first 50 lbs?", a: "The timeline varies by individual, but most folks see the first 50 lbs lost within the first 5-10 months. The key is consistency and following the system we'll build together. The reason I designed this to be a 12 month program is to ensure the habits and systems we build are sustainable long-term. The goal is that once you complete the program, you'll have the tools and knowledge to maintain your progress for life." }
+  { q: "How long will it take for me to lose the first 50 lbs?", a: "The timeline varies by individual, but most men see the first 50 lbs lost within 5-10 months. The key is following the system we'll build together." }
 ]
 
 /* ─── video testimonials — paste each Loom share ID below ────────────
@@ -131,24 +135,48 @@ export default function PostCallPage() {
             Your call is booked
           </div>
           <h1 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(34px,5.5vw,58px)', lineHeight: 1.05, letterSpacing: '-0.03em', margin: 0, maxWidth: 760 }}>
-            You're on the calendar. Here's how to make the call count.
+            Wait---your call isn't confirmed yet.
           </h1>
           <p style={{ marginTop: 22, fontSize: 'clamp(17px,1.6vw,21px)', lineHeight: 1.6, color: T.inkSoft, maxWidth: 640 }}>
-            Check your email for the calendar invite and confirmation. Before we talk, take ten minutes with everything below — it's the difference between a good call and a great one.
+            Before we talk, take time with everything below — it's the difference between a good call and a great one. Watch the videos below to get a better understanding of what to expect. Further instructions will be given so that your call can be confirmed, make sure to fully read through the page.
           </p>
+        </div>
+      </section>
+
+      {/* ── VSL: full overview ── */}
+      <section style={{ ...wrap, paddingBlock: 'clamp(32px,4vw,56px)' }}>
+        <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 500, letterSpacing: '.16em', textTransform: 'uppercase', color: T.moss, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ width: 22, height: 1.5, background: T.moss, display: 'inline-block' }} />Watch this first
+        </span>
+        <h2 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(26px,3.4vw,40px)', marginTop: 16, letterSpacing: '-0.02em' }}>
+          How we get men 50+ lbs down
+        </h2>
+        <p style={{ marginTop: 14, fontSize: 17, lineHeight: 1.7, color: T.inkSoft, maxWidth: 620 }}>
+          If you haven't seen the full overview yet, start here. It's the clearest picture of how the method actually works — watch it before we talk.
+        </p>
+
+        <div style={{ marginTop: 28, position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: 16, overflow: 'hidden', boxShadow: T.shadowLg, border: `1px solid ${T.line}`, background: T.bone }}>
+          <iframe
+            src={`https://www.youtube.com/embed/${YOUTUBE_VSL_ID}`}
+            title="How we get men 50+ lbs down"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+          />
         </div>
       </section>
 
       {/* ── How we'll get you 50+ lbs down ── */}
       <section style={{ ...wrap, paddingBlock: 'clamp(32px,4vw,56px)' }}>
         <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 500, letterSpacing: '.16em', textTransform: 'uppercase', color: T.moss, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ width: 22, height: 1.5, background: T.moss, display: 'inline-block' }} />Watch first
+          <span style={{ width: 22, height: 1.5, background: T.moss, display: 'inline-block' }} />Before the call
         </span>
         <h2 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(26px,3.4vw,40px)', marginTop: 16, letterSpacing: '-0.02em' }}>
           How to prepare for the call
         </h2>
         <p style={{ marginTop: 14, fontSize: 17, lineHeight: 1.7, color: T.inkSoft, maxWidth: 620 }}>
-          Watch this first so we are able to get the most our of our call.
+          Then watch this so we get the most out of our call.
         </p>
 
         <div style={{ marginTop: 28, position: 'relative', paddingBottom: '62.5%', height: 0, borderRadius: 16, overflow: 'hidden', boxShadow: T.shadowLg, border: `1px solid ${T.line}`, background: T.bone }}>
@@ -336,6 +364,27 @@ export default function PostCallPage() {
                 <div className="a">{f.a}</div>
               </details>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Confirm attendance (final step to lock in the booking) ── */}
+      <section style={{ ...wrap, paddingBlock: 'clamp(48px,6vw,88px)' }}>
+        <div style={{ background: T.forest, color: '#fff', borderRadius: 18, padding: 'clamp(28px,4vw,48px)', boxShadow: T.shadow, display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(70,201,139,.18)', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke={T.vital} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 22, height: 22 }}>
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <div>
+            <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>One last step</span>
+            <h2 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(22px,2.8vw,32px)', color: '#fff', margin: '12px 0 0', letterSpacing: '-0.02em' }}>
+              Confirm your attendance to complete the booking.
+            </h2>
+            <p style={{ marginTop: 14, fontSize: 16.5, lineHeight: 1.7, color: 'rgba(255,255,255,.85)' }}>
+              Your time isn't fully locked in until you confirm it. Check your email for the confirmation link and click it now to finalize your spot. Unconfirmed times are released so someone else can take them — so don't leave it.
+            </p>
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Typography, Button, LinearProgress, Paper } from '@mui/material'
+import { Box, Typography, Button, LinearProgress } from '@mui/material'
 
 // ─── backend endpoint ─────────────────────────────────────────────
 // Paste your deployed Apps Script URL here after setup
@@ -198,19 +198,19 @@ function calcMacros(a) {
 function getFlags(a) {
   const flags = []
   if (a.midsection === 'yes')
-    flags.push({ icon: '🔴', title: 'Visceral Fat Accumulation', body: 'Belly-dominant fat storage is the highest-risk pattern metabolically. It wraps around your organs — not just under the skin — and is directly tied to insulin resistance, inflammation, and cardiovascular risk.' })
+    flags.push({ title: 'Visceral Fat Accumulation', body: 'Belly fat wraps your organs and drives insulin resistance, inflammation, and cardiovascular risk. It is the riskiest place on your body to store fat.' })
   if (a.energy_crash === 'yes')
-    flags.push({ icon: '⚡', title: 'Blood Sugar Dysregulation', body: 'The 2–4pm crash is a textbook insulin response pattern. Your body is spiking and crashing glucose after meals. Left unaddressed, this is how insulin resistance develops over years, not days.' })
+    flags.push({ title: 'The Afternoon Energy Crash', body: "Part blood sugar swinging after meals (early insulin resistance), part sleep that isn't restoring you. It is a metabolic problem, not a discipline one." })
   if (a.sleep_quality === 'yes')
-    flags.push({ icon: '😴', title: 'Sleep Architecture Disruption', body: 'Waking unrefreshed despite adequate hours is a strong signal for sleep apnea — which affects up to 45% of obese men — or for chronic cortisol elevation disrupting deep sleep. Both directly suppress fat loss.' })
+    flags.push({ title: 'Sleep Architecture Disruption', body: 'Waking tired after seven or more hours points to sleep apnea or cortisol wrecking your deep sleep. Both directly suppress fat loss.' })
   if (a.winded === 'yes')
-    flags.push({ icon: '💨', title: 'Cardiovascular Stress', body: 'Getting winded on low-effort activity means your heart and lungs are working significantly harder than they should at rest. This is a direct measure of how much strain your current weight is placing on your system.' })
+    flags.push({ title: 'Cardiovascular Stress', body: 'Getting winded on light effort means your heart is working far harder than it should at rest.' })
   if (a.family_history === 'yes')
-    flags.push({ icon: '🧬', title: 'Genetic Risk Multiplier', body: 'A first-degree relative with T2 diabetes or early heart disease roughly doubles your lifetime risk. This doesn\'t change the plan — it changes the urgency. You are not starting from the same baseline as someone without this history.' })
+    flags.push({ title: 'Genetic Risk Multiplier', body: 'A close relative with type 2 diabetes or early heart disease roughly doubles your risk. That raises the urgency, not the plan.' })
   if (a.stress === 'high' || a.stress === 'crushing')
-    flags.push({ icon: '🔁', title: 'Cortisol Load', body: 'Chronic high stress elevates cortisol, which tells your body to store fat — preferentially in the abdomen — and suppresses the hormones needed for fat burning. No calorie deficit fully overcomes this signal.' })
+    flags.push({ title: 'Cortisol Load', body: 'Chronic stress keeps cortisol high, which tells your body to store fat around the middle and blocks fat burning.' })
   if (a.yoyo === 'yes')
-    flags.push({ icon: '📉', title: 'Metabolic Set Point Resistance', body: 'Each cycle of losing and regaining trains your metabolism to protect a higher weight. Your body is now actively defending the number you\'re trying to escape. The fix isn\'t more restriction — it\'s rebuilding the system.' })
+    flags.push({ title: 'Metabolic Set Point Resistance', body: 'Every cycle of losing and regaining trains your body to defend a higher weight. The fix is rebuilding the system, not more restriction.' })
   return flags.slice(0, 4)
 }
 
@@ -236,9 +236,9 @@ const numInputSx = {
 export default function App() {
   const [step, setStep]               = useState(0)
   const [answers, setAnswers]         = useState({})
-  const [phase, setPhase]             = useState('quiz') // 'quiz' | 'capture' | 'results'
-  const [results, setResults]         = useState(null)
+  const [phase, setPhase]             = useState('quiz') // 'quiz' | 'capture'
   const pendingRef                    = useRef(null)
+  const navigate                      = useNavigate()
 
   const total    = QUESTIONS.length
   const progress = phase === 'capture' ? 100 : (step / total) * 100
@@ -261,13 +261,14 @@ export default function App() {
     }
   }
 
-  async function submitLead(name, email, phone, instagram) {
+  async function submitLead(name, email, phone, instagram, source) {
     const r = pendingRef.current
     const payload = {
       name,
       email,
       phone,
       instagram,
+      source,
       bucket: BUCKETS[r.bucket].label,
       timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
     }
@@ -285,6 +286,7 @@ export default function App() {
         email:     payload.email,
         phone:     payload.phone,
         instagram: payload.instagram,
+        source:    payload.source,
         bucket:    payload.bucket,
         timestamp: payload.timestamp,
         // body stats
@@ -312,21 +314,15 @@ export default function App() {
       fetch(`${APPS_SCRIPT_URL}?${params}`, { mode: 'no-cors' })
     } catch (_) { /* silent fail — don't block user */ }
 
-    setResults({ ...r, lead: payload })
-    setPhase('results')
+    // Persist the personalized report so the bucket page can render it,
+    // then route straight to the matching bucket page (the results experience).
+    try {
+      sessionStorage.setItem('chainmover_results', JSON.stringify({ ...r, lead: payload }))
+    } catch (_) { /* ignore storage errors — navigation still works */ }
+    navigate(BUCKET_ROUTES[r.bucket])
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  function restart() {
-    setStep(0)
-    setAnswers({})
-    setResults(null)
-    setPhase('quiz')
-    pendingRef.current = null
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  if (phase === 'results') return <Results results={results} onRestart={restart} />
   if (phase === 'capture') return <LeadCaptureScreen progress={progress} onSubmit={submitLead} />
 
   return (
@@ -509,15 +505,16 @@ function LeadCaptureScreen({ progress, onSubmit }) {
   const [email, setEmail]       = useState('')
   const [phone, setPhone]       = useState('')
   const [instagram, setInsta]   = useState('')
+  const [source, setSource]     = useState('')
   const [loading, setLoading]   = useState(false)
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  const valid = name.trim().length >= 2 && emailValid && phone.replace(/\D/g, '').length >= 10 && instagram.trim().length > 1
+  const valid = name.trim().length >= 2 && emailValid && phone.replace(/\D/g, '').length >= 10 && instagram.trim().length > 1 && source.trim().length > 1
 
   async function handleSubmit() {
     if (!valid) return
     setLoading(true)
-    await onSubmit(name.trim(), email.trim(), phone.trim(), instagram.trim())
+    await onSubmit(name.trim(), email.trim(), phone.trim(), instagram.trim(), source.trim())
   }
 
   return (
@@ -594,7 +591,7 @@ function LeadCaptureScreen({ progress, onSubmit }) {
           </Box>
 
           {/* Instagram */}
-          <Box sx={{ mb: 5 }}>
+          <Box sx={{ mb: 4 }}>
             <Typography sx={{ color: MUTED, fontSize: '0.7rem', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', mb: 1.5 }}>
               Instagram Handle </Typography>
             <Box
@@ -604,8 +601,25 @@ function LeadCaptureScreen({ progress, onSubmit }) {
               value={instagram}
               placeholder="@yourhandle"
               onChange={e => setInsta(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && valid && handleSubmit()}
+              onKeyDown={e => e.key === 'Enter' && document.getElementById('source-input')?.focus()}
               sx={{ ...textInputSx, borderBottomColor: instagram.trim().length > 0 ? GREEN : 'rgba(255,255,255,0.2)' }}
+            />
+          </Box>
+
+          {/* Source / channel */}
+          <Box sx={{ mb: 5 }}>
+            <Typography sx={{ color: MUTED, fontSize: '0.7rem', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', mb: 1.5 }}>
+              Where did you find me?
+            </Typography>
+            <Box
+              component="input"
+              id="source-input"
+              type="text"
+              value={source}
+              placeholder="Instagram, YouTube, X…"
+              onChange={e => setSource(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && valid && handleSubmit()}
+              sx={{ ...textInputSx, borderBottomColor: source.trim().length > 0 ? GREEN : 'rgba(255,255,255,0.2)' }}
             />
           </Box>
 
@@ -625,7 +639,7 @@ function LeadCaptureScreen({ progress, onSubmit }) {
           </Button>
 
           <Typography sx={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.72rem', mt: 2, textAlign: 'center' }}>
-            🔒 We don't sell or share your info. Ever.
+            We don't sell or share your info. Ever.
           </Typography>
 
         </Box>
@@ -635,124 +649,9 @@ function LeadCaptureScreen({ progress, onSubmit }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// RESULTS
+// BUCKET ROUTES
 // ═══════════════════════════════════════════════════════════════════
+// The personalized results experience now lives on the bucket pages
+// (see BucketPage.jsx). After lead capture we persist the computed report
+// to sessionStorage and route to the matching bucket route below.
 const BUCKET_ROUTES = { early: '/early', stress: '/stress', high: '/high' }
-
-function Results({ results, onRestart }) {
-  const { bucket, macros, flags, answers } = results
-  const b = BUCKETS[bucket]
-  const navigate = useNavigate()
-
-  return (
-    <Box sx={{ minHeight: '100svh', bgcolor: BG, display: 'flex', justifyContent: 'center', px: { xs: 2, sm: 4 }, py: 6 }}>
-      <Box sx={{ width: '100%', maxWidth: 580, display: 'flex', flexDirection: 'column', gap: 3 }}>
-
-        {/* ── Bucket Banner ── */}
-        {/* <Paper elevation={0} sx={{ bgcolor: CARD, border: `1px solid ${b.border}`, borderRadius: 3, p: { xs: 3, sm: 4 } }}>
-          <Box sx={{ display: 'inline-flex', alignItems: 'center', bgcolor: b.bg, border: `1px solid ${b.border}`, borderRadius: 1.5, px: 1.5, py: 0.5, mb: 2 }}>
-            <Typography sx={{ color: b.color, fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 1 }}>
-              {b.label}
-            </Typography>
-          </Box>
-          <Typography variant="h5" sx={{ color: WHITE, fontWeight: 800, mb: 2, lineHeight: 1.3 }}>
-            {b.headline}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.65)', lineHeight: 1.8 }}>
-            {b.projection}
-          </Typography>
-        </Paper> */}
-
-        {/* ── Macros ── */}
-        <Paper elevation={0} sx={{ bgcolor: CARD, border: `1px solid ${FAINT}`, borderRadius: 3, p: { xs: 3, sm: 4 } }}>
-          <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.3)', display: 'block', mb: 0.5 }}>
-            Your Daily Numbers
-          </Typography>
-          <Typography variant="h6" sx={{ color: WHITE, fontWeight: 800, mb: 0.5 }}>
-            Built for {answers.weight} lbs → {answers.targetWeight} lbs.
-          </Typography>
-          <Typography variant="body2" sx={{ color: MUTED, mb: 3 }}>
-            Mifflin St Jeor · sedentary baseline · 2,000 cal floor
-          </Typography>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', sm: '1fr 1fr 1fr' }, gap: 1.5 }}>
-            <MacroCard label="Calories" value={macros.calories.toLocaleString()} unit="kcal" color={AMBER} />
-            <MacroCard label="Protein"  value={macros.protein} unit="g / day" color={TEAL} />
-            <MacroCard label="Fat"      value={macros.fat}     unit="g / day" color="#a78bfa" />
-            <MacroCard label="Carbs"    value={macros.carbs}   unit="g / day" color="#60a5fa" />
-            <MacroCard label="Fiber"    value={macros.fiber}   unit="g / day" color="#34d399" />
-          </Box>
-          <Box sx={{ mt: 2.5, p: 2, bgcolor: CARD2, borderRadius: 2, border: `1px solid ${FAINT}` }}>
-            <Typography variant="body2" sx={{ color: MUTED, lineHeight: 1.7 }}>
-              <Box component="span" sx={{ color: TEAL, fontWeight: 700 }}>Protein</Box> is your non-negotiable. Hit it every day regardless of anything else.&nbsp;
-              <Box component="span" sx={{ color: '#a78bfa', fontWeight: 700 }}>Fat</Box> protects testosterone — don't cut it.&nbsp;
-              <Box component="span" sx={{ color: '#60a5fa', fontWeight: 700 }}>Carbs</Box> fill the rest. Cut them first if you need a deficit, but don't eliminate them.
-            </Typography>
-          </Box>
-        </Paper>
-
-        {/* ── Where System Is Breaking ── */}
-        {flags.length > 0 && (
-          <Paper elevation={0} sx={{ bgcolor: CARD, border: '1px solid rgba(239,68,68,0.2)', borderRadius: 3, p: { xs: 3, sm: 4 } }}>
-            <Typography variant="overline" sx={{ color: 'rgba(239,68,68,0.6)', display: 'block', mb: 0.5 }}>
-              What Your Answers Are Telling You
-            </Typography>
-            <Typography variant="body2" sx={{ color: MUTED, mb: 2.5 }}>
-              These are signals, not diagnoses. But they're worth understanding.
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {flags.map(f => (
-                <Box key={f.title} sx={{ display: 'flex', gap: 2, p: 2, bgcolor: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.12)', borderRadius: 2 }}>
-                  <Box sx={{ fontSize: '1.3rem', lineHeight: 1, mt: 0.15, flexShrink: 0 }}>{f.icon}</Box>
-                  <Box>
-                    <Typography sx={{ color: '#fca5a5', fontWeight: 700, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: 0.5, mb: 0.5 }}>{f.title}</Typography>
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.65 }}>{f.body}</Typography>
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-          </Paper>
-        )}
-
-        {/* ── CTA ── */}
-        <Paper elevation={0} sx={{ bgcolor: GREEN, border: `1px solid ${GREEN_B}`, borderRadius: 3, p: { xs: 3, sm: 4 } }}>
-          <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', mb: 1 }}>
-            Next Step
-          </Typography>
-          <Typography variant="h6" sx={{ color: WHITE, fontWeight: 800, mb: 1 }}>
-            This gives you the numbers. The resource below gives you the system.
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mb: 2.5, lineHeight: 1.7 }}>
-            The macros above are accurate. But macros without a behavioral framework don't last. What's built for your profile goes deeper than calories.
-          </Typography>
-          <Button variant="contained" fullWidth onClick={() => navigate(BUCKET_ROUTES[bucket])}
-            sx={{ bgcolor: WHITE, color: '#0a0a0a', fontWeight: 800, py: 1.5, borderRadius: 2, fontSize: '0.95rem', '&:hover': { bgcolor: 'rgba(255,255,255,0.9)' } }}>
-            {b.cta} →
-          </Button>
-        </Paper>
-
-        {/* ── Restart ── */}
-        <Button fullWidth variant="outlined" onClick={onRestart}
-          sx={{ borderColor: 'rgba(255,255,255,0.1)', color: MUTED, borderRadius: 2, py: 1.25, fontWeight: 600,
-            '&:hover': { borderColor: 'rgba(255,255,255,0.25)', bgcolor: 'rgba(255,255,255,0.03)', color: WHITE } }}>
-          Start Over
-        </Button>
-
-      </Box>
-    </Box>
-  )
-}
-
-// ─── macro card ───────────────────────────────────────────────────
-function MacroCard({ label, value, unit, color }) {
-  return (
-    <Box sx={{ bgcolor: CARD2, border: `1px solid ${FAINT}`, borderRadius: 2, px: 2, py: 2 }}>
-      <Typography sx={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', mb: 0.5 }}>
-        {label}
-      </Typography>
-      <Typography sx={{ color, fontWeight: 900, fontSize: '1.6rem', lineHeight: 1 }}>
-        {value}
-      </Typography>
-      <Typography sx={{ color: MUTED, fontSize: '0.7rem', mt: 0.4 }}>{unit}</Typography>
-    </Box>
-  )
-}

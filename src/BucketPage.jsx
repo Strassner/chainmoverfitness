@@ -1,11 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
 
 /* ─── shared links ─────────────────────────────────────────────────── */
 const OVERVIEW_URL = 'https://linktw.in/foHoIb'
+const PLAN_VIDEO_URL = 'https://youtu.be/ceAIiqaK_Kc' // YouTube step-by-step plan (results CTA)
 const IG_URL = 'https://instagram.com/luke.strassner.fit'
 const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-session'
+// Placeholder: the landing-page VSL. Swap for a dedicated "your results" Loom when recorded.
+const RESULTS_VIDEO_ID = '6833df367eae4444b6225ea68b8612ba'
 
 /* ─── brand tokens (match landing page) ────────────────────────────── */
 const T = {
@@ -189,11 +192,11 @@ function renderBlocks(blocks, accent) {
             fontFamily: T.body, fontWeight: 700, fontSize: 17, padding: '17px 32px', borderRadius: 100,
             textDecoration: 'none', boxShadow: '0 8px 22px rgba(70,201,139,.3)',
           }}>Watch the Step-by-Step Overview →</a>
-          <a href={CALENDLY_URL} target="_blank" rel="noreferrer" style={{
+          <Link to="/apply" style={{
             display: 'inline-flex', alignItems: 'center', gap: 10, background: T.forest, color: '#fff',
             fontFamily: T.body, fontWeight: 700, fontSize: 17, padding: '17px 32px', borderRadius: 100,
             textDecoration: 'none', boxShadow: '0 8px 22px rgba(20,61,43,.28)',
-          }}>Book a Call With Luke →</a>
+          }}>Apply to Work With Luke →</Link>
         </div>
       )
       i++; continue
@@ -229,6 +232,216 @@ function renderBlocks(blocks, accent) {
   return out
 }
 
+/* ─── personalized results: data bridge ───────────────────────────── */
+// The quiz (App.jsx) writes the computed report here before routing in.
+function readResults(bucketKey) {
+  try {
+    const raw = sessionStorage.getItem('chainmover_results')
+    if (!raw) return null
+    const r = JSON.parse(raw)
+    // Only use the personalized data if it matches the bucket being viewed,
+    // so a stale completion or a hand-typed URL can't show mismatched flags.
+    if (r.bucket !== bucketKey) return null
+    return r
+  } catch (_) { return null }
+}
+
+// Strip the step-by-step "Path Forward", the guarantee, and the closing CTA
+// out of the narrative markdown — those are now structured React sections.
+function narrativeOnly(md) {
+  return md
+    .split(/\n+---\n+/)
+    .filter(seg => {
+      const s = seg.trim()
+      if (/###\s*0?5\.\s*The Path Forward/i.test(s)) return false
+      if (/###\s*The Chainmover Guarantee/i.test(s)) return false
+      if (/Watch the step by step overview/i.test(s)) return false
+      return true
+    })
+    .join('\n\n---\n\n')
+}
+
+/* ─── personalized results: shared section styles ─────────────────── */
+const eyebrow = (color) => ({ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color, display: 'block', marginBottom: 14 })
+const secH2 = { fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(26px,3.6vw,40px)', lineHeight: 1.12, letterSpacing: '-0.02em', color: T.ink, margin: '0 0 18px' }
+const secP = { fontSize: 17, lineHeight: 1.75, color: T.inkSoft, margin: '0 0 18px' }
+const b = (txt) => <strong style={{ color: T.ink, fontWeight: 700 }}>{txt}</strong>
+
+/* ─── Luke video ───────────────────────────────────────────────────── */
+function LukeVideo({ videoId }) {
+  return (
+    <section style={{ margin: '4px 0 48px' }}>
+      <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: 18, overflow: 'hidden', boxShadow: T.shadow, border: `1px solid ${T.line}` }}>
+        <iframe
+          src={`https://www.loom.com/embed/${videoId}?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true`}
+          title="A message from Luke" frameBorder="0" allowFullScreen
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        />
+      </div>
+      <p style={{ textAlign: 'center', marginTop: 14, fontSize: 14.5, color: T.inkSoft }}>
+        Watch this first — a couple of minutes from me on what your results actually mean, and what to do next.
+      </p>
+    </section>
+  )
+}
+
+/* ─── stakes (short urgency / agitate where this goes) ────────────── */
+function Stakes({ text, accent }) {
+  if (!text) return null
+  return (
+    <section style={{ margin: '0 0 44px' }}>
+      <span style={eyebrow(accent)}>Where this goes if nothing changes</span>
+      <p style={{ fontFamily: T.body, fontSize: 18, lineHeight: 1.65, color: T.ink, fontWeight: 500, margin: 0 }}>{text}</p>
+    </section>
+  )
+}
+
+/* ─── metabolic reframe (shared "feel understood" block) ──────────── */
+function MetabolicReframe() {
+  return (
+    <section style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 18, padding: 'clamp(26px,4vw,40px)', margin: '0 0 44px' }}>
+      <span style={eyebrow(T.moss)}>The part nobody told you</span>
+      <h2 style={secH2}>You don't need more effort. You've had plenty.</h2>
+      <p style={secP}>The belief you walked in with: you just need more discipline, more consistency, to try harder. But you've already tried harder than most people ever will. {b('Effort was never the thing standing between you and the result.')}</p>
+      <p style={secP}>Yes, fat loss comes down to calories in versus calories out. But that's the {b('entry point, not the whole picture.')} Here's what nobody tells you: your "calories out" isn't a fixed number. It swings <em>wildly</em> based on what you eat, when, and how much. Cut too hard for too long and your body quietly turns the burn down to match. That's the deficit that stops working.</p>
+      <p style={secP}>It's also why {b('strategically eating carbs and sugar')} the right way, at the right time, can be one of the best things you do for your metabolism. Done right, it signals your body that it's safe to burn again instead of clinging to every pound.</p>
+      <p style={{ ...secP, marginBottom: 0 }}>That's the whole reason the {b('MROI Method fixes metabolism first.')} Get your "calories out" working <em>for</em> you, and the deficit stops fighting you. You eat like a normal man and still lose fat. It's why metabolically healthy guys make it look easy. Their burn is on their side. Yours can be too.</p>
+    </section>
+  )
+}
+
+/* ─── diagnosis chain (their flags → one mechanism) ───────────────── */
+function DiagnosisChain({ flags, accent }) {
+  return (
+    <section style={{ margin: '0 0 44px' }}>
+      <span style={eyebrow(accent)}>Your diagnosis</span>
+      <h2 style={secH2}>{flags.length > 1 ? `These aren't ${flags.length} separate problems. They're one.` : 'This is one problem wearing different masks.'}</h2>
+      <p style={secP}>Here's the chain your answers traced, each link feeding the next:</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {flags.map(f => (
+          <div key={f.title} style={{ padding: '18px 20px', background: T.bone, borderLeft: `3px solid ${accent}`, borderRadius: 12 }}>
+            <div style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.06em', textTransform: 'uppercase', color: T.ink, fontWeight: 600, marginBottom: 6 }}>{f.title}</div>
+            <p style={{ fontSize: 15.5, lineHeight: 1.65, color: T.inkSoft, margin: 0 }}>{f.body}</p>
+          </div>
+        ))}
+      </div>
+      <p style={{ ...secP, margin: '22px 0 0' }}>Different symptoms, one root: a metabolism stuck in the wrong gear. Fix the root and the whole chain starts to unwind.</p>
+    </section>
+  )
+}
+
+/* ─── macro grid (numbers, tied to the reframe) ───────────────────── */
+function MacroGrid({ macros, answers, accent }) {
+  const items = [
+    ['Calories', Number(macros.calories).toLocaleString(), 'kcal'],
+    ['Protein', macros.protein, 'g / day'],
+    ['Fat', macros.fat, 'g / day'],
+    ['Carbs', macros.carbs, 'g / day'],
+    ['Fiber', macros.fiber, 'g / day'],
+  ]
+  return (
+    <section style={{ margin: '0 0 44px' }}>
+      <span style={eyebrow(accent)}>Your daily numbers</span>
+      <h2 style={secH2}>Built for {answers.weight} → {answers.targetWeight} lbs.</h2>
+      <p style={secP}>Mifflin St Jeor · sedentary baseline · 2,000 calorie floor. These are accurate, but here's the part that matters more than the numbers:</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: 12 }}>
+        {items.map(([label, value, unit]) => (
+          <div key={label} style={{ background: T.paper, border: `1px solid ${T.line}`, borderRadius: 14, padding: '18px 16px' }}>
+            <div style={{ fontFamily: T.mono, fontSize: 10.5, letterSpacing: '.08em', textTransform: 'uppercase', color: T.inkFaint, marginBottom: 6 }}>{label}</div>
+            <div style={{ fontFamily: T.display, fontWeight: 800, fontSize: 28, lineHeight: 1, color: T.ink }}>{value}</div>
+            <div style={{ fontSize: 12, color: T.inkFaint, marginTop: 5 }}>{unit}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 14, padding: '20px 22px', marginTop: 18 }}>
+        <p style={{ ...secP, margin: 0, fontSize: 16 }}>{b('These numbers are the entry point, not the answer.')} When your metabolism is fighting you, hitting them means relentless hunger and a scale that won't budge. Fix the foundation first and the same numbers get <em>easy</em> to hit. Most programs hand you the numbers and skip the part that makes them actually work.</p>
+      </div>
+    </section>
+  )
+}
+
+/* ─── 14-day directional roadmap ──────────────────────────────────── */
+function Roadmap({ phases, accent }) {
+  if (!phases || !phases.length) return null
+  return (
+    <section style={{ margin: '48px 0' }}>
+      <span style={eyebrow(accent)}>Your first 14 days</span>
+      <h2 style={secH2}>Your Roadmap</h2>
+      <p style={secP}>This is the shape of how men in your situation start turning it around. The order matters more than the details, and the details are exactly what we dial in for your body.</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {phases.map((p, i) => (
+          <div key={i} style={{ background: T.paper, border: `1px solid ${T.line}`, borderRadius: 16, padding: 'clamp(20px,3vw,28px)', boxShadow: T.shadow }}>
+            <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase', color: accent, fontWeight: 500 }}>{p.label}</span>
+            <h3 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(19px,2.2vw,24px)', color: T.ink, margin: '8px 0 12px', letterSpacing: '-0.01em' }}>{p.title}</h3>
+            <p style={{ fontSize: 16, lineHeight: 1.7, color: T.inkSoft, margin: '0 0 12px' }}>{p.body}</p>
+            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: T.moss, fontStyle: 'italic', margin: 0 }}>{p.hook}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ─── the gap only a call can fill ────────────────────────────────── */
+function GapBlock() {
+  return (
+    <section style={{ background: T.ink, color: '#fff', borderRadius: 18, padding: 'clamp(28px,4vw,44px)', margin: '44px 0' }}>
+      <span style={eyebrow(T.vital)}>You've got the what and the why</span>
+      <h2 style={{ ...secH2, color: '#fff' }}>Here's the part that actually changes things. The how.</h2>
+      <p style={{ fontSize: 16.5, lineHeight: 1.7, color: 'rgba(255,255,255,.82)', margin: '0 0 16px' }}>You now know what's happening and why effort alone hasn't moved it. What a few scrolls can't give you is the full sequence: how the MROI Method fixes your metabolism first, then turns fat loss into the easy part, in order, from day one.</p>
+      <p style={{ fontSize: 16.5, lineHeight: 1.7, color: 'rgba(255,255,255,.92)', margin: 0 }}>That's exactly what the step by step walkthrough lays out. It's the most valuable twenty minutes you'll spend on this.</p>
+    </section>
+  )
+}
+
+/* ─── guarantee (React version of the markdown callout) ───────────── */
+function GuaranteeCard() {
+  return (
+    <div style={{ background: T.forest, color: '#fff', borderRadius: 18, padding: 'clamp(28px,4vw,44px)', margin: '44px 0', boxShadow: T.shadow }}>
+      <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The Chainmover Guarantee</span>
+      <h3 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(26px,3.4vw,38px)', color: '#fff', margin: '14px 0 18px' }}>50 lbs. Guaranteed.</h3>
+      <p style={{ color: 'rgba(255,255,255,.82)', fontSize: 16.5, lineHeight: 1.7, margin: 0 }}>When you join the Codex, you lose 50 lbs of fat or I coach you for free until you do. Not a discount, not a refund. Every client works with me directly. No handoffs, no sub coaches, no AI.</p>
+    </div>
+  )
+}
+
+/* ─── bucket-matched testimonial ──────────────────────────────────── */
+function MatchedTestimonial({ t, accent }) {
+  if (!t) return null
+  return (
+    <section style={{ margin: '44px 0' }}>
+      <span style={eyebrow(accent)}>Someone who scored where you are</span>
+      <div style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 16, padding: 'clamp(24px,3.5vw,36px)' }}>
+        <p style={{ fontSize: 16, lineHeight: 1.7, color: T.inkSoft, margin: '0 0 18px' }}>{t.frame}</p>
+        <blockquote style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(20px,2.6vw,26px)', lineHeight: 1.4, color: T.ink, margin: '0 0 18px', letterSpacing: '-0.01em' }}>“{t.quote}”</blockquote>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <span style={{ fontWeight: 700, color: T.ink }}>{t.name}</span>
+          <span style={{ fontFamily: T.mono, fontSize: 13, letterSpacing: '.04em', color: accent }}>{t.stat}</span>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── call-first CTA + disclaimer ─────────────────────────────────── */
+function ResultsCTA() {
+  return (
+    <section style={{ margin: '48px 0 8px' }}>
+      <div style={{ background: `linear-gradient(160deg, ${T.forest} 0%, ${T.forest700} 100%)`, borderRadius: 20, padding: 'clamp(32px,5vw,52px)', textAlign: 'center', color: '#fff', boxShadow: T.shadow }}>
+        <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital, display: 'block', marginBottom: 14 }}>Your step-by-step plan</span>
+        <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>Watch exactly how to fix this, for a body like yours.</h2>
+        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>The full walkthrough shows you how the MROI Method fixes your metabolism first, then makes fat loss the easy part, in order, from day one. It's the plan that finally fits how your body actually works.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+          <a href={PLAN_VIDEO_URL} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: T.vital, color: T.forest, fontFamily: T.body, fontWeight: 700, fontSize: 17, padding: '18px 34px', borderRadius: 100, textDecoration: 'none', boxShadow: '0 8px 22px rgba(70,201,139,.3)' }}>Watch the step by step plan →</a>
+        </div>
+      </div>
+      <p style={{ fontSize: 12.5, lineHeight: 1.6, color: T.inkFaint, fontStyle: 'italic', margin: '28px 0 0', textAlign: 'center' }}>
+        Chainmover Fitness · Luke Strassner. For educational purposes based on lived experience and current research. Not medical advice. Always work with a qualified healthcare provider for your specific situation.
+      </p>
+    </section>
+  )
+}
+
 /* ─── header ───────────────────────────────────────────────────────── */
 function DocHeader() {
   return (
@@ -249,7 +462,10 @@ function DocHeader() {
 /* ─── document page shell ──────────────────────────────────────────── */
 function DocPage({ meta }) {
   useFonts()
-  const blocks = parseBlocks(meta.md)
+  const [results] = useState(() => readResults(meta.bucketKey))
+  const macros = results?.macros
+  const flags = results?.flags || []
+  const answers = results?.answers || {}
   return (
     <div style={{ background: T.paper, minHeight: '100svh', fontFamily: T.body, color: T.ink }}>
       <DocHeader />
@@ -272,9 +488,17 @@ function DocPage({ meta }) {
         </div>
       </section>
 
-      {/* reading column */}
-      <article style={{ maxWidth: 820, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', paddingBlock: 'clamp(40px,5vw,64px)' }}>
-        {renderBlocks(blocks, meta.accent)}
+      {/* reading column — a fast read: agitate → hint of value → next step */}
+      <article style={{ maxWidth: 760, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', paddingBlock: 'clamp(36px,5vw,56px)' }}>
+        {flags.length > 0 && <DiagnosisChain flags={flags} accent={meta.accent} />}
+        <Stakes text={meta.stakes} accent={meta.accent} />
+        <MetabolicReframe />
+        {macros && <MacroGrid macros={macros} answers={answers} accent={meta.accent} />}
+        <Roadmap phases={meta.roadmap} accent={meta.accent} />
+        <GuaranteeCard />
+        <MatchedTestimonial t={meta.testimonial} accent={meta.accent} />
+        <GapBlock />
+        <ResultsCTA />
       </article>
 
       {/* footer */}
@@ -702,15 +926,46 @@ The next step is seeing how the full system fits together from start to finish.
 
 *Chainmover Fitness. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
 
+/* ─── per-bucket personalized data ─────────────────────────────────── */
+const EARLY_DATA = {
+  stakes: "Your labs probably still read 'normal,' which is exactly the trap. This biology only moves one direction on its own. Left alone, men in this profile are usually on a medication, carrying a prediabetes marker, and two or three failed diets deeper within a decade. This is the most reversible it will ever be.",
+  roadmap: [
+    { label: 'Days 1 to 3', title: 'Kill the 2pm crash', body: "Steady your blood sugar first. That's about how you build your meals: protein first, carbs paired instead of eaten on their own. The afternoon crater and the cravings on top of it start to fade.", hook: "Exactly how you build that around your day is what we dial in." },
+    { label: 'Days 4 to 7', title: 'Lock in the foundation', body: "Get the foundational inputs in place: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. At your stage these few levers do most of the work.", hook: "How much of each, and which to prioritize first, comes down to your labs and your history." },
+    { label: 'Week 2', title: 'Protect sleep, lower the load', body: "Treat sleep quality and your stress load as primary levers, not afterthoughts. They sit upstream of the testosterone and cortisol driving everything else.", hook: "Pinpointing your specific cortisol drivers is the part a page can't do for you." },
+  ],
+  testimonial: { name: 'Gabe', stat: 'Down 25 lbs in 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this.' It's not just a pipe dream anymore.", frame: "Gabe started right where you are, early in and half expecting another false start. A few months later, this isn't a pipe dream to him anymore." },
+}
+
+const STRESS_DATA = {
+  stakes: "Your numbers may still get called 'borderline.' Your body stopped being borderline a while ago. Roughly 7 in 10 people in this range progress to type 2 if nothing changes, and every month inside the loop makes it harder to reverse. The window is open. It's not infinite.",
+  roadmap: [
+    { label: 'Days 1 to 3', title: 'Break the crash and caffeine loop', body: "Stabilize blood sugar through what and how you eat: protein forward meals, carbs paired not naked, and cutting the liquid sugar. Then a deficit can finally hold instead of fighting you.", hook: "The specific triggers, and the order to hit them in, are different for every man." },
+    { label: 'Days 4 to 7', title: 'Hit the loop in several places at once', body: "One change won't do it. The foundational inputs (daily steps, food quality, resistance training, and sleep quality, not just hours) have to go in together, because every broken system is making the others worse.", hook: "Which inputs, and in what sequence, depends on your insulin and testosterone numbers." },
+    { label: 'Week 2', title: 'Turn sleep and cortisol into interventions', body: "Treat sleep quality and your stress load as real interventions. This is how you raise testosterone and lower cortisol at the same time.", hook: "Naming your real cortisol drivers, and what to do about each, is what we map together." },
+  ],
+  testimonial: { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing.", frame: "Daniel came in carrying the same kind of load you're looking at. He went on to lose 85 lbs. Here's what he said just two months in:" },
+}
+
+const HIGH_DATA = {
+  stakes: "This isn't one number that's off. It's a cluster reinforcing itself: insulin, blood pressure, inflammation, testosterone. Left unchanged, men in this profile typically face their first major health event before 45. It's still reversible. What changes with time is how much work it takes.",
+  roadmap: [
+    { label: 'Days 1 to 3', title: 'Lock the foundation, no exceptions', body: "Get the foundational inputs locked first: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. Without a prescription, these are the most powerful intervention you have.", hook: "What that looks like around your medications and your joints is something we build for you." },
+    { label: 'Days 4 to 7', title: 'Lower the inflammatory load', body: "Bring inflammation down through food quality: more whole foods, protein, and omega 3s, less of what spikes it. It's the fire feeding the insulin resistance, joint pain, and low testosterone, so easing it eases several systems at once.", hook: "Which levers are safe for you depends on what you're currently being treated for." },
+    { label: 'Week 2', title: 'Make medication an unlock, not the system', body: "Medication manages your symptoms while you're taking it. It doesn't fix the cause permanently. The foundational habits are what address the root, so the result holds even as the dose changes.", hook: "Coordinating that with your doctor is exactly what the call is for. Never start, stop, or adjust meds on your own." },
+  ],
+  testimonial: { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing.", frame: "Daniel was sure he'd already tried everything, carrying a heavy metabolic load. He's down 85 lbs now. This is what shifted for him early on:" },
+}
+
 /* ─── exports ──────────────────────────────────────────────────────── */
 export function EarlyWarningPage() {
-  return <DocPage meta={{ level: 'Level 1', tag: 'Early Warning', name: 'The Early Warning Stage', accent: '#f59e0b', accentSoft: 'rgba(245,158,11,0.12)', intro: "Your labs look fine. Your doctor isn't worried yet. That is exactly what makes this stage the most dangerous one.", md: EARLY_MD }} />
+  return <DocPage meta={{ bucketKey: 'early', level: 'Level 1', tag: 'Early Warning', name: 'The Early Warning Stage', accent: '#f59e0b', accentSoft: 'rgba(245,158,11,0.12)', intro: "Your labs look fine. Your doctor isn't worried yet. That is exactly what makes this stage the most dangerous one.", md: EARLY_MD, ...EARLY_DATA }} />
 }
 
 export function MetabolicStressPage() {
-  return <DocPage meta={{ level: 'Level 2', tag: 'Active Dysfunction', name: 'Active Dysfunction', accent: '#f97316', accentSoft: 'rgba(249,115,22,0.12)', intro: 'Your labs may still be called borderline. Your body stopped being borderline a while ago.', md: STRESS_MD }} />
+  return <DocPage meta={{ bucketKey: 'stress', level: 'Level 2', tag: 'Active Dysfunction', name: 'Active Dysfunction', accent: '#f97316', accentSoft: 'rgba(249,115,22,0.12)', intro: 'Your labs may still be called borderline. Your body stopped being borderline a while ago.', md: STRESS_MD, ...STRESS_DATA }} />
 }
 
 export function HighRiskPage() {
-  return <DocPage meta={{ level: 'Level 3', tag: 'The Window Is Closing', name: 'The Window Is Closing', accent: '#ef4444', accentSoft: 'rgba(239,68,68,0.12)', intro: 'Your doctor flagged something. Maybe several things. You were given a pamphlet and told to lose weight. This is what they did not have time to explain.', md: HIGH_MD }} />
+  return <DocPage meta={{ bucketKey: 'high', level: 'Level 3', tag: 'The Window Is Closing', name: 'The Window Is Closing', accent: '#ef4444', accentSoft: 'rgba(239,68,68,0.12)', intro: 'Your doctor flagged something. Maybe several things. You were given a pamphlet and told to lose weight. This is what they did not have time to explain.', md: HIGH_MD, ...HIGH_DATA }} />
 }

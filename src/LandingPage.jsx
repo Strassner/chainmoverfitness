@@ -9,6 +9,8 @@ import danielAfter from './assets/danielafter.jpg'
 /* ─── CALENDLY URL — swap this for your real link ─────────────────── */
 const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-session'
 
+const YOUTUBE_URL = 'https://www.youtube.com/@Luke-Strassner'
+
 /* ─── VSL — paste your Loom share ID here ──────────────────────────
    From https://www.loom.com/share/abc123  →  the ID is 'abc123'.    */
 const VSL_LOOM_ID = '6833df367eae4444b6225ea68b8612ba'
@@ -403,8 +405,11 @@ function Method() {
 
 /* ─── Results / Testimonials ───────────────────────────────────────── */
 const QUOTES = [
-  { name: 'Daniel', stat: '−85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing." },
-  { name: 'Gabe', stat: '−25 lbs · first 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this' — it's not just a pipe dream anymore." },
+  { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing." },
+  { name: 'Larry', stat: 'Down 40 lbs in 5 months', quote: "Other coaches felt like I was being handed off to a guy in Ecuador. It didn't feel the same. With Luke I actually get Luke. If I don't have enough communication, it doesn't work for me, and this works." },
+  { name: 'Sascha', stat: 'Entrepreneur, Father', quote: "In my business it's man to man. What I look like on the outside is what people presume about how my business is run. This is the first time in years the scale is actually going the right way. I broke 230 for the first time in years, in the first couple of weeks. Nutrition wise I'm dialed in and the weight is moving." },
+  { name: 'Wyatt', stat: 'Doctor of Chiropractic Medicine', quote: "You're not just doing a little bit of exercise and a little bit of nutrition. You're getting down to the minutiae of it. That's what actually makes me think you know what you're doing." },
+  { name: 'Gabe', stat: 'Down 25 lbs in 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this.' It's not just a pipe dream anymore." },
 ]
 
 /* Loom video testimonial share IDs (vertical clips). */
@@ -422,7 +427,7 @@ function Results() {
           <span className="cm-eyebrow">Client Wins</span>
           <h2 style={{ fontSize: 'clamp(32px,4.4vw,54px)', marginTop: 18 }}>Real men. Real pounds gone for good.</h2>
           <p style={{ marginTop: 20, fontSize: 'clamp(17px,1.5vw,20px)', color: T.inkSoft, lineHeight: 1.6 }}>
-            A before &amp; after, and the words straight from the men who did it.
+            The words, straight from the men who did it.
           </p>
         </div>
 
@@ -687,7 +692,7 @@ function Footer() {
           <div>
             <h4 style={{ fontFamily: T.mono, fontSize: 11, letterSpacing: '.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', marginBottom: 18 }}>Start</h4>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {[['/quiz', 'Take the Assessment'], ['/apply', 'Apply to Work With Luke'], ['https://instagram.com/luke.strassner.fit', 'Instagram']].map(([href, label]) => (
+              {[['/quiz', 'Take the Assessment'], ['/apply', 'Apply to Work With Luke'], ['https://instagram.com/luke.strassner.fit', 'Instagram'], [YOUTUBE_URL, 'YouTube']].map(([href, label]) => (
                 <li key={label}>
                   {href.startsWith('/')
                     ? <Link to={href} className="cm-footer-link">{label}</Link>

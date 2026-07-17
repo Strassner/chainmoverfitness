@@ -6,6 +6,9 @@ import App from './App.jsx'
 import LandingPage from './LandingPage.jsx'
 import { EarlyWarningPage, MetabolicStressPage, HighRiskPage } from './BucketPage.jsx'
 import ApplicationPage from './ApplicationPage.jsx'
+import CarbsPage from './CarbsPage.jsx'
+import SleepPage from './SleepPage.jsx'
+import VisceralFatPage from './VisceralFatPage.jsx'
 import PostCallPage from './PostCallPage.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -18,6 +21,9 @@ createRoot(document.getElementById('root')).render(
         <Route path="/stress" element={<MetabolicStressPage />} />
         <Route path="/high" element={<HighRiskPage />} />
         <Route path="/apply" element={<ApplicationPage />} />
+        <Route path="/carbs" element={<CarbsPage />} />
+        <Route path="/sleep" element={<SleepPage />} />
+        <Route path="/visceralfat" element={<VisceralFatPage />} />
         <Route path="/booked" element={<PostCallPage />} />
       </Routes>
     </BrowserRouter>

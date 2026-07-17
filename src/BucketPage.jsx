@@ -4,7 +4,8 @@ import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
 
 /* ─── shared links ─────────────────────────────────────────────────── */
 const OVERVIEW_URL = 'https://linktw.in/foHoIb'
-const PLAN_VIDEO_URL = 'https://youtu.be/ceAIiqaK_Kc' // YouTube step-by-step plan (results CTA)
+const PLAN_VIDEO_ID = 'ceAIiqaK_Kc' // YouTube step-by-step plan (results CTA)
+const PLAN_VIDEO_URL = `https://www.youtube.com/watch?v=${PLAN_VIDEO_ID}` // deep link out to YouTube
 const IG_URL = 'https://instagram.com/luke.strassner.fit'
 const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-session'
 // Placeholder: the landing-page VSL. Swap for a dedicated "your results" Loom when recorded.
@@ -431,9 +432,22 @@ function ResultsCTA() {
         <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital, display: 'block', marginBottom: 14 }}>Your step-by-step plan</span>
         <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>Watch exactly how to fix this, for a body like yours.</h2>
         <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>The full walkthrough shows you how the MROI Method fixes your metabolism first, then makes fat loss the easy part, in order, from day one. It's the plan that finally fits how your body actually works.</p>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-          <a href={PLAN_VIDEO_URL} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: T.vital, color: T.forest, fontFamily: T.body, fontWeight: 700, fontSize: 17, padding: '18px 34px', borderRadius: 100, textDecoration: 'none', boxShadow: '0 8px 22px rgba(70,201,139,.3)' }}>Watch the step by step plan →</a>
-        </div>
+        <a href={PLAN_VIDEO_URL} target="_blank" rel="noreferrer" aria-label="Watch the step by step plan on YouTube"
+          style={{ display: 'block', position: 'relative', maxWidth: 620, margin: '0 auto', borderRadius: 16, overflow: 'hidden', aspectRatio: '16 / 9', background: '#000', boxShadow: '0 20px 50px rgba(0,0,0,.35)', border: '1px solid rgba(255,255,255,.14)' }}>
+          <img
+            src={`https://img.youtube.com/vi/${PLAN_VIDEO_ID}/maxresdefault.jpg`}
+            onError={(e) => { e.currentTarget.src = `https://img.youtube.com/vi/${PLAN_VIDEO_ID}/hqdefault.jpg` }}
+            alt="Watch the step by step plan"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+          <span style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.2)' }} />
+          <svg viewBox="0 0 68 48" width="82" height="58" aria-hidden="true"
+            style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,.45))' }}>
+            <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#FF0000" />
+            <path d="M45,24 27,14 27,34 Z" fill="#fff" />
+          </svg>
+        </a>
+        <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.6)', textAlign: 'center', margin: '14px 0 0' }}>Opens on YouTube</p>
       </div>
       <p style={{ fontSize: 12.5, lineHeight: 1.6, color: T.inkFaint, fontStyle: 'italic', margin: '28px 0 0', textAlign: 'center' }}>
         Chainmover Fitness · Luke Strassner. For educational purposes based on lived experience and current research. Not medical advice. Always work with a qualified healthcare provider for your specific situation.
@@ -495,9 +509,7 @@ function DocPage({ meta }) {
         <MetabolicReframe />
         {macros && <MacroGrid macros={macros} answers={answers} accent={meta.accent} />}
         <Roadmap phases={meta.roadmap} accent={meta.accent} />
-        <GuaranteeCard />
         <MatchedTestimonial t={meta.testimonial} accent={meta.accent} />
-        <GapBlock />
         <ResultsCTA />
       </article>
 

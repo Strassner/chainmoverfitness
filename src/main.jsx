@@ -9,6 +9,8 @@ import ApplicationPage from './ApplicationPage.jsx'
 import CarbsPage from './CarbsPage.jsx'
 import SleepPage from './SleepPage.jsx'
 import VisceralFatPage from './VisceralFatPage.jsx'
+import LandingSalesPage from './LandingSalesPage.jsx'
+import BuyPage from './BuyPage.jsx'
 import PostCallPage from './PostCallPage.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -24,6 +26,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/carbs" element={<CarbsPage />} />
         <Route path="/sleep" element={<SleepPage />} />
         <Route path="/visceralfat" element={<VisceralFatPage />} />
+        <Route path="/landing" element={<LandingSalesPage />} />
+        <Route path="/buy" element={<BuyPage />} />
         <Route path="/booked" element={<PostCallPage />} />
       </Routes>
     </BrowserRouter>

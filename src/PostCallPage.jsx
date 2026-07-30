@@ -1,6 +1,10 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
+import larryTransformation from './assets/LarryBeforeAfterJuly28.jpg'
+import danielTransformation from './assets/DanielBeforeAfterJuly28.jpg'
+import gabeTransformation from './assets/GabeBeforeAfterJuly28.jpg'
+import { QuoteGrid, VideoTestimonialGrid, FeaturedTransformation } from './proofUtils'
 
 /* ─── EMBED — paste your Loom share ID here ─────────────────────────
    From a Loom URL like https://www.loom.com/share/abc123def456
@@ -67,6 +71,8 @@ const PAGE_CSS = `
     .pc-results { grid-template-columns: 1fr !important; max-width: 460px; margin-inline: auto; }
     .pc-videos { grid-template-columns: 1fr !important; max-width: 360px; margin-inline: auto; }
     .pc-quotes { grid-template-columns: 1fr !important; }
+    .pc-feature-grid { grid-template-columns: 1fr !important; }
+    .pc-lab-grid { grid-template-columns: 1fr !important; }
   }
 `
 
@@ -85,13 +91,26 @@ const EXPECT = [
 // ]
 
 /* ─── written testimonials ─────────────────────────────────────────── */
+/* The 3 featured transformations up top. */
+const FEATURED_TRANSFORMATIONS = [
+  { name: 'Larry', stat: 'Down 40 lbs in 5 months', quote: "Other coaches felt like I was being handed off to a guy in Ecuador. It didn't feel the same. With Luke I actually get Luke. If I don't have enough communication, it doesn't work for me, and this works.", photo: larryTransformation },
+  { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing.", photo: danielTransformation },
+  { name: 'Gabe', stat: 'Down 25 lbs in 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this.' It's not just a pipe dream anymore.", photo: gabeTransformation },
+]
+
 const QUOTES = [
-  { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing." },
-  { name: 'Larry', stat: 'Down 40 lbs in 5 months', quote: "Other coaches felt like I was being handed off to a guy in Ecuador. It didn't feel the same. With Luke I actually get Luke. If I don't have enough communication, it doesn't work for me, and this works." },
   { name: 'Sascha', stat: 'Entrepreneur, Father', quote: "In my business it's man to man. What I look like on the outside is what people presume about how my business is run. This is the first time in years the scale is actually going the right way. I broke 230 for the first time in years, in the first couple of weeks. Nutrition wise I'm dialed in and the weight is moving." },
   { name: 'Wyatt', stat: 'Doctor of Chiropractic Medicine', quote: "You're not just doing a little bit of exercise and a little bit of nutrition. You're getting down to the minutiae of it. That's what actually makes me think you know what you're doing." },
-  { name: 'Gabe', stat: 'Down 25 lbs in 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this.' It's not just a pipe dream anymore." },
 ]
+
+/* Lab report cards — commented out for now, bring back when real lab
+   screenshots + numbers are ready. See proofUtils.jsx (LabProofGrid).
+const LAB_PROOFS = [
+  { name: 'Mike', stat: 'Fasting glucose 186 to 127 in 4 weeks (Metabolic phase)' },
+  { name: 'Client B', stat: 'TODO — add stat' },
+  { name: 'Client C', stat: 'TODO — add stat' },
+]
+*/
 
 const FAQS = [
   { q: "I've tried programs before and they didn't work. Why would this be different?", a: "Because most programs give generic fixes. We fix the order of operations: metabolism and recovery first, so by the time you'd normally plateau or stall, your body is working with you instead of against you. Your past failures were almost always a structure and support problem." },
@@ -289,17 +308,44 @@ export default function PostCallPage() {
         <p style={{ marginTop: 14, fontSize: 17, lineHeight: 1.7, color: T.inkSoft, maxWidth: 620 }}>
           Same doubts. Same failed attempts. Here's what happened after they showed up to the call.
         </p>
-        <div className="pc-quotes" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 40 }}>
-          {QUOTES.map(q => (
-            <blockquote key={q.name} style={{ margin: 0, background: T.paper, border: `1px solid ${T.line}`, borderRadius: 16, padding: 'clamp(24px,3.5vw,32px)', boxShadow: T.shadow, display: 'flex', flexDirection: 'column' }}>
-              <p style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(18px,2vw,22px)', lineHeight: 1.45, color: T.ink, letterSpacing: '-0.01em' }}>“{q.quote}”</p>
-              <footer style={{ marginTop: 'auto', paddingTop: 18, display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
-                <b style={{ fontFamily: T.display, fontSize: 16, color: T.ink }}>{q.name}</b>
-                <span style={{ fontFamily: T.mono, fontSize: 12.5, color: T.moss }}>{q.stat}</span>
-              </footer>
-            </blockquote>
+
+        {/* Featured transformations — Larry, Daniel, Gabe */}
+        <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', gap: 20 }}>
+          {FEATURED_TRANSFORMATIONS.map(f => (
+            <FeaturedTransformation
+              key={f.name}
+              T={T}
+              photoSrc={f.photo}
+              name={f.name}
+              stat={f.stat}
+              quote={f.quote}
+              className="pc-feature-grid"
+              minHeight={300}
+              style={{ marginBottom: 0 }}
+            />
           ))}
         </div>
+
+        <span style={{ marginTop: 40, fontFamily: T.mono, fontSize: 12.5, fontWeight: 500, letterSpacing: '.16em', textTransform: 'uppercase', color: T.moss, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ width: 22, height: 1.5, background: T.moss, display: 'inline-block' }} />In their words
+        </span>
+        <QuoteGrid
+          quotes={QUOTES}
+          className="pc-quotes"
+          gridStyle={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 20 }}
+          cardStyle={{ margin: 0, background: T.paper, border: `1px solid ${T.line}`, borderRadius: 16, padding: 'clamp(24px,3.5vw,32px)', boxShadow: T.shadow, display: 'flex', flexDirection: 'column' }}
+          quoteStyle={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(18px,2vw,22px)', lineHeight: 1.45, color: T.ink, letterSpacing: '-0.01em' }}
+          footerStyle={{ marginTop: 'auto', paddingTop: 18, display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}
+          nameStyle={{ fontFamily: T.display, fontSize: 16, color: T.ink }}
+          statStyle={{ fontFamily: T.mono, fontSize: 12.5, color: T.moss }}
+        />
+
+        {/* Lab report cards — commented out for now
+        <span style={{ marginTop: 40, fontFamily: T.mono, fontSize: 12.5, fontWeight: 500, letterSpacing: '.16em', textTransform: 'uppercase', color: T.moss, display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ width: 22, height: 1.5, background: T.moss, display: 'inline-block' }} />The labs don't lie
+        </span>
+        <LabProofGrid proofs={LAB_PROOFS} T={T} columns={3} className="pc-lab-grid" style={{ marginTop: 20 }} />
+        */}
         {/* <div className="pc-results" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24, marginTop: 40 }}>
           {WINS.map(w => (
             <article key={w.name} style={{ background: T.paper, border: `1px solid ${T.line}`, borderRadius: 16, overflow: 'hidden', boxShadow: T.shadow }}>
@@ -343,29 +389,13 @@ export default function PostCallPage() {
           <p style={{ marginTop: 14, fontSize: 17, lineHeight: 1.7, color: T.inkSoft, maxWidth: 620 }}>
             Short, unscripted clips from men who went through it.
           </p>
-          <div className="pc-videos" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, marginTop: 40 }}>
-            {VIDEO_TESTIMONIALS.map((v, i) => (
-              <div key={i} style={{ background: '#000', border: `1px solid ${T.line}`, borderRadius: 16, overflow: 'hidden', boxShadow: T.shadow, aspectRatio: '9 / 16' }}>
-                {v.loomId && !v.loomId.startsWith('PASTE_') ? (
-                  <iframe
-                    src={`https://www.loom.com/embed/${v.loomId}?${LOOM_PARAMS}`}
-                    title={v.name}
-                    frameBorder="0"
-                    allowFullScreen
-                    style={{ width: '100%', height: '100%', display: 'block' }}
-                  />
-                ) : (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, background: T.mist, color: T.inkFaint, fontFamily: T.mono, fontSize: 12, textAlign: 'center', padding: 20 }}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke={T.moss} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: 30, height: 30 }}>
-                      <polygon points="5 3 19 12 5 21 5 3" />
-                    </svg>
-                    <span style={{ fontWeight: 600, color: T.inkSoft }}>{v.name}</span>
-                    <span>Paste a Loom ID in VIDEO_TESTIMONIALS</span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <VideoTestimonialGrid
+            videos={VIDEO_TESTIMONIALS}
+            T={T}
+            loomParams={LOOM_PARAMS}
+            className="pc-videos"
+            gridStyle={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, marginTop: 40 }}
+          />
         </div>
       </section>
 

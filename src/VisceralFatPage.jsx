@@ -76,7 +76,7 @@ export default function VisceralFatPage() {
           Visceral fat is a metabolism problem, not a willpower problem
         </h1>
         <p style={{ marginTop: 18, fontSize: 'clamp(17px,1.7vw,20px)', lineHeight: 1.55, color: T.inkSoft, fontWeight: 500 }}>
-          The belly fat you can't pinch is the one driving your health markers. Here's what it actually is, and why "just eat less" never touches it.
+          The belly fat you can't pinch is the one driving your health markers. Here's what it actually is, and why "just eat less" isn't helpful advice.
         </p>
 
         {/* Section 1: the two fats */}

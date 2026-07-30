@@ -148,6 +148,45 @@ function Summary() {
   )
 }
 
+/* Enrollment + cancellation terms, per plan. Switches with the plan
+   selector below since the two plans have different commitments. */
+const PLAN_TERMS = {
+  weekly: {
+    bullets: [
+      'A 3-month minimum commitment at $75/week',
+      'Weekly billing starting today',
+      'Your first 14 days are covered by our money-back guarantee',
+      'This charge is binding after day 14',
+      'Cancellation after your 90 days is just a message to Luke in the app',
+    ],
+    cancellation: [
+      { when: 'Within your first 14 days', body: 'Full refund guarantee. Message Luke in the app, refund processes within 5 business days.' },
+      { when: 'After day 14, during your 90 days', body: 'You cannot cancel. This is a binding commitment you made at checkout.' },
+      { when: 'After 90 days', body: 'Message Luke in the app with CANCEL. Confirmation within 24 hours. Billing stops on your next charge date.' },
+    ],
+    consent: (
+      <>I understand the M.R.O.I. Protocol is a <b style={{ color: T.ink }}>3-month commitment at $75/week</b>. I have 14 days to request a full refund. After day 14, I cannot cancel and this charge is binding.</>
+    ),
+  },
+  sixmonth: {
+    bullets: [
+      'A one-time payment of $1,297 for 6 months of coaching',
+      'Charged in full today, no recurring billing',
+      'Your first 14 days are covered by our money-back guarantee',
+      'After day 14, your payment is refundable at Luke\'s discretion',
+      'Nothing recurring to cancel, your program simply runs its course',
+    ],
+    cancellation: [
+      { when: 'Within your first 14 days', body: 'Full refund guarantee. Message Luke in the app, refund processes within 5 business days.' },
+      { when: 'After day 14', body: 'Your payment is refundable at Luke\'s discretion.' },
+      { when: 'At the end of your 6 months', body: 'Your program ends automatically. Nothing renews or charges again unless you choose to continue.' },
+    ],
+    consent: (
+      <>I understand the M.R.O.I. Protocol is a <b style={{ color: T.ink }}>one-time payment of $1,297 for 6 months</b> of coaching. I have 14 days to request a full refund. After day 14, this payment is refundable only at Luke's discretion.</>
+    ),
+  },
+}
+
 /* Checkout (right) */
 function Checkout() {
   const [plan, setPlan] = useState('sixmonth')
@@ -156,6 +195,13 @@ function Checkout() {
 
   const url = plan === 'weekly' ? STRIPE_WEEKLY_URL : STRIPE_SIXMONTH_URL
   const ctaLabel = plan === 'weekly' ? 'Start Now, $75 a week' : 'Start Now, $1,297 for 6 months'
+  const terms = PLAN_TERMS[plan]
+
+  const selectPlan = (next) => {
+    setPlan(next)
+    setAgreedTerms(false)
+    setAgreedCancellation(false)
+  }
 
   const handleEnroll = () => {
     if (!agreedTerms || !agreedCancellation) return
@@ -173,25 +219,25 @@ function Checkout() {
 
       {/* plan selector */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        <button type="button" className={`plan${plan === 'weekly' ? ' sel' : ''}`} onClick={() => setPlan('weekly')}>
+        <button type="button" className={`plan${plan === 'weekly' ? ' sel' : ''}`} onClick={() => selectPlan('weekly')}>
           <span className="dot" />
           <span style={{ flex: 1 }}>
             <span style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
               <b style={{ fontFamily: T.display, fontSize: 19, color: T.ink }}>$75 a week</b>
               <span style={{ fontFamily: T.mono, fontSize: 12, color: T.moss }}>3 month commitment</span>
             </span>
-            <span style={{ display: 'block', marginTop: 6, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Billed weekly, with a 3 month commitment. Your first 14 days are covered by the refund, so the risk is on me.</span>
+            <span style={{ display: 'block', marginTop: 6, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Billed weekly, with a 3 month commitment.</span>
           </span>
         </button>
 
-        <button type="button" className={`plan${plan === 'sixmonth' ? ' sel' : ''}`} onClick={() => setPlan('sixmonth')}>
+        <button type="button" className={`plan${plan === 'sixmonth' ? ' sel' : ''}`} onClick={() => selectPlan('sixmonth')}>
           <span className="dot" />
           <span style={{ flex: 1 }}>
             <span style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
               <b style={{ fontFamily: T.display, fontSize: 19, color: T.ink }}>$1,297 for 6 months</b>
               <span style={{ fontFamily: T.mono, fontSize: 12, color: T.forest600 }}>Save $653</span>
             </span>
-            <span style={{ display: 'block', marginTop: 6, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Paid once. About $50 a week. A commitment you choose on purpose, not a trap.</span>
+            <span style={{ display: 'block', marginTop: 6, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Paid once. About $50 a week.</span>
           </span>
         </button>
       </div>
@@ -201,55 +247,29 @@ function Checkout() {
         <h4 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 15, color: T.ink, margin: '0 0 14px' }}>Enrollment terms</h4>
         <p style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.65, margin: 0, marginBottom: 14 }}>By signing up for the M.R.O.I. Protocol, you agree to:</p>
         <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <li style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.6, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <span style={{ flexShrink: 0, color: T.vital, fontWeight: 600 }}>•</span>
-            <span>A 3-month minimum commitment at $75/week</span>
-          </li>
-          <li style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.6, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <span style={{ flexShrink: 0, color: T.vital, fontWeight: 600 }}>•</span>
-            <span>Weekly billing starting today</span>
-          </li>
-          <li style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.6, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <span style={{ flexShrink: 0, color: T.vital, fontWeight: 600 }}>•</span>
-            <span>Your first 14 days are covered by our money-back guarantee</span>
-          </li>
-          <li style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.6, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <span style={{ flexShrink: 0, color: T.vital, fontWeight: 600 }}>•</span>
-            <span>This charge is binding after day 14</span>
-          </li>
-          <li style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.6, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <span style={{ flexShrink: 0, color: T.vital, fontWeight: 600 }}>•</span>
-            <span>Cancellation after your 90 days is just a message to Luke in the app</span>
-          </li>
-          <li style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.6, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <span style={{ flexShrink: 0, color: T.vital, fontWeight: 600 }}>•</span>
-            <span>No forms, no runaround</span>
-          </li>
+          {terms.bullets.map(b => (
+            <li key={b} style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.6, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+              <span style={{ flexShrink: 0, color: T.vital, fontWeight: 600 }}>•</span>
+              <span>{b}</span>
+            </li>
+          ))}
         </ul>
 
         <h4 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 15, color: T.ink, margin: '18px 0 12px' }}>Cancellation terms</h4>
         <div style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.7 }}>
-          <div style={{ marginBottom: 12 }}>
-            <b style={{ color: T.ink }}>Within your first 14 days:</b>
-            <p style={{ margin: '4px 0 0' }}>Full refund guarantee. Message Luke in the app, refund processes within 5 business days.</p>
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <b style={{ color: T.ink }}>After day 14, during your 90 days:</b>
-            <p style={{ margin: '4px 0 0' }}>You cannot cancel. This is a binding commitment you made at checkout.</p>
-          </div>
-          <div>
-            <b style={{ color: T.ink }}>After 90 days:</b>
-            <p style={{ margin: '4px 0 0' }}>Message Luke in the app with CANCEL. Confirmation within 24 hours. Billing stops on your next charge date.</p>
-          </div>
+          {terms.cancellation.map((c, i) => (
+            <div key={c.when} style={{ marginBottom: i < terms.cancellation.length - 1 ? 12 : 0 }}>
+              <b style={{ color: T.ink }}>{c.when}:</b>
+              <p style={{ margin: '4px 0 0' }}>{c.body}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* consent checkboxes */}
       <label className={`agree${agreedTerms ? ' checked' : ''}`} style={{ marginTop: 18 }}>
         <input type="checkbox" checked={agreedTerms} onChange={e => setAgreedTerms(e.target.checked)} />
-        <span>
-          I understand the M.R.O.I. Protocol is a <b style={{ color: T.ink }}>3-month commitment at $75/week</b>. I have 14 days to request a full refund. After day 14, I cannot cancel and this charge is binding.
-        </span>
+        <span>{terms.consent}</span>
       </label>
 
       <label className={`agree${agreedCancellation ? ' checked' : ''}`} style={{ marginTop: 12 }}>
@@ -312,7 +332,7 @@ function AfterJoin() {
         ))}
       </div>
       <p style={{ marginTop: 20, textAlign: 'center', fontSize: 15.5, color: T.inkSoft, lineHeight: 1.65 }}>
-        By this time next week you are not guessing anymore. You are finally feeling on track and certain about where your health is going. Joining creates certainty. It does not take it away.
+        By this time tomorrow you are not guessing anymore. You are finally feeling on track and certain about where your health is going.
       </p>
     </Wrap>
   )

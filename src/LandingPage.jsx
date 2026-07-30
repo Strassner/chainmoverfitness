@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
 import coachPhoto from './assets/coachesphoto.png'
-import danielBefore from './assets/Danielbefore2479.PNG'
-import danielAfter from './assets/danielafter.jpg'
+import larryTransformation from './assets/LarryBeforeAfterJuly28.jpg'
+import danielTransformation from './assets/DanielBeforeAfterJuly28.jpg'
+import gabeTransformation from './assets/GabeBeforeAfterJuly28.jpg'
+import { QuoteGrid, VideoTestimonialGrid, FeaturedTransformation } from './proofUtils'
 
 /* ─── CALENDLY URL — swap this for your real link ─────────────────── */
 const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-session'
@@ -140,7 +142,7 @@ const GLOBAL_CSS = `
   @media (max-width: 520px) { .cm-method-grid { grid-template-columns: 1fr !important; } .sc-float { display: none !important; } }
   @media (max-width: 480px) { .cm-sc-float { display: none !important; } }
   @media (max-width: 820px) { .cm-feature-grid { grid-template-columns: 1fr !important; } }
-  @media (max-width: 760px) { .cm-vids-grid { grid-template-columns: 1fr !important; max-width: 340px !important; } .cm-quotes-grid { grid-template-columns: 1fr !important; } }
+  @media (max-width: 760px) { .cm-vids-grid { grid-template-columns: 1fr !important; max-width: 340px !important; } .cm-quotes-grid { grid-template-columns: 1fr !important; } .cm-lab-grid { grid-template-columns: 1fr !important; } }
 `
 
 function StyleTag() {
@@ -403,14 +405,30 @@ function Method() {
   )
 }
 
-/* ─── Results / Testimonials ───────────────────────────────────────── */
+/* ─── Results / Testimonials ─────────────────────────────────────────
+   Order: 3 featured photo transformations, then the best written
+   testimonials (everyone left in the bank fits here on this page).    */
+
+/* The 3 featured transformations up top. */
+const FEATURED_TRANSFORMATIONS = [
+  { name: 'Larry', stat: 'Down 40 lbs in 5 months', quote: "Other coaches felt like I was being handed off to a guy in Ecuador. It didn't feel the same. With Luke I actually get Luke. If I don't have enough communication, it doesn't work for me, and this works.", photo: larryTransformation },
+  { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing.", photo: danielTransformation },
+  { name: 'Gabe', stat: 'Down 25 lbs in 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this.' It's not just a pipe dream anymore.", photo: gabeTransformation },
+]
+
 const QUOTES = [
-  { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing." },
-  { name: 'Larry', stat: 'Down 40 lbs in 5 months', quote: "Other coaches felt like I was being handed off to a guy in Ecuador. It didn't feel the same. With Luke I actually get Luke. If I don't have enough communication, it doesn't work for me, and this works." },
   { name: 'Sascha', stat: 'Entrepreneur, Father', quote: "In my business it's man to man. What I look like on the outside is what people presume about how my business is run. This is the first time in years the scale is actually going the right way. I broke 230 for the first time in years, in the first couple of weeks. Nutrition wise I'm dialed in and the weight is moving." },
   { name: 'Wyatt', stat: 'Doctor of Chiropractic Medicine', quote: "You're not just doing a little bit of exercise and a little bit of nutrition. You're getting down to the minutiae of it. That's what actually makes me think you know what you're doing." },
-  { name: 'Gabe', stat: 'Down 25 lbs in 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this.' It's not just a pipe dream anymore." },
 ]
+
+/* Lab report cards — commented out for now, bring back when real lab
+   screenshots + numbers are ready. See proofUtils.jsx (LabProofGrid).
+const LAB_PROOFS = [
+  { name: 'Mike', stat: 'Fasting glucose 186 to 127 in 4 weeks (Metabolic phase)' },
+  { name: 'Client B', stat: 'TODO — add stat' },
+  { name: 'Client C', stat: 'TODO — add stat' },
+]
+*/
 
 /* Loom video testimonial share IDs (vertical clips). */
 const VIDEO_TESTIMONIALS = [
@@ -431,39 +449,41 @@ function Results() {
           </p>
         </div>
 
-        {/* Featured before/after — Daniel */}
-        {/* <div className="cm-feature-grid" style={{ marginTop: 56, background: T.paper, border: `1px solid ${T.line}`, borderRadius: 20, overflow: 'hidden', boxShadow: T.shadow, display: 'grid', gridTemplateColumns: '1.1fr .9fr' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, background: T.line, position: 'relative' }}>
-            <img src={danielBefore} alt="Daniel before" style={{ width: '100%', height: '100%', minHeight: 340, objectFit: 'cover', display: 'block' }} />
-            <img src={danielAfter} alt="Daniel after" style={{ width: '100%', height: '100%', minHeight: 340, objectFit: 'cover', display: 'block' }} />
-            <span style={{ position: 'absolute', top: 14, left: 14, fontFamily: T.mono, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', background: 'rgba(17,36,27,.72)', color: '#fff', padding: '4px 9px', borderRadius: 100 }}>Before</span>
-            <span style={{ position: 'absolute', top: 14, right: 14, fontFamily: T.mono, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', background: T.vital, color: T.forest, padding: '4px 9px', borderRadius: 100 }}>After</span>
-          </div>
-          <div style={{ padding: 'clamp(28px,4vw,44px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <span className="cm-eyebrow">The transformation</span>
-            <b style={{ fontFamily: T.display, fontSize: 28, marginTop: 14 }}>Daniel</b>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 16 }}>
-              <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 52, color: T.forest, letterSpacing: '-0.03em' }}>−85</span>
-              <span style={{ fontFamily: T.mono, fontSize: 14, color: T.inkFaint }}>lbs lost</span>
-            </div>
-            <p style={{ marginTop: 18, fontSize: 16, color: T.inkSoft, lineHeight: 1.6 }}>
-              Markers normalized, energy and confidence back. His words are below.
-            </p>
-          </div>
-        </div> */}
-
-        {/* Written quotes — Daniel + Gabe */}
-        <div className="cm-quotes-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 24 }}>
-          {QUOTES.map(q => (
-            <blockquote key={q.name} style={{ margin: 0, background: T.bone, border: `1px solid ${T.line}`, borderRadius: 18, padding: 'clamp(26px,3.5vw,38px)', display: 'flex', flexDirection: 'column' }}>
-              <p style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(19px,2.2vw,24px)', lineHeight: 1.45, color: T.ink, letterSpacing: '-0.01em' }}>“{q.quote}”</p>
-              <footer style={{ marginTop: 'auto', paddingTop: 20, display: 'flex', alignItems: 'baseline', gap: 12 }}>
-                <b style={{ fontFamily: T.display, fontSize: 17, color: T.ink }}>{q.name}</b>
-                <span style={{ fontFamily: T.mono, fontSize: 13, color: T.moss }}>{q.stat}</span>
-              </footer>
-            </blockquote>
+        {/* Featured transformations — Larry, Daniel, Gabe */}
+        <div style={{ marginTop: 40, display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {FEATURED_TRANSFORMATIONS.map(f => (
+            <FeaturedTransformation
+              key={f.name}
+              T={T}
+              photoSrc={f.photo}
+              name={f.name}
+              stat={f.stat}
+              quote={f.quote}
+              className="cm-feature-grid"
+              columns="1.1fr .9fr"
+              minHeight={340}
+              style={{ marginBottom: 0 }}
+            />
           ))}
         </div>
+
+        {/* Written quotes */}
+        <span className="cm-eyebrow" style={{ marginTop: 48, marginBottom: 20, display: 'inline-flex' }}>In their words</span>
+        <QuoteGrid
+          quotes={QUOTES}
+          className="cm-quotes-grid"
+          gridStyle={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}
+          cardStyle={{ margin: 0, background: T.bone, border: `1px solid ${T.line}`, borderRadius: 18, padding: 'clamp(26px,3.5vw,38px)', display: 'flex', flexDirection: 'column' }}
+          quoteStyle={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(19px,2.2vw,24px)', lineHeight: 1.45, color: T.ink, letterSpacing: '-0.01em' }}
+          footerStyle={{ marginTop: 'auto', paddingTop: 20, display: 'flex', alignItems: 'baseline', gap: 12 }}
+          nameStyle={{ fontFamily: T.display, fontSize: 17, color: T.ink }}
+          statStyle={{ fontFamily: T.mono, fontSize: 13, color: T.moss }}
+        />
+
+        {/* Lab report cards — commented out for now
+        <span className="cm-eyebrow" style={{ marginTop: 48, marginBottom: 20, display: 'inline-flex' }}>The labs don't lie</span>
+        <LabProofGrid proofs={LAB_PROOFS} T={T} columns={3} className="cm-lab-grid" />
+        */}
       </Wrap>
     </section>
   )
@@ -481,19 +501,13 @@ function VideoTestimonials() {
             Short, unscripted clips from men who sat exactly where you are now.
           </p>
         </div>
-        <div className="cm-vids-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, marginTop: 48, maxWidth: 760, marginInline: 'auto' }}>
-          {VIDEO_TESTIMONIALS.map((id, i) => (
-            <div key={id} style={{ background: '#000', border: `1px solid ${T.line}`, borderRadius: 16, overflow: 'hidden', boxShadow: T.shadow, aspectRatio: '9 / 16' }}>
-              <iframe
-                src={`https://www.loom.com/embed/${id}?${LOOM_PARAMS}`}
-                title={`Client testimonial ${i + 1}`}
-                frameBorder="0"
-                allowFullScreen
-                style={{ width: '100%', height: '100%', display: 'block' }}
-              />
-            </div>
-          ))}
-        </div>
+        <VideoTestimonialGrid
+          videos={VIDEO_TESTIMONIALS}
+          T={T}
+          loomParams={LOOM_PARAMS}
+          className="cm-vids-grid"
+          gridStyle={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, marginTop: 48, maxWidth: 760, marginInline: 'auto' }}
+        />
       </Wrap>
     </section>
   )

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
+import { MatchedTestimonialCard } from './proofUtils'
 
 /* ─── shared links ─────────────────────────────────────────────────── */
 const OVERVIEW_URL = 'https://linktw.in/foHoIb'
@@ -408,20 +409,7 @@ function GuaranteeCard() {
 
 /* ─── bucket-matched testimonial ──────────────────────────────────── */
 function MatchedTestimonial({ t, accent }) {
-  if (!t) return null
-  return (
-    <section style={{ margin: '44px 0' }}>
-      <span style={eyebrow(accent)}>Someone who scored where you are</span>
-      <div style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 16, padding: 'clamp(24px,3.5vw,36px)' }}>
-        <p style={{ fontSize: 16, lineHeight: 1.7, color: T.inkSoft, margin: '0 0 18px' }}>{t.frame}</p>
-        <blockquote style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(20px,2.6vw,26px)', lineHeight: 1.4, color: T.ink, margin: '0 0 18px', letterSpacing: '-0.01em' }}>“{t.quote}”</blockquote>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontWeight: 700, color: T.ink }}>{t.name}</span>
-          <span style={{ fontFamily: T.mono, fontSize: 13, letterSpacing: '.04em', color: accent }}>{t.stat}</span>
-        </div>
-      </div>
-    </section>
-  )
+  return <MatchedTestimonialCard T={T} t={t} accent={accent} eyebrowStyle={eyebrow(accent)} />
 }
 
 /* ─── call-first CTA + disclaimer ─────────────────────────────────── */

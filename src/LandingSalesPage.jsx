@@ -76,7 +76,7 @@ const CSS = `
   .mroi-lp .faq[open] summary .ico::after { transform: rotate(45deg); }
   .mroi-lp .faq .ans { padding: 0 0 20px; font-size: 15.5px; color: ${T.inkSoft}; line-height: 1.65; }
 
-  @media (max-width: 900px) { .mroi-lp .proof-grid { grid-template-columns: 1fr 1fr !important; } .mroi-lp .get-grid { grid-template-columns: 1fr !important; } .mroi-lp .ba-grid { grid-template-columns: 1fr !important; } .mroi-lp .lab-grid { grid-template-columns: 1fr !important; } }
+  @media (max-width: 900px) { .mroi-lp .proof-grid { grid-template-columns: 1fr 1fr !important; } .mroi-lp .get-grid { grid-template-columns: 1fr !important; } .mroi-lp .ba-grid { grid-template-columns: 1fr !important; } .mroi-lp .lab-grid { grid-template-columns: 1fr !important; } .mroi-lp .transform-photo img { height: auto !important; min-height: 0 !important; aspect-ratio: 3 / 2; } }
   @media (max-width: 620px) { .mroi-lp .proof-grid { grid-template-columns: 1fr !important; } .mroi-lp .nav-links { display: none !important; } }
 `
 
@@ -93,6 +93,9 @@ function Header() {
   return (
     <>
       <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,.85)', backdropFilter: 'saturate(180%) blur(14px)', borderBottom: `1px solid ${T.lineSoft}` }}>
+        <div style={{ background: T.forest, color: '#fff', textAlign: 'center', padding: '9px 16px', fontFamily: T.mono, fontSize: 13, letterSpacing: '.02em' }}>
+          Only <span style={{ textDecoration: 'line-through', opacity: .6 }}>15</span> <b style={{ color: T.vital, fontSize: 14 }}>11 slots</b> open for August
+        </div>
         <Wrap>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72, gap: 16 }}>
             <Link to="/landing" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -158,6 +161,9 @@ function Belief() {
         </p>
         <p style={{ marginTop: 20, fontSize: 'clamp(17px,1.6vw,19px)', color: T.inkSoft, lineHeight: 1.6 }}>
           When you are foggy and crashing every afternoon, staying on track feels impossible. We build the structure and fix the energy. Then it gets easy.
+        </p>
+        <p style={{ marginTop: 20, fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(18px,2vw,22px)', color: T.forest, lineHeight: 1.4 }}>
+          That was never a discipline problem. That was a system that was never built for your actual life.
         </p>
         <p style={{ marginTop: 16, fontSize: 15.5, color: T.inkFaint, fontStyle: 'italic', lineHeight: 1.6 }}>
           "It's not for a lack of trying. I already know what to do. That is the problem."
@@ -227,6 +233,7 @@ function Proof() {
             name={f.name}
             stat={f.stat}
             quote={f.quote}
+            className="ba-grid transform-photo"
           />
         ))}
 
@@ -290,12 +297,36 @@ function Phases() {
 
 /* Block 5 — what you get */
 const DELIVERABLES = [
-  { name: 'Your M.R.O.I. Phase Plans', body: 'A custom nutrition plan for each phase of the protocol. Most guys get one plan and outgrow it in a month. You get a new one built for you at every phase, as your body changes.' },
-  { name: 'The Busy-Man Training Plan', body: 'Training for a guy with a job and a family. A few focused sessions a week that fit your life. Home gym, a full gym, or no gym at all, I build the plan around the equipment you have. You will not live in the gym.' },
-  { name: 'Weekly Adjustments From Luke', body: 'Weekly adjustments based on your schedule and how your body responded last week. What is working, what changes, what comes next.' },
-  { name: 'Course Correction From Luke', body: 'The day you start to drift, I pull you back. Message me during the week and you get me, not a bot. That is the whole point.' },
-  { name: 'One App For All Of It', body: 'Your plan, your food, your numbers, all in one place.' },
-  { name: 'A Room Of Guys On The Same Journey', body: 'Men on the same journey as you, going through it at the same time.' },
+  {
+    name: 'Personalized Onboarding',
+    body: 'Before you start, we find exactly what has been holding you back.',
+    points: [
+      'A 15 minute onboarding call',
+      'A Metabolic Risk Assessment to find your primary blocker, nutrition, stress, sleep, or tracking accuracy',
+      'Your starting protocol, built around your specific results, not a generic template',
+    ],
+  },
+  {
+    name: 'Your Core Protocol',
+    body: 'The metabolic health first system that runs the whole time you are with me.',
+    points: [
+      'A nutrition framework built on the M.R.O.I. method',
+      'A stress and sleep protocol targeting the biggest non food driver of insulin resistance',
+      'A movement protocol, the minimum effective dose, not a gym program you will not stick to',
+    ],
+  },
+  {
+    name: 'Weekly Adjustments',
+    body: 'A weekly check in, and your protocol reviewed and adjusted every week based on how your body is actually responding. Not a static plan you are left to figure out alone.',
+  },
+  {
+    name: 'Ongoing Support',
+    body: 'Message access for questions between check ins, with a response within 48 hours. Plus access to the private client community.',
+  },
+  {
+    name: 'The Safety Net',
+    body: 'Your 14 day money back guarantee.',
+  },
 ]
 
 function WhatYouGet() {
@@ -306,10 +337,10 @@ function WhatYouGet() {
           <span className="eyebrow center">What you get</span>
           <h2 style={{ fontSize: 'clamp(28px,4vw,46px)', marginTop: 16 }}>The M.R.O.I. Protocol</h2>
           <p style={{ marginTop: 16, fontSize: 'clamp(16px,1.5vw,18px)', color: T.inkSoft, lineHeight: 1.6 }}>
-            All built for a busy life. Let me do the thinking and the planning. You just show up, and look back in a few months as a different man. 
+            All built for a busy life. Let me do the thinking and the planning. You just show up, and look back in a few months as a different man.
           </p>
         </div>
-        <div className="get-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 18 }}>
+        <div className="get-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 18, maxWidth: 720, marginInline: 'auto' }}>
           {DELIVERABLES.map((d, i) => (
             <div key={d.name} className="card">
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
@@ -317,6 +348,13 @@ function WhatYouGet() {
                 <h3 style={{ fontSize: 19 }}>{d.name}</h3>
               </div>
               <p style={{ marginTop: 12, fontSize: 15, color: T.inkSoft, lineHeight: 1.6 }}>{d.body}</p>
+              {d.points && (
+                <ul style={{ marginTop: 12, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {d.points.map((pt, j) => (
+                    <li key={j} style={{ fontSize: 14.5, color: T.inkSoft, lineHeight: 1.55 }}>{pt}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           ))}
         </div>
@@ -365,7 +403,7 @@ function BadWeek() {
 function Fourteen() {
   const steps = [
     'You get your plan and start week 1.',
-    'You do the check ins. I review your week and send your first video.',
+    "You do the check ins. I review your week and make your first adjustments.",
     'If it is not for you by day 14, you message me and get every dollar back.',
   ]
   return (
@@ -402,14 +440,27 @@ function Offer() {
           Wait another year and it only gets harder. Less energy, more weight, the same problem still waiting for you. It does not fix itself.
         </p>
 
-        <p style={{ marginTop: 28, fontSize: 15, color: T.inkSoft, lineHeight: 1.6 }}>
+        <div className="get-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 36, textAlign: 'left' }}>
+          <div className="card">
+            <span style={{ fontFamily: T.mono, fontSize: 12, color: T.moss, textTransform: 'uppercase', letterSpacing: '.06em' }}>Monthly</span>
+            <div style={{ fontFamily: T.display, fontWeight: 800, fontSize: 28, color: T.ink, marginTop: 8 }}>$197 a month</div>
+            <p style={{ marginTop: 8, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Billed monthly, cancel anytime.</p>
+          </div>
+          <div className="card" style={{ borderColor: T.vital }}>
+            <span style={{ fontFamily: T.mono, fontSize: 12, color: T.moss, textTransform: 'uppercase', letterSpacing: '.06em' }}>6 Months, Save $185</span>
+            <div style={{ fontFamily: T.display, fontWeight: 800, fontSize: 28, color: T.ink, marginTop: 8 }}>$997 once</div>
+            <p style={{ marginTop: 8, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Paid once. About $166 a month.</p>
+          </div>
+        </div>
+
+        <p style={{ marginTop: 24, fontSize: 15, color: T.inkSoft, lineHeight: 1.6 }}>
           14 days. Do the check ins. If it is not for you, get every dollar back.
         </p>
 
         <div style={{ marginTop: 28 }}>{START()}</div>
 
         <p style={{ marginTop: 26, fontSize: 14.5, color: T.inkFaint, lineHeight: 1.6 }}>
-          The old you said "be consistent this time. The new you follows a system that runs when your week falls apart.
+          The old you said "be consistent this time." The new you follows a system that runs when your week falls apart.
         </p>
       </Wrap>
     </section>
@@ -419,7 +470,7 @@ function Offer() {
 /* What happens after you join */
 const AFTER = [
   { when: 'The moment you join', body: 'You get a welcome message from me, an invite to my training app, and a few short forms so I can build your plan around your real life. You are welcomed into the client community right away.' },
-  { when: 'Within 24 hours of your forms', body: 'Your first nutrition and training plan is ready. You get a full walkthrough of the app, and my personal phone number. Any question, any time, you text me.' },
+  { when: 'Within 24 hours of your forms', body: 'Your first nutrition and training plan is ready. You get a full walkthrough of the app, and how to reach me with questions between check ins.' },
   {when: 'Day 3', body: 'Your weight starts to drop. You feel just a little bit sharper in the afternoon. You spend no time thinking about what to do, instead you spend your energy on your work and your family.' },
   { when: 'Saturday', body: 'Your first check in. I look at how your week went.' },
   { when: 'Sunday', body: 'Your first round of adjustments lands. You know exactly what to do next.' },
@@ -449,14 +500,53 @@ function AfterJoin() {
   )
 }
 
+/* The six month arc */
+const ARC = [
+  { when: 'Months 1 to 2', title: 'Foundation Reset', body: 'Your protocol goes in and you feel the first metabolic shifts.' },
+  { when: 'Months 3 to 4', title: 'Adaptation', body: 'Your protocol gets refined based on your data. This is where most guys plateau on their own. You will not.' },
+  { when: 'Months 5 to 6', title: 'Lock In', body: 'Your results solidify into habits built to last.' },
+]
+
+function SixMonthArc() {
+  return (
+    <section style={{ background: T.bone, paddingBlock: 'clamp(56px,8vw,110px)' }}>
+      <Wrap style={{ maxWidth: 720 }}>
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <span className="eyebrow center">Your six months</span>
+          <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', marginTop: 16 }}>Here is how it unfolds.</h2>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {ARC.map((a, i) => (
+            <div key={a.title} style={{ display: 'flex', gap: 18, alignItems: 'flex-start', background: T.paper, border: `1px solid ${T.line}`, borderRadius: 14, padding: '22px 24px' }}>
+              <span style={{ flexShrink: 0, width: 36, height: 36, borderRadius: 10, background: T.forest, color: '#fff', display: 'grid', placeItems: 'center', fontFamily: T.display, fontWeight: 800, fontSize: 16 }}>{i + 1}</span>
+              <div>
+                <div style={{ fontFamily: T.mono, fontSize: 12, color: T.moss, letterSpacing: '.06em', textTransform: 'uppercase' }}>{a.when}</div>
+                <h3 style={{ marginTop: 6, fontSize: 19 }}>{a.title}</h3>
+                <p style={{ marginTop: 8, fontSize: 15.5, color: T.inkSoft, lineHeight: 1.6 }}>{a.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Wrap>
+    </section>
+  )
+}
+
 /* FAQ */
 const FAQS = [
   { q: 'I have tried other programs and nothing stuck. Why is this different?', a: "Most programs hand you a plan and leave you alone, or they push fat loss before your body is ready. We fix your energy and build the structure first, in order, and I stay on you the whole way. That is why it holds." },
+  { q: 'What does week 1 actually look like?', a: "You get your first nutrition and training plan, built around your schedule, and you start right away. On Saturday I check in on how the week went. Sunday your first adjustments land, so you know exactly what to do next." },
+  { q: 'Am I too old, too busy, or too far gone for this?', a: "No. I build the plan around your life, your joints, your schedule, and where you are starting from. Older, busier, or bigger just changes the plan. It does not change whether this works." },
   { q: 'I do not have much time. Will this work?', a: "Yes. This is built for a man with a job and a family. A few focused sessions a week, and a plan built around your schedule. It fits your life instead of taking it over." },
   { q: 'Do I need a gym?', a: "No. Home gym, a full gym, or no gym at all, I build your training around the equipment you have." },
+  { q: 'What happens if I fall off track one week?', a: "You will have a bad week. That is week 4, not failure. Every man hits it. You will not be doing it alone, that is exactly when I step in." },
   { q: 'Will I actually work with Luke?', a: "Yes. Every check in comes from me. I send your weekly adjustments and I answer you during the week. You get me, not a bot and not a sub coach." },
+  { q: 'How often do I actually hear from you?', a: "Your first plan lands within 24 hours of your forms. After that, a check in every Saturday and adjustments every Sunday. And you can message me with questions between check ins, with a response within 48 hours." },
   { q: 'What if it is not for me?', a: "You have 14 days. Do the check ins and follow the week 1 plan. If it is not for you, message me and get every dollar back. No forms." },
-  { q: 'How much is it?', a: "You will see both plans when you go to start. Whatever you pick, your first 14 days are covered by the refund, so you see the whole offer with no risk." },
+  { q: 'How much is it?', a: "$197 a month, cancel anytime. Or $997 once for 6 months, about $166 a month. Either way your first 14 days are covered by the refund, so you see the whole offer with no risk." },
+  { q: 'Why does this cost more than an app or a free plan?', a: "An app cannot see you crash at 3pm or notice when your week falls apart. A free plan does not adjust when your life changes. You are not paying for information, you are paying for a coach who catches it and fixes it." },
+  { q: 'How is this different from a generic program or another coach?', a: "There is no cookie cutter plan. You get me directly, not a sub coach, and a plan built around your actual life instead of a template. It is also built to survive a bad week instead of falling apart at the first one." },
+  { q: 'Do I have to give up alcohol, train every day, or eat perfectly?', a: "No. Cheat meals are not a concept here, frequency matters more than perfection. Three or four sessions a week is enough, and your plan is built around your real life, not a strict list of rules." },
 ]
 
 function FAQ() {
@@ -488,10 +578,10 @@ function YourChoice() {
         <span className="eyebrow center vital">Your choice</span>
         <h2 style={{ color: '#fff', fontSize: 'clamp(28px,4vw,44px)', marginTop: 16 }}>You have done harder things than this.</h2>
         <p style={{ marginTop: 20, fontSize: 'clamp(17px,1.6vw,20px)', color: 'rgba(255,255,255,.86)', lineHeight: 1.65 }}>
-          You build systems for everything else in your life, and you win. Your health is the one place you never did. That is the only reason it is not handled yet.
+          You build systems for everything else in your life, and you win. Your health just never had one. That is the only thing that has been missing.
         </p>
         <p style={{ marginTop: 16, fontSize: 'clamp(17px,1.6vw,20px)', color: '#fff', fontWeight: 600, lineHeight: 1.6 }}>
-          If it was really a priority, you already know your next move. The choice is yours.
+          The system is ready when you are. The choice is yours.
         </p>
         <div style={{ marginTop: 30 }}>{START()}</div>
       </Wrap>
@@ -525,15 +615,18 @@ export default function LandingSalesPage() {
       <style>{CSS}</style>
       <Header />
       <main>
-        <VSL />
+        {/* <VSL /> */}
         <Belief />
         <Proof />
-        <Phases />
+        {/* Phases commented out for now — testing WhatYouGet standing alone.
+            Revert or fold phase content into WhatYouGet based on how it reads live. */}
+        {/* <Phases /> */}
         <WhatYouGet />
         <CourseCorrection />
-        {/* <BadWeek /> */}
+        <BadWeek />
         <Fourteen />
         <AfterJoin />
+        <SixMonthArc />
         <Offer />
         <FAQ />
         <YourChoice />

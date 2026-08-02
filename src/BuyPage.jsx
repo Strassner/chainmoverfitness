@@ -7,9 +7,9 @@ import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
    Fully self-contained. All styles scoped under `.mroi-buy`.
    ══════════════════════════════════════════════════════════════════════ */
 
-/* Payment links — swap for your real Stripe Checkout URLs. */
-const STRIPE_WEEKLY_URL   = 'PASTE_STRIPE_WEEKLY_CHECKOUT_URL'
-const STRIPE_SIXMONTH_URL = 'PASTE_STRIPE_SIXMONTH_CHECKOUT_URL'
+/* Payment links (HubFit checkout). */
+const CHECKOUT_MONTHLY_URL  = 'https://app.hubfit.com/plan/6a6b6f098f234c08d41b7a4f'
+const CHECKOUT_SIXMONTH_URL = 'https://app.hubfit.com/plan/6a637908cf608505ae6651b7'
 
 const T = {
   forest:    '#143D2B',
@@ -73,6 +73,12 @@ const CSS = `
   .mroi-buy .agree input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: ${T.forest}; flex-shrink: 0; cursor: pointer; }
   .mroi-buy .agree span { font-size: 14.5px; line-height: 1.55; color: ${T.inkSoft}; }
 
+  .mroi-buy .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 20px 0; font-family: ${T.display}; font-weight: 700; font-size: 16px; color: ${T.ink}; border-top: 1px solid ${T.line}; user-select: none; }
+  .mroi-buy .faq summary::-webkit-details-marker { display: none; }
+  .mroi-buy .faq summary .ico::after { content: "+"; font-size: 20px; font-weight: 400; color: ${T.moss}; transition: transform .25s; display: inline-block; }
+  .mroi-buy .faq[open] summary .ico::after { transform: rotate(45deg); }
+  .mroi-buy .faq .ans { padding: 0 0 20px; font-size: 14.5px; color: ${T.inkSoft}; line-height: 1.65; }
+
   @media (max-width: 900px) { .mroi-buy .checkout-grid { grid-template-columns: 1fr !important; } .mroi-buy .summary-col { position: static !important; } }
 `
 
@@ -87,17 +93,19 @@ const CHECK = (
 )
 
 const INCLUDED = [
-  'Your M.R.O.I. Phase Plans, a custom nutrition plan for each phase',
-  'The Busy-Man Training Plan, built around the equipment you have',
-  'Weekly adjustments based on your schedule and how your body responded',
-  'Course correction from Luke, he pulls you back the day you drift',
-  'One app for your plan, your food, and your numbers',
-  'A room of guys on the same journey, going through it at the same time',
+  'Personalized onboarding, a call, a Metabolic Risk Assessment, and your starting protocol',
+  'Your core protocol, nutrition, stress and sleep, and movement, built on the M.R.O.I. method',
+  'Weekly adjustments, your protocol reviewed and changed every week based on your data',
+  'Ongoing support, message access between check ins plus the private client community',
+  'The Safety Net, your 14 day money back guarantee',
 ]
 
 function Header() {
   return (
     <header style={{ background: T.paper, borderBottom: `1px solid ${T.lineSoft}` }}>
+      <div style={{ background: T.forest, color: '#fff', textAlign: 'center', padding: '9px 16px', fontFamily: T.mono, fontSize: 13, letterSpacing: '.02em' }}>
+        Only <span style={{ textDecoration: 'line-through', opacity: .6 }}>15</span> <b style={{ color: T.vital, fontSize: 14 }}>11 slots</b> open for August
+      </div>
       <Wrap>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 70, gap: 16 }}>
           <Link to="/landing" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -151,26 +159,24 @@ function Summary() {
 /* Enrollment + cancellation terms, per plan. Switches with the plan
    selector below since the two plans have different commitments. */
 const PLAN_TERMS = {
-  weekly: {
+  monthly: {
     bullets: [
-      'A 3-month minimum commitment at $75/week',
-      'Weekly billing starting today',
+      'Monthly billing at $197/month, starting today',
       'Your first 14 days are covered by our money-back guarantee',
-      'This charge is binding after day 14',
-      'Cancellation after your 90 days is just a message to Luke in the app',
+      'No minimum commitment, cancel anytime',
+      'Cancellation is just a message to Luke in the app',
     ],
     cancellation: [
       { when: 'Within your first 14 days', body: 'Full refund guarantee. Message Luke in the app, refund processes within 5 business days.' },
-      { when: 'After day 14, during your 90 days', body: 'You cannot cancel. This is a binding commitment you made at checkout.' },
-      { when: 'After 90 days', body: 'Message Luke in the app with CANCEL. Confirmation within 24 hours. Billing stops on your next charge date.' },
+      { when: 'After day 14', body: 'Cancel anytime. Message Luke in the app with CANCEL. Confirmation within 24 hours. Billing stops on your next charge date.' },
     ],
     consent: (
-      <>I understand the M.R.O.I. Protocol is a <b style={{ color: T.ink }}>3-month commitment at $75/week</b>. I have 14 days to request a full refund. After day 14, I cannot cancel and this charge is binding.</>
+      <>I understand the M.R.O.I. Protocol is billed at <b style={{ color: T.ink }}>$197/month with no minimum commitment</b>. I have 14 days to request a full refund. After that, I can cancel anytime.</>
     ),
   },
   sixmonth: {
     bullets: [
-      'A one-time payment of $1,297 for 6 months of coaching',
+      'A one-time payment of $997 for 6 months of coaching',
       'Charged in full today, no recurring billing',
       'Your first 14 days are covered by our money-back guarantee',
       'After day 14, your payment is refundable at Luke\'s discretion',
@@ -182,7 +188,7 @@ const PLAN_TERMS = {
       { when: 'At the end of your 6 months', body: 'Your program ends automatically. Nothing renews or charges again unless you choose to continue.' },
     ],
     consent: (
-      <>I understand the M.R.O.I. Protocol is a <b style={{ color: T.ink }}>one-time payment of $1,297 for 6 months</b> of coaching. I have 14 days to request a full refund. After day 14, this payment is refundable only at Luke's discretion.</>
+      <>I understand the M.R.O.I. Protocol is a <b style={{ color: T.ink }}>one-time payment of $997 for 6 months</b> of coaching. I have 14 days to request a full refund. After day 14, this payment is refundable only at Luke's discretion.</>
     ),
   },
 }
@@ -193,8 +199,8 @@ function Checkout() {
   const [agreedTerms, setAgreedTerms] = useState(false)
   const [agreedCancellation, setAgreedCancellation] = useState(false)
 
-  const url = plan === 'weekly' ? STRIPE_WEEKLY_URL : STRIPE_SIXMONTH_URL
-  const ctaLabel = plan === 'weekly' ? 'Start Now, $75 a week' : 'Start Now, $1,297 for 6 months'
+  const url = plan === 'monthly' ? CHECKOUT_MONTHLY_URL : CHECKOUT_SIXMONTH_URL
+  const ctaLabel = plan === 'monthly' ? 'Start Now, $197 a month' : 'Start Now, $997 for 6 months'
   const terms = PLAN_TERMS[plan]
 
   const selectPlan = (next) => {
@@ -208,7 +214,7 @@ function Checkout() {
     if (url.startsWith('http')) {
       window.location.href = url
     } else {
-      alert('Test mode: paste your Stripe Checkout URL into the constants at the top of BuyPage.jsx to enable live checkout.')
+      alert('Test mode: paste your checkout URL into the constants at the top of BuyPage.jsx to enable live checkout.')
     }
   }
 
@@ -219,14 +225,14 @@ function Checkout() {
 
       {/* plan selector */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        <button type="button" className={`plan${plan === 'weekly' ? ' sel' : ''}`} onClick={() => selectPlan('weekly')}>
+        <button type="button" className={`plan${plan === 'monthly' ? ' sel' : ''}`} onClick={() => selectPlan('monthly')}>
           <span className="dot" />
           <span style={{ flex: 1 }}>
             <span style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
-              <b style={{ fontFamily: T.display, fontSize: 19, color: T.ink }}>$75 a week</b>
-              <span style={{ fontFamily: T.mono, fontSize: 12, color: T.moss }}>3 month commitment</span>
+              <b style={{ fontFamily: T.display, fontSize: 19, color: T.ink }}>$197 a month</b>
+              <span style={{ fontFamily: T.mono, fontSize: 12, color: T.moss }}>Cancel anytime</span>
             </span>
-            <span style={{ display: 'block', marginTop: 6, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Billed weekly, with a 3 month commitment.</span>
+            <span style={{ display: 'block', marginTop: 6, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Billed monthly, cancel anytime.</span>
           </span>
         </button>
 
@@ -234,10 +240,10 @@ function Checkout() {
           <span className="dot" />
           <span style={{ flex: 1 }}>
             <span style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
-              <b style={{ fontFamily: T.display, fontSize: 19, color: T.ink }}>$1,297 for 6 months</b>
-              <span style={{ fontFamily: T.mono, fontSize: 12, color: T.forest600 }}>Save $653</span>
+              <b style={{ fontFamily: T.display, fontSize: 19, color: T.ink }}>$997 for 6 months</b>
+              <span style={{ fontFamily: T.mono, fontSize: 12, color: T.forest600 }}>Save $185</span>
             </span>
-            <span style={{ display: 'block', marginTop: 6, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Paid once. About $50 a week.</span>
+            <span style={{ display: 'block', marginTop: 6, fontSize: 14, color: T.inkSoft, lineHeight: 1.5 }}>Paid once. About $166 a month.</span>
           </span>
         </button>
       </div>
@@ -303,7 +309,7 @@ function Checkout() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
           Secure checkout
         </span>
-        <span>Payments by Stripe</span>
+        <span>Payments by HubFit</span>
       </div>
     </div>
   )
@@ -311,7 +317,7 @@ function Checkout() {
 
 const AFTER = [
   { when: 'The moment you join', body: 'You get a welcome message from me, an invite to my training app, and a few short forms so I can build your plan around your real life. You are welcomed into the client community right away.' },
-  { when: 'Within 24 hours of your forms', body: 'Your first nutrition and training plan is ready. You get a full walkthrough of the app, and my personal phone number. Any question, any time, you text me.' },
+  { when: 'Within 24 hours of your forms', body: 'Your first nutrition and training plan is ready. You get a full walkthrough of the app, and how to reach me with questions between check ins.' },
   { when: 'Saturday', body: 'Your first check in. I look at how your week went.' },
   { when: 'Sunday', body: 'Your first round of adjustments lands. You know exactly what to do next.' },
 ]
@@ -338,6 +344,32 @@ function AfterJoin() {
   )
 }
 
+const BUY_FAQS = [
+  { q: 'What are my payment options?', a: "$197 a month, cancel anytime. Or $997 once for 6 months, about $166 a month and $185 cheaper than paying monthly." },
+  { q: 'Can I cancel?', a: "Yes, anytime. Message me in the app and it is handled. No cancel wall, no runaround." },
+  { q: 'What if it is not for me?', a: "You have 14 days. Do the check ins and follow the week 1 plan. If it is not for you, message me and get every dollar back. No forms, no runaround." },
+  { q: 'What happens if I fall off track one week?', a: "You will have a bad week. That is week 4, not failure. Every man hits it. You will not be doing it alone, that is exactly when I step in." },
+]
+
+function FAQ() {
+  return (
+    <Wrap style={{ paddingBottom: 'clamp(40px,6vw,72px)', maxWidth: 720 }}>
+      <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        <span className="eyebrow">Questions</span>
+        <h2 style={{ fontSize: 'clamp(24px,3vw,34px)', marginTop: 12 }}>Straight answers.</h2>
+      </div>
+      <div>
+        {BUY_FAQS.map((f, i) => (
+          <details key={i} className="faq" open={i === 0}>
+            <summary>{f.q}<span className="ico" /></summary>
+            <div className="ans">{f.a}</div>
+          </details>
+        ))}
+      </div>
+    </Wrap>
+  )
+}
+
 function YourChoice() {
   return (
     <section style={{ background: T.forest, color: '#fff' }}>
@@ -345,10 +377,10 @@ function YourChoice() {
         <span className="eyebrow" style={{ color: T.vital }}>Your choice</span>
         <h2 style={{ color: '#fff', fontSize: 'clamp(26px,3.4vw,38px)', marginTop: 14 }}>You have done harder things than this.</h2>
         <p style={{ marginTop: 18, fontSize: 'clamp(16px,1.5vw,19px)', color: 'rgba(255,255,255,.86)', lineHeight: 1.65 }}>
-          You build systems for everything else in your life, and you win. Your health is the one place you never did. That is the only reason it is not handled yet.
+          You build systems for everything else in your life, and you win. Your health just never had one. That is the only thing that has been missing.
         </p>
         <p style={{ marginTop: 14, fontSize: 'clamp(16px,1.5vw,19px)', color: '#fff', fontWeight: 600, lineHeight: 1.6 }}>
-          If it was really a priority, you already know your next move. The choice is yours.
+          The system is ready when you are. The choice is yours.
         </p>
       </Wrap>
     </section>
@@ -395,6 +427,7 @@ export default function BuyPage() {
           </div>
         </Wrap>
         <AfterJoin />
+        <FAQ />
         <YourChoice />
       </main>
       <Footer />

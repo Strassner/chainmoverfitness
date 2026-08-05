@@ -16,6 +16,10 @@ import { QuoteGrid, FeaturedTransformation, PersonStoryFeature } from './proofUt
 const VSL_LOOM_ID = 'PASTE_VSL_LOOM_ID_HERE'
 const LOOM_PARAMS = 'hideEmbedTopBar=true&hide_owner=true&hide_title=true&hide_share=true'
 
+/* Product name — must match PRODUCT_NAME in BuyPage.jsx so the name doesn't
+   change between this funnel and checkout. */
+const PRODUCT_NAME = 'The 300lb to Lean Blueprint'
+
 const T = {
   forest:    '#143D2B',
   forest700: '#1A4B35',
@@ -113,9 +117,7 @@ function Header() {
           <p style={{ marginTop: 16, fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(18px,2.2vw,25px)', color: T.forest, lineHeight: 1.25, letterSpacing: '-0.01em', maxWidth: 640, marginInline: 'auto' }}>
             Get the weight off and your energy back in 6 months, without starving, cutting carbs, or living in the gym.
           </p>
-          <p style={{ marginTop: 16, fontSize: 'clamp(15px,1.5vw,18px)', color: T.inkSoft, fontWeight: 500, maxWidth: 580, marginInline: 'auto' }}>
-            I am Luke. I lost 100 pounds myself. I help busy men fix the metabolic problem behind the weight, so it comes off and stays off.
-          </p>
+          
         </Wrap>
       </section>
     </>
@@ -139,7 +141,7 @@ function VSL() {
           ) : (
             <iframe
               src={`https://www.loom.com/embed/${VSL_LOOM_ID}?${LOOM_PARAMS}`}
-              title="The M.R.O.I. Protocol"
+              title={PRODUCT_NAME}
               frameBorder="0"
               allowFullScreen
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
@@ -335,7 +337,7 @@ function WhatYouGet() {
       <Wrap>
         <div style={{ textAlign: 'center', maxWidth: 640, marginInline: 'auto', marginBottom: 44 }}>
           <span className="eyebrow center">What you get</span>
-          <h2 style={{ fontSize: 'clamp(28px,4vw,46px)', marginTop: 16 }}>The M.R.O.I. Protocol</h2>
+          <h2 style={{ fontSize: 'clamp(28px,4vw,46px)', marginTop: 16 }}>{PRODUCT_NAME}</h2>
           <p style={{ marginTop: 16, fontSize: 'clamp(16px,1.5vw,18px)', color: T.inkSoft, lineHeight: 1.6 }}>
             All built for a busy life. Let me do the thinking and the planning. You just show up, and look back in a few months as a different man.
           </p>
@@ -616,7 +618,7 @@ export default function LandingSalesPage() {
       <Header />
       <main>
         {/* <VSL /> */}
-        <Belief />
+        {/* <Belief /> */}
         <Proof />
         {/* Phases commented out for now — testing WhatYouGet standing alone.
             Revert or fold phase content into WhatYouGet based on how it reads live. */}

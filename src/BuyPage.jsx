@@ -3,13 +3,62 @@ import { Link } from 'react-router-dom'
 import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
 
 /* ══════════════════════════════════════════════════════════════════════
-   ISOLATED TEST ROUTE — /buy  (lean checkout, no application)
+   ISOLATED TEST ROUTE — /buy  (gated checkout: fit-screening application
+   runs first, plan picker only reveals once qualified)
    Fully self-contained. All styles scoped under `.mroi-buy`.
    ══════════════════════════════════════════════════════════════════════ */
 
 /* Payment links (HubFit checkout). */
 const CHECKOUT_MONTHLY_URL  = 'https://app.hubfit.com/plan/6a6b6f098f234c08d41b7a4f'
 const CHECKOUT_SIXMONTH_URL = 'https://app.hubfit.com/plan/6a637908cf608505ae6651b7'
+
+/* Product name — this is what's being sold. Framed as a system/blueprint
+   you follow, not a coaching relationship you have to trust blind. */
+const PRODUCT_NAME = 'The 300lb to Lean Blueprint'
+
+// NOTE: must match APPS_SCRIPT_URL in App.jsx / ApplicationPage.jsx — same endpoint, fire-and-forget GET.
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFz--iYveQkyXn9vLUpYuEVvWid0QOZp2vQW3yEcxeHIwvOllqtXTW5nOOJetJtys/exec'
+
+/* Fit-screening questions, asked before the plan picker is revealed. */
+const GATE_QUESTIONS = [
+  {
+    id: 'follow_plan',
+    q: 'Are you willing to follow the plan even if it goes against mainstream advice?',
+    options: [
+      { value: 'Yes', label: 'Yes' },
+      { value: 'No', label: 'No' },
+    ],
+    failValues: ['No'],
+  },
+  {
+    id: 'honest_conversations',
+    q: 'Are you willing to have open and honest conversations about your actions during the week, no matter what?',
+    options: [
+      { value: 'Yes', label: 'Yes' },
+      { value: 'No', label: 'No' },
+    ],
+    failValues: ['No'],
+  },
+  {
+    id: 'pushed_outside_comfort',
+    q: 'Are you willing to be pushed outside your comfort zone to reach your goals?',
+    options: [
+      { value: 'Yes', label: 'Yes' },
+      { value: 'No', label: 'No' },
+    ],
+    failValues: ['No'],
+  },
+  {
+    id: 'start_timeline',
+    q: 'How soon are you ready to start?',
+    options: [
+      { value: 'Ready now', label: 'Ready now' },
+      { value: 'Within the next few weeks', label: 'Within the next few weeks' },
+      { value: 'Just exploring, not ready yet', label: 'Just exploring, not ready yet' },
+    ],
+    failValues: ['Just exploring, not ready yet'],
+  },
+]
 
 const T = {
   forest:    '#143D2B',
@@ -67,6 +116,10 @@ const CSS = `
   .mroi-buy .cta-primary:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(70,201,139,.46); }
   .mroi-buy .cta:disabled { background: ${T.line}; color: ${T.inkFaint}; cursor: not-allowed; box-shadow: none; }
 
+  .mroi-buy .gate-opt { display: block; text-align: left; width: 100%; padding: 14px 18px; border-radius: 12px; border: 1.5px solid ${T.line}; background: ${T.paper}; cursor: pointer; font-family: ${T.body}; font-size: 15px; font-weight: 500; color: ${T.ink}; transition: border-color .15s, background .15s, box-shadow .15s; }
+  .mroi-buy .gate-opt:hover { border-color: ${T.moss}; }
+  .mroi-buy .gate-opt.sel { border-color: ${T.vital}; background: ${T.mist}; font-weight: 600; box-shadow: 0 4px 14px rgba(70,201,139,.18); }
+
   .mroi-buy .agree { display: flex; gap: 13px; align-items: flex-start; padding: 18px; border: 1.5px solid ${T.line}; border-radius: 14px; background: ${T.bone}; cursor: pointer; transition: border-color .2s, background .2s; }
   .mroi-buy .agree:hover { border-color: ${T.moss}; }
   .mroi-buy .agree.checked { border-color: ${T.vital}; background: ${T.mist}; }
@@ -93,10 +146,10 @@ const CHECK = (
 )
 
 const INCLUDED = [
-  'Personalized onboarding, a call, a Metabolic Risk Assessment, and your starting protocol',
-  'Your core protocol, nutrition, stress and sleep, and movement, built on the M.R.O.I. method',
-  'Weekly adjustments, your protocol reviewed and changed every week based on your data',
-  'Ongoing support, message access between check ins plus the private client community',
+  'Onboarding: a welcome call, your Metabolic Risk Assessment, and Day 1 of your Blueprint built and ready to follow',
+  'Your full Blueprint, nutrition, stress and sleep, and movement, engineered on the M.R.O.I. method',
+  'Weekly recalibrations, your Blueprint reviewed and adjusted every week based on your real data',
+  'Built-in support, message access between check ins plus the private client community',
   'The Safety Net, your 14 day money back guarantee',
 ]
 
@@ -124,10 +177,10 @@ function Summary() {
   return (
     <div className="summary-col" style={{ position: 'sticky', top: 24, alignSelf: 'start' }}>
       <div style={{ background: T.forest, color: '#fff', borderRadius: 22, padding: 'clamp(28px,3.5vw,40px)', boxShadow: T.shadowLg }}>
-        <span className="eyebrow" style={{ color: T.vital }}>Your enrollment</span>
-        <h2 style={{ color: '#fff', fontSize: 'clamp(24px,2.8vw,32px)', marginTop: 12 }}>The M.R.O.I. Protocol</h2>
+        <span className="eyebrow" style={{ color: T.vital }}>What you're getting</span>
+        <h2 style={{ color: '#fff', fontSize: 'clamp(24px,2.8vw,32px)', marginTop: 12 }}>{PRODUCT_NAME}</h2>
         <p style={{ marginTop: 14, fontSize: 15, color: 'rgba(255,255,255,.78)', lineHeight: 1.6 }}>
-          Coaching for men who are done starting over. Every check in comes from Luke himself, not a sub coach.
+          A done-for-you system that tells you exactly what to do, every day, until the weight is gone for good. Works from any starting point, built and personally overseen by Luke, never handed off to a sub coach.
         </p>
         <ul style={{ listStyle: 'none', margin: '24px 0 0', padding: '22px 0 0', borderTop: '1px solid rgba(255,255,255,.14)', display: 'flex', flexDirection: 'column', gap: 13 }}>
           {INCLUDED.map(item => (
@@ -171,12 +224,12 @@ const PLAN_TERMS = {
       { when: 'After day 14', body: 'Cancel anytime. Message Luke in the app with CANCEL. Confirmation within 24 hours. Billing stops on your next charge date.' },
     ],
     consent: (
-      <>I understand the M.R.O.I. Protocol is billed at <b style={{ color: T.ink }}>$197/month with no minimum commitment</b>. I have 14 days to request a full refund. After that, I can cancel anytime.</>
+      <>I understand {PRODUCT_NAME} is billed at <b style={{ color: T.ink }}>$197/month with no minimum commitment</b>. I have 14 days to request a full refund. After that, I can cancel anytime.</>
     ),
   },
   sixmonth: {
     bullets: [
-      'A one-time payment of $997 for 6 months of coaching',
+      'A one-time payment of $997 for 6 months',
       'Charged in full today, no recurring billing',
       'Your first 14 days are covered by our money-back guarantee',
       'After day 14, your payment is refundable at Luke\'s discretion',
@@ -188,9 +241,114 @@ const PLAN_TERMS = {
       { when: 'At the end of your 6 months', body: 'Your program ends automatically. Nothing renews or charges again unless you choose to continue.' },
     ],
     consent: (
-      <>I understand the M.R.O.I. Protocol is a <b style={{ color: T.ink }}>one-time payment of $997 for 6 months</b> of coaching. I have 14 days to request a full refund. After day 14, this payment is refundable only at Luke's discretion.</>
+      <>I understand {PRODUCT_NAME} is a <b style={{ color: T.ink }}>one-time payment of $997 for 6 months</b>. I have 14 days to request a full refund. After day 14, this payment is refundable only at Luke's discretion.</>
     ),
   },
+}
+
+/* Fires the gate answers to the shared lead-capture endpoint, pass or fail,
+   so every applicant lands in the sheet — just tagged qualified/unqualified. */
+function submitGateLead(answers, qualified) {
+  try {
+    let lead = {}
+    try { lead = (JSON.parse(sessionStorage.getItem('chainmover_results') || '{}').lead) || {} } catch (_) { /* no lead */ }
+    const params = new URLSearchParams({
+      form:                    'buy_gate',
+      name:                    lead.name || '',
+      email:                   lead.email || '',
+      phone:                   lead.phone || '',
+      instagram:               lead.instagram || '',
+      source:                  lead.source || '',
+      bucket:                  lead.bucket || '',
+      follow_plan:             answers.follow_plan || '',
+      honest_conversations:    answers.honest_conversations || '',
+      pushed_outside_comfort:  answers.pushed_outside_comfort || '',
+      start_timeline:          answers.start_timeline || '',
+      qualified:               qualified ? 'true' : 'false',
+      timestamp:               new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+    })
+    fetch(`${APPS_SCRIPT_URL}?${params}`, { mode: 'no-cors' })
+  } catch (_) { /* silent fail — never block the gate result */ }
+}
+
+function GateOption({ selected, label, onClick }) {
+  return (
+    <button type="button" className={`gate-opt${selected ? ' sel' : ''}`} onClick={onClick}>
+      {label}
+    </button>
+  )
+}
+
+/* Fit-screening gate (right column, shown before Checkout). */
+function Gate({ onComplete }) {
+  const [answers, setAnswers] = useState({})
+  const allAnswered = GATE_QUESTIONS.every(q => answers[q.id])
+
+  const submit = () => {
+    if (!allAnswered) return
+    const qualified = GATE_QUESTIONS.every(q => !q.failValues.includes(answers[q.id]))
+    submitGateLead(answers, qualified)
+    onComplete(qualified)
+  }
+
+  return (
+    <div style={{ background: T.paper, border: `1px solid ${T.line}`, borderRadius: 22, padding: 'clamp(28px,4vw,44px)', boxShadow: T.shadow }}>
+      <span className="eyebrow">Before you start</span>
+      <h3 style={{ fontSize: 'clamp(22px,2.4vw,28px)', marginTop: 12, marginBottom: 8 }}>A few quick questions.</h3>
+      <p style={{ fontSize: 14.5, color: T.inkSoft, lineHeight: 1.6, marginBottom: 28 }}>
+        {PRODUCT_NAME} works from any starting point. It only has one real requirement: you follow it exactly as built, no swaps, no second-guessing. Answer honestly so we can confirm that is you before you enroll.
+      </p>
+
+      {GATE_QUESTIONS.map((q, i) => (
+        <div key={q.id} style={{ marginBottom: 26 }}>
+          <div style={{ fontFamily: T.mono, fontSize: 11.5, letterSpacing: '.08em', textTransform: 'uppercase', color: T.inkFaint, marginBottom: 8 }}>
+            Question {i + 1} of {GATE_QUESTIONS.length}
+          </div>
+          <h4 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 16.5, lineHeight: 1.35, color: T.ink, margin: '0 0 12px' }}>
+            {q.q}
+          </h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {q.options.map(opt => (
+              <GateOption
+                key={opt.value}
+                selected={answers[q.id] === opt.value}
+                label={opt.label}
+                onClick={() => setAnswers(a => ({ ...a, [q.id]: opt.value }))}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <button type="button" className="cta cta-primary" disabled={!allAnswered} onClick={submit}>
+        Continue
+      </button>
+      {!allAnswered && (
+        <p style={{ marginTop: 12, fontSize: 13, color: T.inkFaint, textAlign: 'center' }}>Answer all questions above to continue.</p>
+      )}
+    </div>
+  )
+}
+
+/* Shown when the gate answers indicate a poor fit. Hard block — no path
+   back to checkout or a call, just a respectful no. */
+function Blocked() {
+  return (
+    <Wrap style={{ paddingBlock: 'clamp(64px,10vw,120px)', maxWidth: 640, textAlign: 'center' }}>
+      <span className="eyebrow">Application result</span>
+      <h1 style={{ fontSize: 'clamp(28px,3.6vw,40px)', marginTop: 14 }}>This is not the right fit right now.</h1>
+      <p style={{ marginTop: 18, fontSize: 16, color: T.inkSoft, lineHeight: 1.65 }}>
+        Based on your answers, {PRODUCT_NAME} is not a match for where you are at today. It only works if you are ready to follow it exactly as built, and it would not be fair to either of us to start something you are not ready for.
+      </p>
+      <Link
+        to="/landing"
+        className="cta"
+        style={{ marginTop: 32, display: 'inline-flex', width: 'auto', paddingInline: 36, background: T.line, color: T.ink }}
+      >
+        Back to home
+      </Link>
+    </Wrap>
+  )
 }
 
 /* Checkout (right) */
@@ -251,7 +409,7 @@ function Checkout() {
       {/* TOS section */}
       <div style={{ marginTop: 26, background: T.bone, border: `1px solid ${T.line}`, borderRadius: 16, padding: '22px 24px' }}>
         <h4 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 15, color: T.ink, margin: '0 0 14px' }}>Enrollment terms</h4>
-        <p style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.65, margin: 0, marginBottom: 14 }}>By signing up for the M.R.O.I. Protocol, you agree to:</p>
+        <p style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.65, margin: 0, marginBottom: 14 }}>By signing up for {PRODUCT_NAME}, you agree to:</p>
         <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {terms.bullets.map(b => (
             <li key={b} style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.6, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
@@ -300,7 +458,7 @@ function Checkout() {
 
       {/* after the yes */}
       <p style={{ marginTop: 18, paddingTop: 18, borderTop: `1px solid ${T.lineSoft}`, textAlign: 'center', fontSize: 14, color: T.inkFaint, lineHeight: 1.6 }}>
-        Luke reviews your first week and reaches out personally.
+        The system flags your first week automatically, and Luke reviews it personally.
       </p>
 
       {/* trust row */}
@@ -316,9 +474,9 @@ function Checkout() {
 }
 
 const AFTER = [
-  { when: 'The moment you join', body: 'You get a welcome message from me, an invite to my training app, and a few short forms so I can build your plan around your real life. You are welcomed into the client community right away.' },
-  { when: 'Within 24 hours of your forms', body: 'Your first nutrition and training plan is ready. You get a full walkthrough of the app, and how to reach me with questions between check ins.' },
-  { when: 'Saturday', body: 'Your first check in. I look at how your week went.' },
+  { when: 'The moment you join', body: 'You get instant access to your training app and a few short intake forms, so the system can build Day 1 of your Blueprint around your real life. You are welcomed into the private client community right away.' },
+  { when: 'Within 24 hours of your forms', body: 'Your Blueprint is built and ready: a full nutrition and training plan, plus a walkthrough of the app and how to reach support between check ins.' },
+  { when: 'Saturday', body: 'Your first check in. Luke reviews how your week went inside the system.' },
   { when: 'Sunday', body: 'Your first round of adjustments lands. You know exactly what to do next.' },
 ]
 
@@ -407,28 +565,40 @@ function Footer() {
 
 export default function BuyPage() {
   useFonts()
+  const [phase, setPhase] = useState('gate') // 'gate' | 'checkout' | 'blocked'
+
   return (
     <div className="mroi-buy">
       <style>{CSS}</style>
       <Header />
       <main>
-        <Wrap style={{ paddingBlock: 'clamp(36px,5vw,64px)' }}>
-          <div style={{ maxWidth: 680, marginBottom: 40 }}>
-            <span className="eyebrow">Start</span>
-            <h1 style={{ fontSize: 'clamp(30px,4.2vw,46px)', marginTop: 14 }}>Start the M.R.O.I. Protocol.</h1>
-            <p style={{ marginTop: 16, fontSize: 'clamp(16px,1.4vw,19px)', color: T.inkSoft, lineHeight: 1.6 }}>
-              You already know what you get and who is coaching you. Pick your plan and start. Your first 14 days are covered by the refund, so the risk is on me.
-            </p>
-          </div>
+        {phase === 'blocked' ? (
+          <Blocked />
+        ) : (
+          <>
+            <Wrap style={{ paddingBlock: 'clamp(36px,5vw,64px)' }}>
+              <div style={{ maxWidth: 680, marginBottom: 40 }}>
+                <span className="eyebrow">Start</span>
+                <h1 style={{ fontSize: 'clamp(30px,4.2vw,46px)', marginTop: 14 }}>Start {PRODUCT_NAME}.</h1>
+                <p style={{ marginTop: 16, fontSize: 'clamp(16px,1.4vw,19px)', color: T.inkSoft, lineHeight: 1.6 }}>
+                  {phase === 'gate'
+                    ? 'A few quick questions first, so we can make sure this is the right fit before you enroll.'
+                    : 'You already know what the Blueprint does. Pick your plan and start following it. Your first 14 days are covered by the refund, so the risk is on me.'}
+                </p>
+              </div>
 
-          <div className="checkout-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.05fr', gap: 'clamp(24px,3vw,40px)', alignItems: 'start' }}>
-            <Summary />
-            <Checkout />
-          </div>
-        </Wrap>
-        <AfterJoin />
-        <FAQ />
-        <YourChoice />
+              <div className="checkout-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.05fr', gap: 'clamp(24px,3vw,40px)', alignItems: 'start' }}>
+                <Summary />
+                {phase === 'gate'
+                  ? <Gate onComplete={qualified => setPhase(qualified ? 'checkout' : 'blocked')} />
+                  : <Checkout />}
+              </div>
+            </Wrap>
+            <AfterJoin />
+            <FAQ />
+            <YourChoice />
+          </>
+        )}
       </main>
       <Footer />
     </div>

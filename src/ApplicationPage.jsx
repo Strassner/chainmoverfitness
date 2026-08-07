@@ -7,6 +7,13 @@ const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-ses
 // NOTE: must match APPS_SCRIPT_URL in App.jsx — same endpoint, fire-and-forget GET.
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFz--iYveQkyXn9vLUpYuEVvWid0QOZp2vQW3yEcxeHIwvOllqtXTW5nOOJetJtys/exec'
 
+/* Dedicated application endpoint — separate Apps Script project from the
+   quiz one above, so applications get their own sheet and fire an instant
+   Slack notification. Source lives in apps-script/application-notifier.gs.
+   Paste the /exec URL from that deployment here. Until it is set, the
+   application still logs to APPS_SCRIPT_URL and simply skips Slack. */
+const APPLICATION_SCRIPT_URL = 'PASTE_APPLICATION_SCRIPT_EXEC_URL_HERE'
+
 /* ─── brand tokens (match BucketPage) ──────────────────────────────── */
 const T = {
   forest:    '#143D2B',
@@ -106,6 +113,87 @@ function Footer() {
   )
 }
 
+/* ─── contact fields ───────────────────────────────────────────────────
+   Quiz traffic arrives with name/email/phone already in sessionStorage.
+   Landing-page traffic does not, so we ask here — without a phone number
+   there is no way to follow up with someone who applies and never books. */
+/* Validation returns an error string, or null when the value is fine.
+
+   Phone deliberately is NOT US-only — Luke coaches clients in Canada,
+   Portugal, the Philippines and Dubai, so a strict 10-digit rule would
+   reject real leads. The rule is: 7 to 15 digits, which is the ITU E.164
+   range, with an optional leading +. */
+function validateName(v) {
+  return v.trim() ? null : 'Please enter your name.'
+}
+
+function validatePhone(v) {
+  const raw = v.trim()
+  if (!raw) return 'Please enter a phone number.'
+  if (/[a-z]/i.test(raw)) return 'Numbers only please, no letters.'
+  const digits = raw.replace(/\D/g, '')
+  if (digits.length < 7) return 'That looks too short. Include your area code.'
+  if (digits.length > 15) return 'That looks too long. Check for an extra digit.'
+  return null
+}
+
+function validateEmail(v) {
+  const raw = v.trim()
+  if (!raw) return 'Please enter an email address.'
+  if (/\s/.test(raw)) return 'Email addresses cannot contain spaces.'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(raw)) return "That does not look like an email address."
+  return null
+}
+
+/* Formats as a US number while typing, but backs off the moment the value
+   stops looking like one — a leading + or more than 10 digits means an
+   international number, and we leave those exactly as typed. */
+function formatPhoneInput(v) {
+  if (v.trim().startsWith('+')) return v
+  const d = v.replace(/\D/g, '')
+  if (d.length > 10) return v
+  if (d.length <= 3) return d
+  if (d.length <= 6) return `(${d.slice(0, 3)}) ${d.slice(3)}`
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`
+}
+
+const CONTACT_FIELDS = [
+  { id: 'name',  label: 'Full name',     type: 'text',  autoComplete: 'name',  placeholder: 'Jane Doe',        validate: validateName },
+  { id: 'phone', label: 'Phone number',  type: 'tel',   autoComplete: 'tel',   placeholder: '(555) 123-4567',  validate: validatePhone, format: formatPhoneInput, hint: 'Outside the US? Start with + and your country code.' },
+  { id: 'email', label: 'Email address', type: 'email', autoComplete: 'email', placeholder: 'you@example.com', validate: validateEmail },
+]
+
+function TextField({ field, value, error, onChange, onBlur }) {
+  const borderColor = error ? '#C4453A' : value ? T.vital : T.line
+  return (
+    <label style={{ display: 'block', marginBottom: 16 }}>
+      <span style={{ display: 'block', fontFamily: T.mono, fontSize: 11.5, letterSpacing: '.08em', textTransform: 'uppercase', color: T.inkFaint, marginBottom: 7 }}>
+        {field.label}
+      </span>
+      <input
+        type={field.type}
+        value={value}
+        autoComplete={field.autoComplete}
+        placeholder={field.placeholder}
+        aria-invalid={error ? 'true' : 'false'}
+        onChange={e => onChange(field.id, field.format ? field.format(e.target.value) : e.target.value)}
+        onBlur={() => onBlur(field.id)}
+        style={{
+          width: '100%', boxSizing: 'border-box', padding: '15px 17px',
+          borderRadius: 12, border: `1.5px solid ${borderColor}`,
+          background: T.paper, fontFamily: T.body, fontSize: 16, color: T.ink,
+          outline: 'none', transition: 'border-color .15s',
+        }}
+      />
+      {error ? (
+        <span style={{ display: 'block', marginTop: 7, fontSize: 13.5, color: '#C4453A' }}>{error}</span>
+      ) : field.hint ? (
+        <span style={{ display: 'block', marginTop: 7, fontSize: 13, color: T.inkFaint }}>{field.hint}</span>
+      ) : null}
+    </label>
+  )
+}
+
 /* ─── option card ──────────────────────────────────────────────────── */
 function OptionCard({ selected, label, onClick }) {
   return (
@@ -135,23 +223,66 @@ export default function ApplicationPage() {
   const [submitting, setSubmitting] = useState(false)
   const calRef = useRef(null)
 
+  // Prefill from the quiz lead when there is one, so quiz traffic is not
+  // asked for details it already gave.
+  const [contact, setContact] = useState(() => {
+    try {
+      const lead = (JSON.parse(sessionStorage.getItem('chainmover_results') || '{}').lead) || {}
+      return { name: lead.name || '', phone: lead.phone || '', email: lead.email || '' }
+    } catch (_) {
+      return { name: '', phone: '', email: '' }
+    }
+  })
+
+  // Which fields have been blurred at least once, or failed a submit attempt.
+  // Errors stay hidden until then, so nobody is told they are wrong while
+  // still typing the first character.
+  const [touched, setTouched] = useState({})
+
+  const setField = (id, value) => setContact(c => ({ ...c, [id]: value }))
+  const markTouched = id => setTouched(t => ({ ...t, [id]: true }))
+
+  const errors = {}
+  CONTACT_FIELDS.forEach(f => {
+    const err = f.validate(contact[f.id])
+    if (err) errors[f.id] = err
+  })
+
   const allAnswered = QUESTIONS.every(q => answers[q.id])
+  const contactValid = Object.keys(errors).length === 0
 
   function submit() {
-    if (!allAnswered || submitting) return
+    if (submitting) return
+
+    // Reveal every contact error at once rather than leaving a dead button.
+    if (!contactValid) {
+      setTouched(CONTACT_FIELDS.reduce((t, f) => ({ ...t, [f.id]: true }), {}))
+      const firstBad = CONTACT_FIELDS.find(f => errors[f.id])
+      if (firstBad) {
+        const el = document.querySelector(`input[autocomplete="${firstBad.autoComplete}"]`)
+        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus({ preventScroll: true }) }
+      }
+      return
+    }
+
+    if (!allAnswered) return
     setSubmitting(true)
 
-    // Fire the application to the same endpoint the quiz uses (fire-and-forget GET).
     try {
       let lead = {}
       try { lead = (JSON.parse(sessionStorage.getItem('chainmover_results') || '{}').lead) || {} } catch (_) { /* no lead */ }
+      // Landing pages link here as /apply?src=... . Quiz traffic carries a
+      // lead object with its own source; direct traffic has neither, so fall
+      // back to the query param to keep these rows attributable.
+      const src = new URLSearchParams(window.location.search).get('src') || ''
       const params = new URLSearchParams({
         form:           'application',
-        name:           lead.name || '',
-        email:          lead.email || '',
-        phone:          lead.phone || '',
+        // Typed values win — they are the ones the applicant just confirmed.
+        name:           contact.name.trim()  || lead.name  || '',
+        email:          contact.email.trim() || lead.email || '',
+        phone:          contact.phone.trim() || lead.phone || '',
         instagram:      lead.instagram || '',
-        source:         lead.source || '',
+        source:         lead.source || src,
         bucket:         lead.bucket || '',
         weight_to_lose: answers.weight_to_lose || '',
         situation:      answers.situation || '',
@@ -159,7 +290,15 @@ export default function ApplicationPage() {
         start_timeline: answers.start_timeline || '',
         timestamp:      new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
       })
+
+      // Existing quiz endpoint — kept so the current sheet keeps receiving
+      // applications. Safe to remove once the dedicated one is trusted.
       fetch(`${APPS_SCRIPT_URL}?${params}`, { mode: 'no-cors' })
+
+      // Dedicated application endpoint — logs its own sheet and fires Slack.
+      if (!APPLICATION_SCRIPT_URL.startsWith('PASTE_')) {
+        fetch(`${APPLICATION_SCRIPT_URL}?${params}`, { mode: 'no-cors' })
+      }
     } catch (_) { /* silent fail — never block the booking step */ }
 
     setSubmitted(true)
@@ -181,7 +320,13 @@ export default function ApplicationPage() {
     function init() {
       if (window.Calendly && calRef.current) {
         calRef.current.innerHTML = '' // guard against double-init (StrictMode / re-render)
-        window.Calendly.initInlineWidget({ url: CALENDLY_URL, parentElement: calRef.current })
+        window.Calendly.initInlineWidget({
+          url: CALENDLY_URL,
+          parentElement: calRef.current,
+          // Carry over what they just typed so booking is one less form to
+          // fill, and so the Calendly invitee matches the application row.
+          prefill: { name: contact.name, email: contact.email },
+        })
       }
     }
 
@@ -197,7 +342,7 @@ export default function ApplicationPage() {
     }
     script.addEventListener('load', init)
     return () => script && script.removeEventListener('load', init)
-  }, [submitted])
+  }, [submitted, contact.name, contact.email])
 
   return (
     <div style={{ background: T.paper, minHeight: '100svh', fontFamily: T.body, color: T.ink, display: 'flex', flexDirection: 'column' }}>
@@ -235,6 +380,28 @@ export default function ApplicationPage() {
               </div>
             ))}
 
+            <div style={{ marginBottom: 40 }}>
+              <div style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase', color: T.inkFaint, marginBottom: 10 }}>
+                Last step
+              </div>
+              <h2 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(20px,2.6vw,26px)', lineHeight: 1.25, color: T.ink, margin: '0 0 8px' }}>
+                Where can Luke reach you?
+              </h2>
+              <p style={{ fontSize: 15, color: T.inkSoft, lineHeight: 1.55, margin: '0 0 20px' }}>
+                So he can get hold of you directly if the calendar does not have a time that works.
+              </p>
+              {CONTACT_FIELDS.map(f => (
+                <TextField
+                  key={f.id}
+                  field={f}
+                  value={contact[f.id]}
+                  error={touched[f.id] ? errors[f.id] : undefined}
+                  onChange={setField}
+                  onBlur={markTouched}
+                />
+              ))}
+            </div>
+
             <button
               type="button"
               onClick={submit}
@@ -267,10 +434,12 @@ export default function ApplicationPage() {
               We'll go over your results in detail and see if this is the right fit. You'll leave knowing exactly what's not working right inside your body — and the plan to fix it. Grab the time that works best:
             </p>
 
+            {/* No data-url here on purpose: widget.js auto-initializes any
+                .calendly-inline-widget[data-url] it finds on load, which
+                would override the manual init below and drop the prefill. */}
             <div
               ref={calRef}
               className="calendly-inline-widget"
-              data-url={CALENDLY_URL}
               style={{ minWidth: 320, height: 720, marginTop: 24 }}
             />
 

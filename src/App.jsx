@@ -198,19 +198,19 @@ function calcMacros(a) {
 function getFlags(a) {
   const flags = []
   if (a.midsection === 'yes')
-    flags.push({ title: 'Visceral Fat Accumulation', body: 'Belly fat wraps your organs and drives insulin resistance, inflammation, and cardiovascular risk. It is the riskiest place on your body to store fat.' })
+    flags.push({ title: 'Visceral Fat Accumulation', body: 'Belly fat does not just sit there. It pumps out signals that make your cells resistant to insulin, so more of what you eat gets stored instead of burned. The more you carry there, the higher insulin runs, and the harder fat loss gets.' })
   if (a.energy_crash === 'yes')
-    flags.push({ title: 'The Afternoon Energy Crash', body: "Part blood sugar swinging after meals (early insulin resistance), part sleep that isn't restoring you. It is a metabolic problem, not a discipline one." })
+    flags.push({ title: 'The Afternoon Energy Crash', body: 'That 2 to 3pm wall is insulin swinging your blood sugar down hard after meals. It is early insulin resistance showing up in real time, not a discipline problem.' })
   if (a.sleep_quality === 'yes')
-    flags.push({ title: 'Sleep Architecture Disruption', body: 'Waking tired after seven or more hours points to sleep apnea or cortisol wrecking your deep sleep. Both directly suppress fat loss.' })
+    flags.push({ title: 'Sleep Architecture Disruption', body: 'Waking tired after seven or more hours points to sleep apnea or cortisol wrecking your deep sleep. Both spike insulin resistance overnight, which is why fat loss stalls even when the food is dialed in.' })
   if (a.winded === 'yes')
-    flags.push({ title: 'Cardiovascular Stress', body: 'Getting winded on light effort means your heart is working far harder than it should at rest.' })
+    flags.push({ title: 'Cardiovascular Stress', body: 'Getting winded on light effort means your heart is compensating for chronically high insulin thickening your blood vessels. It is working harder than it should at rest.' })
   if (a.family_history === 'yes')
-    flags.push({ title: 'Genetic Risk Multiplier', body: 'A close relative with type 2 diabetes or early heart disease roughly doubles your risk. That raises the urgency, not the plan.' })
+    flags.push({ title: 'Genetic Risk Multiplier', body: 'A close relative with type 2 diabetes or early heart disease usually means you inherited cells that struggle to respond to insulin. That raises the urgency of fixing it now, not the plan.' })
   if (a.stress === 'high' || a.stress === 'crushing')
-    flags.push({ title: 'Cortisol Load', body: 'Chronic stress keeps cortisol high, which tells your body to store fat around the middle and blocks fat burning.' })
+    flags.push({ title: 'Cortisol Load', body: 'Chronic stress keeps cortisol high, and cortisol raises blood sugar, which forces insulin even higher to compensate. High insulin is what tells your body to store fat around the middle and blocks it from ever being released.' })
   if (a.yoyo === 'yes')
-    flags.push({ title: 'Metabolic Set Point Resistance', body: 'Every cycle of losing and regaining trains your body to defend a higher weight. The fix is rebuilding the system, not more restriction.' })
+    flags.push({ title: 'Metabolic Set Point Resistance', body: 'Every crash diet spikes cortisol and worsens insulin resistance, training your body to defend a higher weight instead of releasing fat. The fix is rebuilding the system, not more restriction.' })
   return flags.slice(0, 4)
 }
 
@@ -261,14 +261,19 @@ export default function App() {
     }
   }
 
-  async function submitLead(name, email, phone, instagram, source) {
+  async function submitLead(name, email, instagram, source, marketingConsent) {
     const r = pendingRef.current
     const payload = {
       name,
       email,
-      phone,
+      // Phone is no longer collected here. Kept as an empty field so the
+      // sheet's column layout and downstream readers stay unchanged.
+      phone: '',
       instagram,
       source,
+      // Recorded so there is a record of who opted in and when — the
+      // timestamp below is the consent timestamp.
+      marketing_consent: marketingConsent ? 'Yes' : 'No',
       bucket: BUCKETS[r.bucket].label,
       timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
     }
@@ -287,6 +292,7 @@ export default function App() {
         phone:     payload.phone,
         instagram: payload.instagram,
         source:    payload.source,
+        marketing_consent: payload.marketing_consent,
         bucket:    payload.bucket,
         timestamp: payload.timestamp,
         // body stats
@@ -503,18 +509,20 @@ const textInputSx = {
 function LeadCaptureScreen({ progress, onSubmit }) {
   const [name, setName]         = useState('')
   const [email, setEmail]       = useState('')
-  const [phone, setPhone]       = useState('')
   const [instagram, setInsta]   = useState('')
   const [source, setSource]     = useState('')
+  const [consent, setConsent]   = useState(false)
   const [loading, setLoading]   = useState(false)
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  const valid = name.trim().length >= 2 && emailValid && phone.replace(/\D/g, '').length >= 10 && instagram.trim().length > 1 && source.trim().length > 1
+  // Consent is part of validity: the plan is delivered by email, so there is
+  // no way to fulfil this without permission to send it.
+  const valid = name.trim().length >= 2 && emailValid && instagram.trim().length > 1 && source.trim().length > 1 && consent
 
   async function handleSubmit() {
     if (!valid) return
     setLoading(true)
-    await onSubmit(name.trim(), email.trim(), phone.trim(), instagram.trim(), source.trim())
+    await onSubmit(name.trim(), email.trim(), instagram.trim(), source.trim(), consent)
   }
 
   return (
@@ -536,7 +544,7 @@ function LeadCaptureScreen({ progress, onSubmit }) {
             Where should we send your results?
           </Typography>
           <Typography variant="body2" sx={{ color: MUTED, mb: 5, lineHeight: 1.7 }}>
-            We'll email you your plan. No spam.
+            Your macro plan gets emailed straight over. Unsubscribe any time.
           </Typography>
 
           {/* Name */}
@@ -568,25 +576,8 @@ function LeadCaptureScreen({ progress, onSubmit }) {
               value={email}
               placeholder="john@gmail.com"
               onChange={e => setEmail(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && document.getElementById('phone-input')?.focus()}
-              sx={{ ...textInputSx, borderBottomColor: emailValid ? GREEN : 'rgba(255,255,255,0.2)' }}
-            />
-          </Box>
-
-          {/* Phone */}
-          <Box sx={{ mb: 4 }}>
-            <Typography sx={{ color: MUTED, fontSize: '0.7rem', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', mb: 1.5 }}>
-              Phone Number
-            </Typography>
-            <Box
-              component="input"
-              id="phone-input"
-              type="tel"
-              value={phone}
-              placeholder="Phone Here"
-              onChange={e => setPhone(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && document.getElementById('instagram-input')?.focus()}
-              sx={{ ...textInputSx, borderBottomColor: phone.replace(/\D/g, '').length >= 10 ? GREEN : 'rgba(255,255,255,0.2)' }}
+              sx={{ ...textInputSx, borderBottomColor: emailValid ? GREEN : 'rgba(255,255,255,0.2)' }}
             />
           </Box>
 
@@ -621,6 +612,32 @@ function LeadCaptureScreen({ progress, onSubmit }) {
               onKeyDown={e => e.key === 'Enter' && valid && handleSubmit()}
               sx={{ ...textInputSx, borderBottomColor: source.trim().length > 0 ? GREEN : 'rgba(255,255,255,0.2)' }}
             />
+          </Box>
+
+          {/* Marketing consent — this is how the plan gets delivered, so it
+              is required. Never default this to checked: a pre-ticked box is
+              not consent, and the record we store would be worthless. */}
+          <Box
+            component="label"
+            sx={{
+              display: 'flex', gap: 1.75, alignItems: 'flex-start', cursor: 'pointer',
+              mb: 3, p: 2, borderRadius: 2,
+              border: `1px solid ${consent ? GREEN_B : 'rgba(255,255,255,0.12)'}`,
+              bgcolor: consent ? 'rgba(27,59,45,0.28)' : 'transparent',
+              transition: 'border-color .15s, background-color .15s',
+            }}
+          >
+            <Box
+              component="input"
+              type="checkbox"
+              checked={consent}
+              onChange={e => setConsent(e.target.checked)}
+              sx={{ width: 20, height: 20, mt: '2px', flexShrink: 0, accentColor: '#6bcfa0', cursor: 'pointer' }}
+            />
+            <Typography sx={{ color: MUTED, fontSize: '0.85rem', lineHeight: 1.6 }}>
+              Yes, email me my macro plan and send me coaching tips and offers from
+              Chainmover Fitness. Unsubscribe any time in one click.
+            </Typography>
           </Box>
 
           <Button

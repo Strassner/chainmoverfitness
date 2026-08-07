@@ -11,6 +11,8 @@ const IG_URL = 'https://instagram.com/luke.strassner.fit'
 const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-session'
 // Placeholder: the landing-page VSL. Swap for a dedicated "your results" Loom when recorded.
 const RESULTS_VIDEO_ID = '6833df367eae4444b6225ea68b8612ba'
+// Placeholder: the $27 Insulin Resistance Reset Kit checkout link (Gumroad/Stripe/etc).
+const RESET_KIT_URL = 'PASTE_RESET_KIT_CHECKOUT_URL_HERE'
 
 /* ─── brand tokens (match landing page) ────────────────────────────── */
 const T = {
@@ -305,9 +307,9 @@ function MetabolicReframe() {
       <span style={eyebrow(T.moss)}>The part nobody told you</span>
       <h2 style={secH2}>You don't need more effort. You've had plenty.</h2>
       <p style={secP}>The belief you walked in with: you just need more discipline, more consistency, to try harder. But you've already tried harder than most people ever will. {b('Effort was never the thing standing between you and the result.')}</p>
-      <p style={secP}>Yes, fat loss comes down to calories in versus calories out. But that's the {b('entry point, not the whole picture.')} Here's what nobody tells you: your "calories out" isn't a fixed number. It swings <em>wildly</em> based on what you eat, when, and how much. Cut too hard for too long and your body quietly turns the burn down to match. That's the deficit that stops working.</p>
-      <p style={secP}>It's also why {b('strategically eating carbs and sugar')} the right way, at the right time, can be one of the best things you do for your metabolism. Done right, it signals your body that it's safe to burn again instead of clinging to every pound.</p>
-      <p style={{ ...secP, marginBottom: 0 }}>That's the whole reason the {b('MROI Method fixes metabolism first.')} Get your "calories out" working <em>for</em> you, and the deficit stops fighting you. You eat like a normal man and still lose fat. It's why metabolically healthy guys make it look easy. Their burn is on their side. Yours can be too.</p>
+      <p style={secP}>Yes, fat loss comes down to calories in versus calories out. But here's what nobody explains: {b('insulin decides whether your body is even allowed to burn fat.')} While insulin is chronically elevated, your fat cells are biologically locked, they cannot release fat to be used as fuel, no matter how big your deficit is or how hard you try. That's the deficit that stops working, not because you failed it, but because insulin never came down long enough to unlock it.</p>
+      <p style={secP}>It's also why {b('strategically eating carbs and sugar')} the right way, at the right time, can be one of the best things you do for insulin. Done right, it keeps insulin quiet instead of spiking it, so your body has permission to burn again instead of clinging to every pound.</p>
+      <p style={{ ...secP, marginBottom: 0 }}>That's the whole reason the {b('M.R.O.I. method fixes insulin resistance first.')} Bring insulin down, and fat loss stops being a fight, it just starts working. You eat like a normal man and still lose fat. It's why metabolically healthy guys make it look easy. Their insulin is quiet, so their fat is actually available to burn. Yours can be too.</p>
     </section>
   )
 }
@@ -318,7 +320,7 @@ function DiagnosisChain({ flags, accent }) {
     <section style={{ margin: '0 0 44px' }}>
       <span style={eyebrow(accent)}>Your diagnosis</span>
       <h2 style={secH2}>{flags.length > 1 ? `These aren't ${flags.length} separate problems. They're one.` : 'This is one problem wearing different masks.'}</h2>
-      <p style={secP}>Here's the chain your answers traced, each link feeding the next:</p>
+      <p style={secP}>Here's the insulin chain your answers traced, each link feeding the next:</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {flags.map(f => (
           <div key={f.title} style={{ padding: '18px 20px', background: T.bone, borderLeft: `3px solid ${accent}`, borderRadius: 12 }}>
@@ -327,7 +329,7 @@ function DiagnosisChain({ flags, accent }) {
           </div>
         ))}
       </div>
-      <p style={{ ...secP, margin: '22px 0 0' }}>Different symptoms, one root: a metabolism stuck in the wrong gear. Fix the root and the whole chain starts to unwind.</p>
+      <p style={{ ...secP, margin: '22px 0 0' }}>Different symptoms, one root: insulin running chronically high. While it's elevated, your body is biologically locked out of burning fat, it does not matter how hard you try. Bring insulin down and the whole chain starts to unwind.</p>
     </section>
   )
 }
@@ -356,7 +358,60 @@ function MacroGrid({ macros, answers, accent }) {
         ))}
       </div>
       <div style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 14, padding: '20px 22px', marginTop: 18 }}>
-        <p style={{ ...secP, margin: 0, fontSize: 16 }}>{b('These numbers are the entry point, not the answer.')} When your metabolism is fighting you, hitting them means relentless hunger and a scale that won't budge. Fix the foundation first and the same numbers get <em>easy</em> to hit. Most programs hand you the numbers and skip the part that makes them actually work.</p>
+        <p style={{ ...secP, margin: 0, fontSize: 16 }}>{b('These numbers are the entry point, not the answer.')} If insulin is running chronically high, hitting them still will not move the scale, your body is biologically locked out of burning fat regardless of the deficit. Bring insulin down first and the same numbers get <em>easy</em> to hit. Most programs hand you the numbers and skip the part that actually unlocks them.</p>
+      </div>
+    </section>
+  )
+}
+
+/* ─── $27 tripwire: Insulin Resistance Reset Kit ───────────────────── */
+const RESET_KIT_BULLETS = [
+  'The 3-day reset protocol that starts lowering insulin resistance immediately',
+  'Exactly which carbs to eat and when, so your body stops storing and starts burning',
+  'The food swaps that make the numbers above actually achievable',
+  'Why the hunger has not been your fault, and how to shut it off in under a week',
+]
+
+function InsulinResetOffer({ accent }) {
+  const handleClick = (e) => {
+    if (!RESET_KIT_URL.startsWith('http')) {
+      e.preventDefault()
+      alert('Test mode: paste your checkout URL into RESET_KIT_URL at the top of BucketPage.jsx to enable the Reset Kit purchase.')
+    }
+  }
+  return (
+    <section style={{ margin: '0 0 44px' }}>
+      <div style={{ background: T.paper, border: `2px solid ${T.vital}`, borderRadius: 18, padding: 'clamp(24px,3.5vw,36px)', boxShadow: T.shadow }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
+          <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.14em', textTransform: 'uppercase', color: accent, fontWeight: 600 }}>Fix this first</span>
+          <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: '#fff', background: T.forest, padding: '5px 12px', borderRadius: 100 }}>$27 · Instant access</span>
+        </div>
+        <h3 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(22px,2.8vw,28px)', lineHeight: 1.2, letterSpacing: '-0.02em', color: T.ink, margin: '0 0 14px' }}>
+          The Insulin Resistance Reset Kit
+        </h3>
+        <p style={{ fontSize: 16, lineHeight: 1.7, color: T.inkSoft, margin: '0 0 18px' }}>
+          The numbers above only work once insulin comes down. While it's chronically elevated, you are biologically locked out of burning fat, no matter how disciplined you are. This is the fastest, cheapest way to find out if insulin resistance is your blocker, and start reversing it this week.
+        </p>
+        <ul style={{ listStyle: 'none', margin: '0 0 22px', padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {RESET_KIT_BULLETS.map(item => (
+            <li key={item} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 15, color: T.ink, lineHeight: 1.55 }}>
+              <span style={{ flexShrink: 0, color: T.vital, fontWeight: 700 }}>✓</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+        <a
+          href={RESET_KIT_URL}
+          target="_blank"
+          rel="noreferrer"
+          onClick={handleClick}
+          style={{ display: 'block', textAlign: 'center', width: '100%', fontFamily: T.body, fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 100, background: T.vital, color: T.forest, boxShadow: '0 10px 26px rgba(70,201,139,.32)' }}
+        >
+          Get the Reset Kit — $27
+        </a>
+        <p style={{ fontSize: 13, color: T.inkFaint, textAlign: 'center', margin: '14px 0 0' }}>
+          One-time payment, instant download. Think of it as a $27 preview of how The 300lb to Lean Blueprint actually works.
+        </p>
       </div>
     </section>
   )
@@ -419,7 +474,7 @@ function ResultsCTA() {
       <div style={{ background: `linear-gradient(160deg, ${T.forest} 0%, ${T.forest700} 100%)`, borderRadius: 20, padding: 'clamp(32px,5vw,52px)', textAlign: 'center', color: '#fff', boxShadow: T.shadow }}>
         <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital, display: 'block', marginBottom: 14 }}>Your step-by-step plan</span>
         <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>Watch exactly how to fix this, for a body like yours.</h2>
-        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>The full walkthrough shows you how the MROI Method fixes your metabolism first, then makes fat loss the easy part, in order, from day one. It's the plan that finally fits how your body actually works.</p>
+        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>The full walkthrough shows you how the M.R.O.I. method brings insulin down first, so your body is finally unlocked to burn fat, then makes fat loss the easy part, in order, from day one. It's the plan that finally fits how your body actually works.</p>
         <a href={PLAN_VIDEO_URL} target="_blank" rel="noreferrer" aria-label="Watch the step by step plan on YouTube"
           style={{ display: 'block', position: 'relative', maxWidth: 620, margin: '0 auto', borderRadius: 16, overflow: 'hidden', aspectRatio: '16 / 9', background: '#000', boxShadow: '0 20px 50px rgba(0,0,0,.35)', border: '1px solid rgba(255,255,255,.14)' }}>
           <img
@@ -496,6 +551,7 @@ function DocPage({ meta }) {
         <Stakes text={meta.stakes} accent={meta.accent} />
         <MetabolicReframe />
         {macros && <MacroGrid macros={macros} answers={answers} accent={meta.accent} />}
+        {macros && <InsulinResetOffer accent={meta.accent} />}
         <Roadmap phases={meta.roadmap} accent={meta.accent} />
         <MatchedTestimonial t={meta.testimonial} accent={meta.accent} />
         <ResultsCTA />
@@ -928,31 +984,31 @@ The next step is seeing how the full system fits together from start to finish.
 
 /* ─── per-bucket personalized data ─────────────────────────────────── */
 const EARLY_DATA = {
-  stakes: "Your labs probably still read 'normal,' which is exactly the trap. This biology only moves one direction on its own. Left alone, men in this profile are usually on a medication, carrying a prediabetes marker, and two or three failed diets deeper within a decade. This is the most reversible it will ever be.",
+  stakes: "Your labs probably still read 'normal,' which is exactly the trap. Insulin resistance shows up years before a lab flags it, and it only moves one direction on its own: a little higher every year, and a little harder to reverse every year after that. Left alone, men in this profile are usually on a medication, carrying a prediabetes marker, and two or three failed diets deeper within a decade. This is the most reversible it will ever be.",
   roadmap: [
-    { label: 'Days 1 to 3', title: 'Kill the 2pm crash', body: "Steady your blood sugar first. That's about how you build your meals: protein first, carbs paired instead of eaten on their own. The afternoon crater and the cravings on top of it start to fade.", hook: "Exactly how you build that around your day is what we dial in." },
-    { label: 'Days 4 to 7', title: 'Lock in the foundation', body: "Get the foundational inputs in place: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. At your stage these few levers do most of the work.", hook: "How much of each, and which to prioritize first, comes down to your labs and your history." },
-    { label: 'Week 2', title: 'Protect sleep, lower the load', body: "Treat sleep quality and your stress load as primary levers, not afterthoughts. They sit upstream of the testosterone and cortisol driving everything else.", hook: "Pinpointing your specific cortisol drivers is the part a page can't do for you." },
+    { label: 'Days 1 to 3', title: 'Kill the 2pm crash', body: "Steady your blood sugar first, that's the earliest sign insulin is starting to misfire. Protein first, carbs paired instead of eaten on their own. As insulin stops swinging so hard, the afternoon crater and the cravings on top of it start to fade.", hook: "Exactly how you build that around your day is what we dial in." },
+    { label: 'Days 4 to 7', title: 'Lock in the foundation', body: "Get the foundational inputs in place: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. At your stage these few levers do most of the work bringing insulin back down.", hook: "How much of each, and which to prioritize first, comes down to your labs and your history." },
+    { label: 'Week 2', title: 'Protect sleep, lower the load', body: "Treat sleep quality and your stress load as primary levers, not afterthoughts. Both push insulin resistance higher overnight, and they sit upstream of the testosterone drop driving everything else.", hook: "Pinpointing your specific cortisol drivers is the part a page can't do for you." },
   ],
   testimonial: { name: 'Gabe', stat: 'Down 25 lbs in 3 months', quote: "The biggest difference in the program is probably my mental health. My clothes fit better, I have better energy. Not only do I have more confidence, but I finally feel like 'yeah, I can do this.' It's not just a pipe dream anymore.", frame: "Gabe started right where you are, early in and half expecting another false start. A few months later, this isn't a pipe dream to him anymore." },
 }
 
 const STRESS_DATA = {
-  stakes: "Your numbers may still get called 'borderline.' Your body stopped being borderline a while ago. Roughly 7 in 10 people in this range progress to type 2 if nothing changes, and every month inside the loop makes it harder to reverse. The window is open. It's not infinite.",
+  stakes: "Your numbers may still get called 'borderline.' Your insulin stopped being borderline a while ago. Roughly 7 in 10 people in this range progress to type 2 diabetes, which is just insulin resistance with nowhere left to hide, if nothing changes, and every month inside the loop makes it harder to reverse. The window is open. It's not infinite.",
   roadmap: [
-    { label: 'Days 1 to 3', title: 'Break the crash and caffeine loop', body: "Stabilize blood sugar through what and how you eat: protein forward meals, carbs paired not naked, and cutting the liquid sugar. Then a deficit can finally hold instead of fighting you.", hook: "The specific triggers, and the order to hit them in, are different for every man." },
-    { label: 'Days 4 to 7', title: 'Hit the loop in several places at once', body: "One change won't do it. The foundational inputs (daily steps, food quality, resistance training, and sleep quality, not just hours) have to go in together, because every broken system is making the others worse.", hook: "Which inputs, and in what sequence, depends on your insulin and testosterone numbers." },
-    { label: 'Week 2', title: 'Turn sleep and cortisol into interventions', body: "Treat sleep quality and your stress load as real interventions. This is how you raise testosterone and lower cortisol at the same time.", hook: "Naming your real cortisol drivers, and what to do about each, is what we map together." },
+    { label: 'Days 1 to 3', title: 'Break the crash and caffeine loop', body: "Stabilize blood sugar through what and how you eat: protein forward meals, carbs paired not naked, and cutting the liquid sugar. That's what gets insulin to stop running high all day. Once it settles, a deficit can finally hold instead of fighting you.", hook: "The specific triggers, and the order to hit them in, are different for every man." },
+    { label: 'Days 4 to 7', title: 'Hit the loop in several places at once', body: "One change won't do it. The foundational inputs (daily steps, food quality, resistance training, and sleep quality, not just hours) have to go in together, because every broken system keeps insulin elevated, and elevated insulin keeps every other system broken.", hook: "Which inputs, and in what sequence, depends on your insulin and testosterone numbers." },
+    { label: 'Week 2', title: 'Turn sleep and cortisol into interventions', body: "Treat sleep quality and your stress load as real interventions. Cortisol and insulin move together, so this is how you bring insulin down, raise testosterone, and lower cortisol all at once.", hook: "Naming your real cortisol drivers, and what to do about each, is what we map together." },
   ],
   testimonial: { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing.", frame: "Daniel came in carrying the same kind of load you're looking at. He went on to lose 85 lbs. Here's what he said just two months in:" },
 }
 
 const HIGH_DATA = {
-  stakes: "This isn't one number that's off. It's a cluster reinforcing itself: insulin, blood pressure, inflammation, testosterone. Left unchanged, men in this profile typically face their first major health event before 45. It's still reversible. What changes with time is how much work it takes.",
+  stakes: "This isn't one number that's off. It's insulin resistance driving a cluster that reinforces itself: blood pressure, inflammation, testosterone, all downstream of the same root. Left unchanged, men in this profile typically face their first major health event before 45. It's still reversible. What changes with time is how much work it takes.",
   roadmap: [
-    { label: 'Days 1 to 3', title: 'Lock the foundation, no exceptions', body: "Get the foundational inputs locked first: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. Without a prescription, these are the most powerful intervention you have.", hook: "What that looks like around your medications and your joints is something we build for you." },
-    { label: 'Days 4 to 7', title: 'Lower the inflammatory load', body: "Bring inflammation down through food quality: more whole foods, protein, and omega 3s, less of what spikes it. It's the fire feeding the insulin resistance, joint pain, and low testosterone, so easing it eases several systems at once.", hook: "Which levers are safe for you depends on what you're currently being treated for." },
-    { label: 'Week 2', title: 'Make medication an unlock, not the system', body: "Medication manages your symptoms while you're taking it. It doesn't fix the cause permanently. The foundational habits are what address the root, so the result holds even as the dose changes.", hook: "Coordinating that with your doctor is exactly what the call is for. Never start, stop, or adjust meds on your own." },
+    { label: 'Days 1 to 3', title: 'Lock the foundation, no exceptions', body: "Get the foundational inputs locked first: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. Without a prescription, these are the fastest lever you have on insulin resistance, and the most powerful intervention you have.", hook: "What that looks like around your medications and your joints is something we build for you." },
+    { label: 'Days 4 to 7', title: 'Lower the inflammatory load', body: "Bring inflammation down through food quality: more whole foods, protein, and omega 3s, less of what spikes it. It's the fire keeping insulin resistance running hot, and insulin resistance is what's driving the joint pain and low testosterone underneath it, so easing it eases several systems at once.", hook: "Which levers are safe for you depends on what you're currently being treated for." },
+    { label: 'Week 2', title: 'Make medication an unlock, not the system', body: "Medication manages your symptoms while you're taking it. It doesn't fix the insulin resistance underneath them. The foundational habits are what address that root, so the result holds even as the dose changes.", hook: "Coordinating that with your doctor is exactly what the call is for. Never start, stop, or adjust meds on your own." },
   ],
   testimonial: { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing.", frame: "Daniel was sure he'd already tried everything, carrying a heavy metabolic load. He's down 85 lbs now. This is what shifted for him early on:" },
 }

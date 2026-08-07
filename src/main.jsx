@@ -10,12 +10,13 @@ import CarbsPage from './CarbsPage.jsx'
 import SleepPage from './SleepPage.jsx'
 import VisceralFatPage from './VisceralFatPage.jsx'
 import LandingSalesPage from './LandingSalesPage.jsx'
+import MetabolicPage from './MetabolicPage.jsx'
 import BuyPage from './BuyPage.jsx'
 import PostCallPage from './PostCallPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/chainmoverfitness">
+    <BrowserRouter basename="/">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/quiz" element={<App />} />
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/sleep" element={<SleepPage />} />
         <Route path="/visceralfat" element={<VisceralFatPage />} />
         <Route path="/landing" element={<LandingSalesPage />} />
+        <Route path="/metabolic" element={<MetabolicPage />} />
         <Route path="/buy" element={<BuyPage />} />
         <Route path="/booked" element={<PostCallPage />} />
       </Routes>

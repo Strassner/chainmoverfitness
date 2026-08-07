@@ -3,15 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>Chainmover Fitness</title>
-    <!--
-      SPA redirect for GitHub Pages. When a deep link like
-      /chainmoverfitness/early is opened directly, GitHub serves this 404
-      page. This script rewrites the URL into a query the app can decode,
-      then bounces to index.html so React Router can render the route.
-      pathSegmentsToKeep = 1 preserves the /chainmoverfitness/ project path.
-    -->
     <script type="text/javascript">
-      var pathSegmentsToKeep = 1;
+      var pathSegmentsToKeep = 0;
       var l = window.location;
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +

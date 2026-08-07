@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
+import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
 
 /* ══════════════════════════════════════════════════════════════════════
    ISOLATED TEST ROUTE — /buy  (gated checkout: fit-screening application
@@ -162,8 +162,7 @@ function Header() {
       <Wrap>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 70, gap: 16 }}>
           <Link to="/landing" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 40, width: 'auto', objectFit: 'contain' }} />
-            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 17, color: T.ink }}>Chainmover</span>
+            <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain' }} />
           </Link>
           <Link to="/landing" style={{ fontFamily: T.mono, fontSize: 12.5, color: T.inkSoft }}>Back</Link>
         </div>
@@ -551,11 +550,10 @@ function Footer() {
       <Wrap>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: T.display, fontWeight: 800, fontSize: 17 }}>
-            <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 30, width: 'auto', objectFit: 'contain' }} />
-            Chainmover Fitness
+            MetaShift Health
           </div>
           <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 12.5, maxWidth: 520, lineHeight: 1.55 }}>
-            © 2026 Chainmover Fitness. Coaching, not medical advice.
+            © 2026 MetaShift Health. Coaching, not medical advice.
           </span>
         </div>
       </Wrap>

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
+import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
 
 /* ─── video (same deep-link-to-YouTube thumbnail as the results VSL) ── */
 const PLAN_VIDEO_ID = 'ceAIiqaK_Kc'
@@ -69,7 +69,7 @@ export default function SleepPage() {
       <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,.85)', backdropFilter: 'saturate(180%) blur(14px)', borderBottom: `1px solid ${T.lineSoft}` }}>
         <div style={{ maxWidth: 720, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', height: 72 }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 44, width: 'auto', objectFit: 'contain', display: 'block' }} />
+            <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
           </Link>
         </div>
       </header>
@@ -150,10 +150,9 @@ export default function SleepPage() {
       <footer style={{ background: T.ink, color: '#fff', paddingBlock: 40, marginTop: 64 }}>
         <div style={{ maxWidth: 720, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: T.display, fontWeight: 800, fontSize: 18 }}>
-            <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 32, width: 'auto', objectFit: 'contain', display: 'block' }} />
-            Chainmover Fitness
+            MetaShift Health
           </div>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 Chainmover Fitness. All rights reserved.</span>
+          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 MetaShift Health. All rights reserved.</span>
         </div>
       </footer>
     </div>

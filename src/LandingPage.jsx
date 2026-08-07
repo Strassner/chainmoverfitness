@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
+import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
 import coachPhoto from './assets/coachesphoto.png'
 import larryTransformation from './assets/LarryBeforeAfterJuly28.jpg'
 import danielTransformation from './assets/DanielBeforeAfterJuly28.jpg'
@@ -171,8 +171,9 @@ function Header() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 76, gap: 24 }}>
           {/* Brand */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: T.display, fontWeight: 800, fontSize: 20, letterSpacing: '-0.03em', color: T.ink, textDecoration: 'none' }}>
-            <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 48, width: 'auto', objectFit: 'contain', display: 'block' }} />
-            <span>Chainmover<small style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: '.18em', color: T.inkFaint, textTransform: 'uppercase', fontWeight: 500, display: 'block', marginTop: 2 }}>Fitness · MROI Method</small></span>
+            <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
+            {/* Brand name lives in the wordmark itself — this is just the descriptor. */}
+            <small style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: '.18em', color: T.inkFaint, textTransform: 'uppercase', fontWeight: 500, borderLeft: `1px solid ${T.line}`, paddingLeft: 12 }}>MROI Method</small>
           </Link>
 
           {/* Nav */}
@@ -325,7 +326,7 @@ function VSL() {
           ) : (
             <iframe
               src={`https://www.loom.com/embed/${VSL_LOOM_ID}?${LOOM_PARAMS}`}
-              title="Chainmover Fitness — VSL"
+              title="MetaShift Health — VSL"
               frameBorder="0"
               allowFullScreen
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
@@ -688,8 +689,7 @@ function Footer() {
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 'clamp(32px,4vw,56px)', paddingBottom: 48, borderBottom: '1px solid rgba(255,255,255,.1)' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: T.display, fontWeight: 800, fontSize: 20, letterSpacing: '-0.03em' }}>
-              <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 40, width: 'auto', objectFit: 'contain', display: 'block' }} />
-              <span>Chainmover Fitness</span>
+              <span>MetaShift Health</span>
             </div>
             <p style={{ marginTop: 16, color: 'rgba(255,255,255,.6)', fontSize: 15, maxWidth: 320, lineHeight: 1.65 }}>
               High-touch 1-on-1 coaching for men ready to lose 50+ pounds for good — using the MROI Method. Backed by a guarantee.
@@ -717,7 +717,7 @@ function Footer() {
           </div>
         </div>
         <div style={{ paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>© 2026 Chainmover Fitness. All rights reserved.</span>
+          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>© 2026 MetaShift Health. All rights reserved.</span>
           <span style={{ color: 'rgba(255,255,255,.3)', fontSize: 12.5, maxWidth: 700, lineHeight: 1.55 }}>
             Results vary. Coaching is not medical advice and does not replace your physician. The 50 lb guarantee requires full program completion and 80% adherence to coaching.
           </span>

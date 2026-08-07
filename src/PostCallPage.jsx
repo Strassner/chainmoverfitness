@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
+import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
 import larryTransformation from './assets/LarryBeforeAfterJuly28.jpg'
 import danielTransformation from './assets/DanielBeforeAfterJuly28.jpg'
 import gabeTransformation from './assets/GabeBeforeAfterJuly28.jpg'
@@ -138,7 +138,7 @@ function PageHeader() {
     <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,.85)', backdropFilter: 'saturate(180%) blur(14px)', borderBottom: `1px solid ${T.lineSoft}` }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 44, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
         </Link>
         <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.14em', textTransform: 'uppercase', color: T.moss }}>Call Confirmed</span>
       </div>
@@ -444,10 +444,9 @@ export default function PostCallPage() {
       <footer style={{ background: T.ink, color: '#fff', paddingBlock: 40 }}>
         <div style={{ ...wrap, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: T.display, fontWeight: 800, fontSize: 18 }}>
-            <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 32, width: 'auto', objectFit: 'contain', display: 'block' }} />
-            Chainmover Fitness
+            MetaShift Health
           </div>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 Chainmover Fitness. All rights reserved.</span>
+          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 MetaShift Health. All rights reserved.</span>
         </div>
       </footer>
     </div>

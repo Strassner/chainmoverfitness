@@ -636,7 +636,7 @@ function LeadCaptureScreen({ progress, onSubmit }) {
             />
             <Typography sx={{ color: MUTED, fontSize: '0.85rem', lineHeight: 1.6 }}>
               Yes, email me my macro plan and send me coaching tips and offers from
-              Chainmover Fitness. Unsubscribe any time in one click.
+              MetaShift Health. Unsubscribe any time in one click.
             </Typography>
           </Box>
 

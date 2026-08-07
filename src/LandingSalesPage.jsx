@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
+import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
 import coachPhoto from './assets/coachesphoto.png'
 import larryTransformation from './assets/LarryBeforeAfterJuly28.jpg'
 import danielTransformation from './assets/DanielBeforeAfterJuly28.jpg'
@@ -103,7 +103,7 @@ function Header() {
         <Wrap>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72, gap: 16 }}>
             <Link to="/landing" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 42, width: 'auto', objectFit: 'contain' }} />
+              <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain' }} />
             </Link>
             <Link to="/buy" className="btn btn-vital" style={{ padding: '12px 24px', fontSize: 15 }}>Start Now</Link>
           </div>
@@ -112,7 +112,7 @@ function Header() {
 
       <section style={{ background: `radial-gradient(120% 120% at 50% -10%,${T.mist} 0%,rgba(232,241,234,0) 55%),${T.paper}`, paddingTop: 'clamp(40px,6vw,72px)', paddingBottom: 'clamp(24px,3vw,32px)' }}>
         <Wrap style={{ textAlign: 'center' }}>
-          <span className="eyebrow center" style={{ marginBottom: 18 }}>Chainmover Fitness · Coach Luke Strassner</span>
+          <span className="eyebrow center" style={{ marginBottom: 18 }}>MetaShift Health · Coach Luke Strassner</span>
           <h1 style={{ fontSize: 'clamp(38px,6vw,62px)' }}>Redefine your health.</h1>
           <p style={{ marginTop: 16, fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(18px,2.2vw,25px)', color: T.forest, lineHeight: 1.25, letterSpacing: '-0.01em', maxWidth: 640, marginInline: 'auto' }}>
             Get the weight off and your energy back in 6 months, without starving, cutting carbs, or living in the gym.
@@ -193,7 +193,7 @@ const QUOTES = [
   { name: 'Sascha', stat: 'Father, entrepreneur', quote: "First time in years the scale is going the right way. I broke 230 in the first couple of weeks. Can't tell you the last time I've been this low. My nutrition is dialed in and the weight is moving." },
   { name: 'Wyatt', stat: 'Doctor of Chiropractic Medicine, down 14 Lbs in 7 weeks', quote: "You're not just doing a little bit of exercise and a little bit of nutrition. You get down to the details. That's what makes me think you know what you're doing." },
   { name: 'JD', stat: 'Father of two, 47 years old', quote: "I was 280 when I got married in 2005. In 2025 I was 380. Now I'm very close to leaving the 300 lbs club and coming into the 200 club." },
-  { name: 'Mike', stat: 'Retired, father, 55 years old', quote: "I'd been through three different doctors and two medications and nobody could tell me why the weight wouldn't move or help me. Five weeks with Luke, I ate more than I had in years and broke 300 for the first time without a drug doing it for me." },
+  { name: 'Mike', stat: 'Retired, father, 55 years old', quote: "I'd been through three different doctors and two medications and nobody could tell me why the weight wouldn't move or help me. I used to be 350. After hiring Luke, I broke 300 for the first time without a drug doing it for me." },
 ]
 
 /* Lab report cards — commented out for now, bring back when real lab
@@ -210,7 +210,7 @@ function Proof() {
     <section style={{ background: T.bone, paddingBlock: 'clamp(56px,8vw,110px)' }}>
       <Wrap>
         <div style={{ textAlign: 'center', maxWidth: 640, marginInline: 'auto', marginBottom: 44 }}>
-          <span className="eyebrow center">Real men. Real results.</span>
+          <span className="eyebrow center">Real clients. Real results.</span>
           <h2 style={{ fontSize: 'clamp(28px,4vw,46px)', marginTop: 16 }}>I was you. I found the way out.</h2>
         </div>
 
@@ -264,9 +264,9 @@ function Proof() {
 
 /* The four phases (how it works, feel-led) */
 const PHASES = [
-  { letter: 'M', title: 'Metabolic', body: "The first thing you feel is energy. The scale starts to drop. And you get to eat more carbs, not fewer. We get your body processing food again and using it for energy right away, instead of storing it and leaving you foggy and crashing at 3pm." },
-  { letter: 'R', title: 'Recovery', body: "Now we fix sleep, stress, and your joints. The bad back or the bad knees, we work on them and around them. And we get you real sleep, so the same hours leave you waking up rested instead of feeling like a train ran over you overnight." },
-  { letter: 'O', title: 'Optimize', body: "This is where we add cardio for the first time, for your heart and for faster fat loss. The foundation is set and you already feel better, so now we push. Most guys lose 15 to 30 pounds in the first two phases. How much more comes off here is up to you. We also build more muscle now, because you finally have the energy for it." },
+  { letter: 'M', title: 'Metabolic', body: "Energy usually improves first, and the scale follows. You eat more carbohydrates here, not fewer. The focus is improving how you handle them, so food gets used for energy rather than leaving you foggy and crashing at 3pm." },
+  { letter: 'R', title: 'Recovery', body: "Next we work on sleep quality, stress load and joints. The bad back or the bad knees, we train around them and on them. Sleep is treated as a lever rather than an afterthought, because it moves insulin sensitivity directly." },
+  { letter: 'O', title: 'Optimize', body: "Cardio enters here for the first time, for cardiovascular health and for faster fat loss. The foundation is set and you already feel better, so this is where we push. Most clients are down 15 to 30 pounds across the first two phases. We add muscle here too, because there is finally the energy for it." },
   { letter: 'I', title: 'Identity', body: "This is where it becomes permanent. We work on this the whole way through, so by the end it is not a program you follow. It is just how you live." },
 ]
 
@@ -505,7 +505,7 @@ function AfterJoin() {
 /* The six month arc */
 const ARC = [
   { when: 'Months 1 to 2', title: 'Foundation Reset', body: 'Your protocol goes in and you feel the first metabolic shifts.' },
-  { when: 'Months 3 to 4', title: 'Adaptation', body: 'Your protocol gets refined based on your data. This is where most guys plateau on their own. You will not.' },
+  { when: 'Months 3 to 4', title: 'Adaptation', body: 'Your protocol gets refined based on your data. This is where most people plateau on their own. You will not.' },
   { when: 'Months 5 to 6', title: 'Lock In', body: 'Your results solidify into habits built to last.' },
 ]
 
@@ -536,10 +536,10 @@ function SixMonthArc() {
 
 /* FAQ */
 const FAQS = [
-  { q: 'I have tried other programs and nothing stuck. Why is this different?', a: "Most programs hand you a plan and leave you alone, or they push fat loss before your body is ready. We fix your energy and build the structure first, in order, and I stay on you the whole way. That is why it holds." },
+  { q: 'I have tried other programs and nothing stuck. Why is this different?', a: "Most programs hand you a plan and leave you alone, or they push fat loss before the underlying metabolic picture supports it. We work on energy and build the structure first, in that order, and I stay on you the whole way. That is why it holds." },
   { q: 'What does week 1 actually look like?', a: "You get your first nutrition and training plan, built around your schedule, and you start right away. On Saturday I check in on how the week went. Sunday your first adjustments land, so you know exactly what to do next." },
   { q: 'Am I too old, too busy, or too far gone for this?', a: "No. I build the plan around your life, your joints, your schedule, and where you are starting from. Older, busier, or bigger just changes the plan. It does not change whether this works." },
-  { q: 'I do not have much time. Will this work?', a: "Yes. This is built for a man with a job and a family. A few focused sessions a week, and a plan built around your schedule. It fits your life instead of taking it over." },
+  { q: 'I do not have much time. Will this work?', a: "Yes. This is built for someone with a job and a family. A few focused sessions a week, and a plan built around your schedule. It fits your life instead of taking it over." },
   { q: 'Do I need a gym?', a: "No. Home gym, a full gym, or no gym at all, I build your training around the equipment you have." },
   { q: 'What happens if I fall off track one week?', a: "You will have a bad week. That is week 4, not failure. Every man hits it. You will not be doing it alone, that is exactly when I step in." },
   { q: 'Will I actually work with Luke?', a: "Yes. Every check in comes from me. I send your weekly adjustments and I answer you during the week. You get me, not a bot and not a sub coach." },
@@ -597,13 +597,12 @@ function Footer() {
       <Wrap>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', paddingBottom: 24, borderBottom: '1px solid rgba(255,255,255,.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 34, width: 'auto', objectFit: 'contain' }} />
-            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 17 }}>Chainmover Fitness</span>
+            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 17 }}>MetaShift Health</span>
           </div>
           <Link to="/buy" className="btn btn-vital">Start Now</Link>
         </div>
         <p style={{ marginTop: 20, color: 'rgba(255,255,255,.4)', fontSize: 12.5, lineHeight: 1.55 }}>
-          © 2026 Chainmover Fitness. Coaching, not medical advice. Always work with your doctor for your own situation.
+          © 2026 MetaShift Health. Coaching, not medical advice. Always work with your doctor for your own situation.
         </p>
       </Wrap>
     </footer>

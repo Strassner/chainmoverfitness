@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import chainmoversLogo from './assets/CHAINMOVERSLOGOV1 (2).png'
+import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
 import { MatchedTestimonialCard } from './proofUtils'
 
 /* ─── shared links ─────────────────────────────────────────────────── */
 const OVERVIEW_URL = 'https://linktw.in/foHoIb'
-const PLAN_VIDEO_ID = 'ceAIiqaK_Kc' // YouTube step-by-step plan (results CTA)
-const PLAN_VIDEO_URL = `https://www.youtube.com/watch?v=${PLAN_VIDEO_ID}` // deep link out to YouTube
+const PLAN_VIDEO_ID = 'p5sdrV7PAso' // YouTube step-by-step plan (results CTA)
+/* Plain https watch URL on purpose. iOS universal links and Android app links
+   hand this straight to the YouTube app when it is installed, and fall back to
+   the browser when it is not. A custom scheme (vnd.youtube://) would deep link
+   too, but silently dead-ends for anyone without the app. Rendered with
+   target="_blank" so desktop opens a new tab and the results page is kept. */
+const PLAN_VIDEO_URL = `https://www.youtube.com/watch?v=${PLAN_VIDEO_ID}`
 const IG_URL = 'https://instagram.com/luke.strassner.fit'
 const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-session'
 // Placeholder: the landing-page VSL. Swap for a dedicated "your results" Loom when recorded.
@@ -149,13 +154,13 @@ function renderBlocks(blocks, accent) {
 
     if (b.type === 'h3') {
       // Guarantee → forest callout card grouping until next hr
-      if (b.text.toLowerCase().includes('chainmover guarantee')) {
+      if (b.text.toLowerCase().includes('metashift guarantee')) {
         const group = []
         let j = i + 1
         while (j < blocks.length && blocks[j].type !== 'hr') { group.push(blocks[j]); j++ }
         out.push(
           <div key={key} style={{ background: T.forest, color: '#fff', borderRadius: 18, padding: 'clamp(28px,4vw,44px)', margin: '44px 0', boxShadow: T.shadow }}>
-            <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The Chainmover Guarantee</span>
+            <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The MetaShift Guarantee</span>
             {group.map((g, gi) => {
               if (g.type === 'p' && /^\*\*.+\*\*$/.test(g.text.trim())) {
                 return <h3 key={gi} style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(26px,3.4vw,38px)', color: '#fff', margin: '14px 0 18px' }}>{g.text.replace(/\*\*/g, '')}</h3>
@@ -258,7 +263,7 @@ function narrativeOnly(md) {
     .filter(seg => {
       const s = seg.trim()
       if (/###\s*0?5\.\s*The Path Forward/i.test(s)) return false
-      if (/###\s*The Chainmover Guarantee/i.test(s)) return false
+      if (/###\s*The MetaShift Guarantee/i.test(s)) return false
       if (/Watch the step by step overview/i.test(s)) return false
       return true
     })
@@ -294,7 +299,7 @@ function Stakes({ text, accent }) {
   if (!text) return null
   return (
     <section style={{ margin: '0 0 44px' }}>
-      <span style={eyebrow(accent)}>Where this goes if nothing changes</span>
+      <span style={eyebrow(accent)}>Trajectory without a change in inputs</span>
       <p style={{ fontFamily: T.body, fontSize: 18, lineHeight: 1.65, color: T.ink, fontWeight: 500, margin: 0 }}>{text}</p>
     </section>
   )
@@ -304,12 +309,12 @@ function Stakes({ text, accent }) {
 function MetabolicReframe() {
   return (
     <section style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 18, padding: 'clamp(26px,4vw,40px)', margin: '0 0 44px' }}>
-      <span style={eyebrow(T.moss)}>The part nobody told you</span>
-      <h2 style={secH2}>You don't need more effort. You've had plenty.</h2>
-      <p style={secP}>The belief you walked in with: you just need more discipline, more consistency, to try harder. But you've already tried harder than most people ever will. {b('Effort was never the thing standing between you and the result.')}</p>
-      <p style={secP}>Yes, fat loss comes down to calories in versus calories out. But here's what nobody explains: {b('insulin decides whether your body is even allowed to burn fat.')} While insulin is chronically elevated, your fat cells are biologically locked, they cannot release fat to be used as fuel, no matter how big your deficit is or how hard you try. That's the deficit that stops working, not because you failed it, but because insulin never came down long enough to unlock it.</p>
-      <p style={secP}>It's also why {b('strategically eating carbs and sugar')} the right way, at the right time, can be one of the best things you do for insulin. Done right, it keeps insulin quiet instead of spiking it, so your body has permission to burn again instead of clinging to every pound.</p>
-      <p style={{ ...secP, marginBottom: 0 }}>That's the whole reason the {b('M.R.O.I. method fixes insulin resistance first.')} Bring insulin down, and fat loss stops being a fight, it just starts working. You eat like a normal man and still lose fat. It's why metabolically healthy guys make it look easy. Their insulin is quiet, so their fat is actually available to burn. Yours can be too.</p>
+      <span style={eyebrow(T.moss)}>The mechanism</span>
+      <h2 style={secH2}>This is a metabolic health problem, not a discipline problem.</h2>
+      <p style={secP}>Most programs assume the missing ingredient is effort. By the time someone reaches this assessment, they have usually supplied plenty of it. {b('Effort is rarely the limiting factor. Insulin sensitivity often is.')}</p>
+      <p style={secP}>Energy balance still governs fat loss. What insulin resistance changes is how hard that balance is to hold: {b('elevated insulin suppresses fat release, increases hunger and reduces available energy,')} so the same deficit demands far more from you and returns far less. That is why an approach that once worked stops feeling sustainable.</p>
+      <p style={secP}>It is also why {b('carbohydrate quality, timing and pairing')} tend to matter more than elimination. Handled well, they keep the insulin response steady rather than spiking it, which is what makes a plan hold up over months instead of weeks.</p>
+      <p style={{ ...secP, marginBottom: 0 }}>That is why the {b('M.R.O.I. method targets insulin sensitivity first.')} Improve it and fat loss stops working against you. People in good metabolic health are not more disciplined, their physiology simply is not working against them. Insulin sensitivity is measurable, and it responds to the right inputs.</p>
     </section>
   )
 }
@@ -318,9 +323,11 @@ function MetabolicReframe() {
 function DiagnosisChain({ flags, accent }) {
   return (
     <section style={{ margin: '0 0 44px' }}>
-      <span style={eyebrow(accent)}>Your diagnosis</span>
-      <h2 style={secH2}>{flags.length > 1 ? `These aren't ${flags.length} separate problems. They're one.` : 'This is one problem wearing different masks.'}</h2>
-      <p style={secP}>Here's the insulin chain your answers traced, each link feeding the next:</p>
+      {/* NOT "your diagnosis" — a coach cannot diagnose. This describes a
+          pattern in self-reported answers, and the wording has to say so. */}
+      <span style={eyebrow(accent)}>What your answers indicate</span>
+      <h2 style={secH2}>{flags.length > 1 ? `These ${flags.length} answers point to one underlying pattern.` : 'These answers point to one underlying pattern.'}</h2>
+      <p style={secP}>Each of these is commonly associated with reduced insulin sensitivity, and each one tends to reinforce the next:</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {flags.map(f => (
           <div key={f.title} style={{ padding: '18px 20px', background: T.bone, borderLeft: `3px solid ${accent}`, borderRadius: 12 }}>
@@ -329,7 +336,7 @@ function DiagnosisChain({ flags, accent }) {
           </div>
         ))}
       </div>
-      <p style={{ ...secP, margin: '22px 0 0' }}>Different symptoms, one root: insulin running chronically high. While it's elevated, your body is biologically locked out of burning fat, it does not matter how hard you try. Bring insulin down and the whole chain starts to unwind.</p>
+      <p style={{ ...secP, margin: '22px 0 0' }}>Different symptoms, one common thread: chronically elevated insulin. While it stays high, fat release is suppressed and hunger and energy both work against you. Improve insulin sensitivity and the chain tends to unwind from the top down. Confirming it takes bloodwork, which is what your physician can order.</p>
     </section>
   )
 }
@@ -358,7 +365,7 @@ function MacroGrid({ macros, answers, accent }) {
         ))}
       </div>
       <div style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 14, padding: '20px 22px', marginTop: 18 }}>
-        <p style={{ ...secP, margin: 0, fontSize: 16 }}>{b('These numbers are the entry point, not the answer.')} If insulin is running chronically high, hitting them still will not move the scale, your body is biologically locked out of burning fat regardless of the deficit. Bring insulin down first and the same numbers get <em>easy</em> to hit. Most programs hand you the numbers and skip the part that actually unlocks them.</p>
+        <p style={{ ...secP, margin: 0, fontSize: 16 }}>{b('These numbers are the entry point, not the answer.')} If insulin is chronically elevated, hitting them is far harder than it should be: fat release is suppressed and hunger works against you at the same intake. Improve insulin sensitivity first and the same numbers become <em>realistic</em> to hold. Most programs hand you the targets and skip the part that determines whether you can sustain them.</p>
       </div>
     </section>
   )
@@ -366,10 +373,10 @@ function MacroGrid({ macros, answers, accent }) {
 
 /* ─── $27 tripwire: Insulin Resistance Reset Kit ───────────────────── */
 const RESET_KIT_BULLETS = [
-  'The 3-day reset protocol that starts lowering insulin resistance immediately',
-  'Exactly which carbs to eat and when, so your body stops storing and starts burning',
-  'The food swaps that make the numbers above actually achievable',
-  'Why the hunger has not been your fault, and how to shut it off in under a week',
+  'A 3-day protocol built around steadying your insulin response',
+  'Which carbohydrates to eat and when, so meals work with your metabolism instead of against it',
+  'The food swaps that make the numbers above realistic day to day',
+  'Why the hunger is physiological rather than a willpower failure, and what reduces it',
 ]
 
 function InsulinResetOffer({ accent }) {
@@ -383,14 +390,14 @@ function InsulinResetOffer({ accent }) {
     <section style={{ margin: '0 0 44px' }}>
       <div style={{ background: T.paper, border: `2px solid ${T.vital}`, borderRadius: 18, padding: 'clamp(24px,3.5vw,36px)', boxShadow: T.shadow }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.14em', textTransform: 'uppercase', color: accent, fontWeight: 600 }}>Fix this first</span>
+          <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.14em', textTransform: 'uppercase', color: accent, fontWeight: 600 }}>Start here</span>
           <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: '#fff', background: T.forest, padding: '5px 12px', borderRadius: 100 }}>$27 · Instant access</span>
         </div>
         <h3 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(22px,2.8vw,28px)', lineHeight: 1.2, letterSpacing: '-0.02em', color: T.ink, margin: '0 0 14px' }}>
           The Insulin Resistance Reset Kit
         </h3>
         <p style={{ fontSize: 16, lineHeight: 1.7, color: T.inkSoft, margin: '0 0 18px' }}>
-          The numbers above only work once insulin comes down. While it's chronically elevated, you are biologically locked out of burning fat, no matter how disciplined you are. This is the fastest, cheapest way to find out if insulin resistance is your blocker, and start reversing it this week.
+          The numbers above are far easier to hold once your insulin response steadies. While it stays chronically elevated, fat release is suppressed and hunger works against you regardless of discipline. This is the fastest, lowest cost way to test whether insulin sensitivity is your limiting factor, and to start working on it this week.
         </p>
         <ul style={{ listStyle: 'none', margin: '0 0 22px', padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {RESET_KIT_BULLETS.map(item => (
@@ -455,7 +462,7 @@ function GapBlock() {
 function GuaranteeCard() {
   return (
     <div style={{ background: T.forest, color: '#fff', borderRadius: 18, padding: 'clamp(28px,4vw,44px)', margin: '44px 0', boxShadow: T.shadow }}>
-      <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The Chainmover Guarantee</span>
+      <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The MetaShift Guarantee</span>
       <h3 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(26px,3.4vw,38px)', color: '#fff', margin: '14px 0 18px' }}>50 lbs. Guaranteed.</h3>
       <p style={{ color: 'rgba(255,255,255,.82)', fontSize: 16.5, lineHeight: 1.7, margin: 0 }}>When you join the Codex, you lose 50 lbs of fat or I coach you for free until you do. Not a discount, not a refund. Every client works with me directly. No handoffs, no sub coaches, no AI.</p>
     </div>
@@ -473,8 +480,8 @@ function ResultsCTA() {
     <section style={{ margin: '48px 0 8px' }}>
       <div style={{ background: `linear-gradient(160deg, ${T.forest} 0%, ${T.forest700} 100%)`, borderRadius: 20, padding: 'clamp(32px,5vw,52px)', textAlign: 'center', color: '#fff', boxShadow: T.shadow }}>
         <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital, display: 'block', marginBottom: 14 }}>Your step-by-step plan</span>
-        <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>Watch exactly how to fix this, for a body like yours.</h2>
-        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>The full walkthrough shows you how the M.R.O.I. method brings insulin down first, so your body is finally unlocked to burn fat, then makes fat loss the easy part, in order, from day one. It's the plan that finally fits how your body actually works.</p>
+        <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>The full walkthrough, for a profile like yours.</h2>
+        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>It covers how the M.R.O.I. method works on insulin sensitivity first, and why fat loss gets easier to sustain once it improves. Same sequence, from day one, built around how metabolic health actually changes.</p>
         <a href={PLAN_VIDEO_URL} target="_blank" rel="noreferrer" aria-label="Watch the step by step plan on YouTube"
           style={{ display: 'block', position: 'relative', maxWidth: 620, margin: '0 auto', borderRadius: 16, overflow: 'hidden', aspectRatio: '16 / 9', background: '#000', boxShadow: '0 20px 50px rgba(0,0,0,.35)', border: '1px solid rgba(255,255,255,.14)' }}>
           <img
@@ -493,7 +500,7 @@ function ResultsCTA() {
         <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.6)', textAlign: 'center', margin: '14px 0 0' }}>Opens on YouTube</p>
       </div>
       <p style={{ fontSize: 12.5, lineHeight: 1.6, color: T.inkFaint, fontStyle: 'italic', margin: '28px 0 0', textAlign: 'center' }}>
-        Chainmover Fitness · Luke Strassner. For educational purposes based on lived experience and current research. Not medical advice. Always work with a qualified healthcare provider for your specific situation.
+        MetaShift Health · Luke Strassner. For educational purposes based on lived experience and current research. Not medical advice. Always work with a qualified healthcare provider for your specific situation.
       </p>
     </section>
   )
@@ -505,7 +512,7 @@ function DocHeader() {
     <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,.85)', backdropFilter: 'saturate(180%) blur(14px)', borderBottom: `1px solid ${T.lineSoft}` }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 44, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
         </Link>
         <Link to="/quiz" style={{
           background: T.forest, color: '#fff', fontFamily: T.body, fontWeight: 600, fontSize: 15,
@@ -561,10 +568,9 @@ function DocPage({ meta }) {
       <footer style={{ background: T.ink, color: '#fff', paddingBlock: 40 }}>
         <div style={{ maxWidth: 820, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: T.display, fontWeight: 800, fontSize: 18 }}>
-            <img src={chainmoversLogo} alt="Chainmover Fitness" style={{ height: 32, width: 'auto', objectFit: 'contain', display: 'block' }} />
-            Chainmover Fitness
+            MetaShift Health
           </div>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 Chainmover Fitness. All rights reserved.</span>
+          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 MetaShift Health. All rights reserved.</span>
         </div>
       </footer>
     </div>
@@ -682,7 +688,7 @@ Do these in order. Protein and steps first. Sleep and supplements next. Everythi
 
 ---
 
-### The Chainmover Guarantee
+### The MetaShift Guarantee
 
 **50 lbs. Guaranteed.**
 
@@ -700,7 +706,7 @@ The next step is seeing how the full system fits together from start to finish.
 
 @luke.strassner.fit
 
-*Chainmover Fitness. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
+*MetaShift Health. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
 
 const STRESS_MD = `Your labs may still be called borderline. Your body stopped being borderline a while ago.
 
@@ -815,7 +821,7 @@ Do these in order. Foundation, protein, and blood sugar first. Sleep, cortisol, 
 
 ---
 
-### The Chainmover Guarantee
+### The MetaShift Guarantee
 
 **50 lbs. Guaranteed.**
 
@@ -833,7 +839,7 @@ The next step is seeing how the full system fits together from start to finish.
 
 @luke.strassner.fit
 
-*Chainmover Fitness. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
+*MetaShift Health. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
 
 const HIGH_MD = `Your doctor flagged something. Maybe several things.
 
@@ -962,7 +968,7 @@ The medication is not the problem. The gap between what the medication does and 
 
 ---
 
-### The Chainmover Guarantee
+### The MetaShift Guarantee
 
 **50 lbs. Guaranteed.**
 
@@ -980,11 +986,11 @@ The next step is seeing how the full system fits together from start to finish.
 
 @luke.strassner.fit
 
-*Chainmover Fitness. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
+*MetaShift Health. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
 
 /* ─── per-bucket personalized data ─────────────────────────────────── */
 const EARLY_DATA = {
-  stakes: "Your labs probably still read 'normal,' which is exactly the trap. Insulin resistance shows up years before a lab flags it, and it only moves one direction on its own: a little higher every year, and a little harder to reverse every year after that. Left alone, men in this profile are usually on a medication, carrying a prediabetes marker, and two or three failed diets deeper within a decade. This is the most reversible it will ever be.",
+  stakes: "Your labs likely still read normal, which is what makes this stage easy to miss. Reduced insulin sensitivity typically develops years before fasting glucose or A1c move, because those markers only shift once insulin can no longer compensate. Left unaddressed it generally trends in one direction. The upside is that this is the stage where the inputs that improve it work fastest.",
   roadmap: [
     { label: 'Days 1 to 3', title: 'Kill the 2pm crash', body: "Steady your blood sugar first, that's the earliest sign insulin is starting to misfire. Protein first, carbs paired instead of eaten on their own. As insulin stops swinging so hard, the afternoon crater and the cravings on top of it start to fade.", hook: "Exactly how you build that around your day is what we dial in." },
     { label: 'Days 4 to 7', title: 'Lock in the foundation', body: "Get the foundational inputs in place: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. At your stage these few levers do most of the work bringing insulin back down.", hook: "How much of each, and which to prioritize first, comes down to your labs and your history." },
@@ -994,9 +1000,9 @@ const EARLY_DATA = {
 }
 
 const STRESS_DATA = {
-  stakes: "Your numbers may still get called 'borderline.' Your insulin stopped being borderline a while ago. Roughly 7 in 10 people in this range progress to type 2 diabetes, which is just insulin resistance with nowhere left to hide, if nothing changes, and every month inside the loop makes it harder to reverse. The window is open. It's not infinite.",
+  stakes: "Your numbers may still be described as borderline. The pattern in your answers suggests insulin sensitivity moved past borderline earlier than the labs did. Without a change in inputs, a meaningful share of people in this range go on to develop type 2 diabetes, which is what insulin resistance becomes once compensation runs out. Diet, training, sleep and daily movement are the levers with the strongest evidence behind them at this stage, and they work better the earlier they are applied.",
   roadmap: [
-    { label: 'Days 1 to 3', title: 'Break the crash and caffeine loop', body: "Stabilize blood sugar through what and how you eat: protein forward meals, carbs paired not naked, and cutting the liquid sugar. That's what gets insulin to stop running high all day. Once it settles, a deficit can finally hold instead of fighting you.", hook: "The specific triggers, and the order to hit them in, are different for every man." },
+    { label: 'Days 1 to 3', title: 'Break the crash and caffeine loop', body: "Stabilize blood sugar through what and how you eat: protein forward meals, carbs paired not naked, and cutting the liquid sugar. That's what gets insulin to stop running high all day. Once it settles, a deficit can finally hold instead of fighting you.", hook: "The specific triggers, and the order to hit them in, vary from person to person." },
     { label: 'Days 4 to 7', title: 'Hit the loop in several places at once', body: "One change won't do it. The foundational inputs (daily steps, food quality, resistance training, and sleep quality, not just hours) have to go in together, because every broken system keeps insulin elevated, and elevated insulin keeps every other system broken.", hook: "Which inputs, and in what sequence, depends on your insulin and testosterone numbers." },
     { label: 'Week 2', title: 'Turn sleep and cortisol into interventions', body: "Treat sleep quality and your stress load as real interventions. Cortisol and insulin move together, so this is how you bring insulin down, raise testosterone, and lower cortisol all at once.", hook: "Naming your real cortisol drivers, and what to do about each, is what we map together." },
   ],
@@ -1004,7 +1010,7 @@ const STRESS_DATA = {
 }
 
 const HIGH_DATA = {
-  stakes: "This isn't one number that's off. It's insulin resistance driving a cluster that reinforces itself: blood pressure, inflammation, testosterone, all downstream of the same root. Left unchanged, men in this profile typically face their first major health event before 45. It's still reversible. What changes with time is how much work it takes.",
+  stakes: "This is not a single number that is off. It is a cluster that reinforces itself, and reduced insulin sensitivity sits upstream of much of it: blood pressure, inflammatory markers and hormone levels all move together. Clusters like this are well documented to raise long term cardiovascular and metabolic risk when nothing changes. They also respond to the same set of inputs, and responding earlier takes less work than responding later. Any decision about medication stays with your physician.",
   roadmap: [
     { label: 'Days 1 to 3', title: 'Lock the foundation, no exceptions', body: "Get the foundational inputs locked first: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. Without a prescription, these are the fastest lever you have on insulin resistance, and the most powerful intervention you have.", hook: "What that looks like around your medications and your joints is something we build for you." },
     { label: 'Days 4 to 7', title: 'Lower the inflammatory load', body: "Bring inflammation down through food quality: more whole foods, protein, and omega 3s, less of what spikes it. It's the fire keeping insulin resistance running hot, and insulin resistance is what's driving the joint pain and low testosterone underneath it, so easing it eases several systems at once.", hook: "Which levers are safe for you depends on what you're currently being treated for." },
@@ -1015,13 +1021,13 @@ const HIGH_DATA = {
 
 /* ─── exports ──────────────────────────────────────────────────────── */
 export function EarlyWarningPage() {
-  return <DocPage meta={{ bucketKey: 'early', level: 'Level 1', tag: 'Early Warning', name: 'The Early Warning Stage', accent: '#f59e0b', accentSoft: 'rgba(245,158,11,0.12)', intro: "Your labs look fine. Your doctor isn't worried yet. That is exactly what makes this stage the most dangerous one.", md: EARLY_MD, ...EARLY_DATA }} />
+  return <DocPage meta={{ bucketKey: 'early', level: 'Level 1', tag: 'Early Signs', name: 'Early Signs of Insulin Resistance', accent: '#f59e0b', accentSoft: 'rgba(245,158,11,0.12)', intro: "Your labs likely read normal and your physician may not be concerned yet. This is the stage where the markers lag furthest behind what is actually happening, and where the inputs that change it work fastest.", md: EARLY_MD, ...EARLY_DATA }} />
 }
 
 export function MetabolicStressPage() {
-  return <DocPage meta={{ bucketKey: 'stress', level: 'Level 2', tag: 'Active Dysfunction', name: 'Active Dysfunction', accent: '#f97316', accentSoft: 'rgba(249,115,22,0.12)', intro: 'Your labs may still be called borderline. Your body stopped being borderline a while ago.', md: STRESS_MD, ...STRESS_DATA }} />
+  return <DocPage meta={{ bucketKey: 'stress', level: 'Level 2', tag: 'Reduced Sensitivity', name: 'Reduced Insulin Sensitivity', accent: '#f97316', accentSoft: 'rgba(249,115,22,0.12)', intro: 'Your labs may still be described as borderline. The pattern in your answers suggests insulin sensitivity has been declining for longer than the numbers show.', md: STRESS_MD, ...STRESS_DATA }} />
 }
 
 export function HighRiskPage() {
-  return <DocPage meta={{ bucketKey: 'high', level: 'Level 3', tag: 'The Window Is Closing', name: 'The Window Is Closing', accent: '#ef4444', accentSoft: 'rgba(239,68,68,0.12)', intro: 'Your doctor flagged something. Maybe several things. You were given a pamphlet and told to lose weight. This is what they did not have time to explain.', md: HIGH_MD, ...HIGH_DATA }} />
+  return <DocPage meta={{ bucketKey: 'high', level: 'Level 3', tag: 'Established Pattern', name: 'An Established Metabolic Pattern', accent: '#ef4444', accentSoft: 'rgba(239,68,68,0.12)', intro: 'Your physician has flagged something, possibly several things, and told you to lose weight. This is the mechanism underneath those markers, and what the evidence says actually moves them.', md: HIGH_MD, ...HIGH_DATA }} />
 }

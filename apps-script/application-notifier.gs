@@ -1,5 +1,5 @@
 /**
- * Chainmover — Application notifier
+ * MetaShift — Application notifier
  * ---------------------------------------------------------------------------
  * A standalone Apps Script project, separate from the metabolic-health quiz
  * script. It does exactly two things when someone submits /apply:

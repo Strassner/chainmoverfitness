@@ -18,7 +18,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter basename="/">
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<MetabolicPage />} />
         <Route path="/quiz" element={<App />} />
         <Route path="/early" element={<EarlyWarningPage />} />
         <Route path="/stress" element={<MetabolicStressPage />} />
@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/sleep" element={<SleepPage />} />
         <Route path="/visceralfat" element={<VisceralFatPage />} />
         <Route path="/landing" element={<LandingSalesPage />} />
-        <Route path="/metabolic" element={<MetabolicPage />} />
+        <Route path="/metabolic" element={<LandingPage />} />
         <Route path="/buy" element={<BuyPage />} />
         <Route path="/booked" element={<PostCallPage />} />
       </Routes>

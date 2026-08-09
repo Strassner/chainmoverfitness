@@ -222,16 +222,22 @@ export default function ApplicationPage() {
   const [submitting, setSubmitting] = useState(false)
   const calRef = useRef(null)
 
-  // Prefill from the quiz lead when there is one, so quiz traffic is not
-  // asked for details it already gave.
-  const [contact, setContact] = useState(() => {
+  // Read the quiz lead once. It drives both the prefill and whether we show
+  // the four questions at all: someone who just answered 11 quiz questions
+  // (including weight, timeline and yo-yo history) has already told us
+  // everything these four ask, so re-asking is friction at peak intent.
+  const [quizLead] = useState(() => {
     try {
-      const lead = (JSON.parse(sessionStorage.getItem('chainmover_results') || '{}').lead) || {}
-      return { name: lead.name || '', phone: lead.phone || '', email: lead.email || '' }
+      return (JSON.parse(sessionStorage.getItem('chainmover_results') || '{}').lead) || {}
     } catch (_) {
-      return { name: '', phone: '', email: '' }
+      return {}
     }
   })
+  const fromQuiz = Boolean(quizLead.email && quizLead.bucket)
+
+  const [contact, setContact] = useState(() => ({
+    name: quizLead.name || '', phone: quizLead.phone || '', email: quizLead.email || '',
+  }))
 
   // Which fields have been blurred at least once, or failed a submit attempt.
   // Errors stay hidden until then, so nobody is told they are wrong while
@@ -247,7 +253,8 @@ export default function ApplicationPage() {
     if (err) errors[f.id] = err
   })
 
-  const allAnswered = QUESTIONS.every(q => answers[q.id])
+  // Quiz traffic never sees the questions, so there is nothing to answer.
+  const allAnswered = fromQuiz || QUESTIONS.every(q => answers[q.id])
   const contactValid = Object.keys(errors).length === 0
 
   function submit() {
@@ -268,20 +275,27 @@ export default function ApplicationPage() {
     setSubmitting(true)
 
     try {
-      let lead = {}
-      try { lead = (JSON.parse(sessionStorage.getItem('chainmover_results') || '{}').lead) || {} } catch (_) { /* no lead */ }
+      const lead = quizLead
       // Landing pages link here as /apply?src=... . Quiz traffic carries a
       // lead object with its own source; direct traffic has neither, so fall
       // back to the query param to keep these rows attributable.
       const src = new URLSearchParams(window.location.search).get('src') || ''
       const params = new URLSearchParams({
-        form:           'application',
+        // Distinguishable in the sheet: quiz applicants skipped the four
+        // questions, so those columns are empty by design, not by failure.
+        form:           fromQuiz ? 'application_quiz' : 'application',
         // Typed values win — they are the ones the applicant just confirmed.
         name:           contact.name.trim()  || lead.name  || '',
         email:          contact.email.trim() || lead.email || '',
         phone:          contact.phone.trim() || lead.phone || '',
         instagram:      lead.instagram || '',
+        // Two different dimensions, kept apart on purpose:
+        //   source   = where they found Luke (YouTube, Instagram…), from the quiz
+        //   page_src = which page sent them here (quiz_high, metabolic…)
+        // Collapsing them meant the bucket attribution was silently lost
+        // whenever a quiz lead already had a source.
         source:         lead.source || src,
+        page_src:       src,
         bucket:         lead.bucket || '',
         weight_to_lose: answers.weight_to_lose || '',
         situation:      answers.situation || '',
@@ -351,16 +365,18 @@ export default function ApplicationPage() {
         {!submitted ? (
           <>
             <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.moss, display: 'block', marginBottom: 16 }}>
-              Application · takes 30 seconds
+              {fromQuiz ? 'Last step · takes 15 seconds' : 'Application · takes 30 seconds'}
             </span>
             <h1 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(32px,5vw,52px)', lineHeight: 1.05, letterSpacing: '-0.03em', color: T.ink, margin: 0 }}>
-              Apply to work with Luke
+              {fromQuiz ? 'Book your call with Luke' : 'Apply to work with Luke'}
             </h1>
             <p style={{ marginTop: 18, marginBottom: 48, fontSize: 'clamp(16px,1.6vw,19px)', lineHeight: 1.6, color: T.inkSoft, maxWidth: 560 }}>
-              A few quick questions so we can see if the program is a fit — and so your call goes straight to your plan instead of logistics.
+              {fromQuiz
+                ? 'Your assessment results are already attached, so there is nothing to fill in twice. Just confirm where Luke can reach you and pick a time.'
+                : 'A few quick questions so we can see if the program is a fit.'}
             </p>
 
-            {QUESTIONS.map((q, i) => (
+            {!fromQuiz && QUESTIONS.map((q, i) => (
               <div key={q.id} style={{ marginBottom: 40 }}>
                 <div style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase', color: T.inkFaint, marginBottom: 10 }}>
                   Question {i + 1} of {QUESTIONS.length}
@@ -380,14 +396,18 @@ export default function ApplicationPage() {
             ))}
 
             <div style={{ marginBottom: 40 }}>
-              <div style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase', color: T.inkFaint, marginBottom: 10 }}>
-                Last step
-              </div>
+              {/* The page eyebrow already says "Last step" for quiz traffic —
+                  no need to say it twice on a two-block page. */}
+              {!fromQuiz && (
+                <div style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase', color: T.inkFaint, marginBottom: 10 }}>
+                  Last step
+                </div>
+              )}
               <h2 style={{ fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(20px,2.6vw,26px)', lineHeight: 1.25, color: T.ink, margin: '0 0 8px' }}>
-                Where can Luke reach you?
+                Where should we reach out to you?
               </h2>
               <p style={{ fontSize: 15, color: T.inkSoft, lineHeight: 1.55, margin: '0 0 20px' }}>
-                So he can get hold of you directly if the calendar does not have a time that works.
+                
               </p>
               {CONTACT_FIELDS.map(f => (
                 <TextField
@@ -415,7 +435,7 @@ export default function ApplicationPage() {
                 transition: 'all .15s',
               }}
             >
-              {submitting ? 'One moment…' : 'Submit application →'}
+              {submitting ? 'One moment…' : fromQuiz ? 'Continue to booking →' : 'Submit application →'}
             </button>
             <p style={{ fontSize: 12.5, color: T.inkFaint, textAlign: 'center', marginTop: 16 }}>
               We don't sell or share your info. Ever.

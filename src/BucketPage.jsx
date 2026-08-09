@@ -6,12 +6,9 @@ import { MatchedTestimonialCard } from './proofUtils'
 /* ─── shared links ─────────────────────────────────────────────────── */
 const OVERVIEW_URL = 'https://linktw.in/foHoIb'
 const PLAN_VIDEO_ID = 'p5sdrV7PAso' // YouTube step-by-step plan (results CTA)
-/* Plain https watch URL on purpose. iOS universal links and Android app links
-   hand this straight to the YouTube app when it is installed, and fall back to
-   the browser when it is not. A custom scheme (vnd.youtube://) would deep link
-   too, but silently dead-ends for anyone without the app. Rendered with
-   target="_blank" so desktop opens a new tab and the results page is kept. */
-const PLAN_VIDEO_URL = `https://www.youtube.com/watch?v=${PLAN_VIDEO_ID}`
+/* The video plays inline on the results page (see ResultsCTA) rather than
+   linking out to youtube.com — this is the highest-intent moment in the
+   funnel and sending people to an attention-capture platform loses them. */
 const IG_URL = 'https://instagram.com/luke.strassner.fit'
 const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-session'
 // Placeholder: the landing-page VSL. Swap for a dedicated "your results" Loom when recorded.
@@ -474,30 +471,61 @@ function MatchedTestimonial({ t, accent }) {
   return <MatchedTestimonialCard T={T} t={t} accent={accent} eyebrowStyle={eyebrow(accent)} />
 }
 
-/* ─── call-first CTA + disclaimer ─────────────────────────────────── */
-function ResultsCTA() {
+/* ─── call-first CTA + disclaimer ─────────────────────────────────────
+   This is the highest-intent moment in the funnel, so booking is the
+   primary action and the video plays inline rather than sending anyone
+   to youtube.com. The thumbnail is a click-to-play facade on purpose:
+   a cold YouTube iframe pulls well over a megabyte before anyone has
+   asked for it, so the iframe only mounts on click.                    */
+function ResultsCTA({ bucketKey }) {
+  const [playing, setPlaying] = useState(false)
+  const frame = { display: 'block', position: 'relative', width: '100%', maxWidth: 620, margin: '0 auto', borderRadius: 16, overflow: 'hidden', aspectRatio: '16 / 9', background: '#000', boxShadow: '0 20px 50px rgba(0,0,0,.35)', border: '1px solid rgba(255,255,255,.14)' }
+
   return (
     <section style={{ margin: '48px 0 8px' }}>
       <div style={{ background: `linear-gradient(160deg, ${T.forest} 0%, ${T.forest700} 100%)`, borderRadius: 20, padding: 'clamp(32px,5vw,52px)', textAlign: 'center', color: '#fff', boxShadow: T.shadow }}>
-        <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital, display: 'block', marginBottom: 14 }}>Your step-by-step plan</span>
-        <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>The full walkthrough, for a profile like yours.</h2>
-        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>It covers how the M.R.O.I. method works on insulin sensitivity first, and why fat loss gets easier to sustain once it improves. Same sequence, from day one, built around how metabolic health actually changes.</p>
-        <a href={PLAN_VIDEO_URL} target="_blank" rel="noreferrer" aria-label="Watch the step by step plan on YouTube"
-          style={{ display: 'block', position: 'relative', maxWidth: 620, margin: '0 auto', borderRadius: 16, overflow: 'hidden', aspectRatio: '16 / 9', background: '#000', boxShadow: '0 20px 50px rgba(0,0,0,.35)', border: '1px solid rgba(255,255,255,.14)' }}>
-          <img
-            src={`https://img.youtube.com/vi/${PLAN_VIDEO_ID}/maxresdefault.jpg`}
-            onError={(e) => { e.currentTarget.src = `https://img.youtube.com/vi/${PLAN_VIDEO_ID}/hqdefault.jpg` }}
-            alt="Watch the step by step plan"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital, display: 'block', marginBottom: 14 }}>Your next step</span>
+        <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>Go through this with Luke.</h2>
+        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>On the call we go through your results in detail, what is driving them, and what the first 90 days would look like for you. Watch the walkthrough first if you want the method explained before you book.</p>
+
+        {playing ? (
+          <iframe
+            style={frame}
+            /* nocookie host so nothing is set before the visitor asks for it */
+            src={`https://www.youtube-nocookie.com/embed/${PLAN_VIDEO_ID}?autoplay=1&rel=0`}
+            title="The step by step plan"
+            frameBorder="0"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
           />
-          <span style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.2)' }} />
-          <svg viewBox="0 0 68 48" width="82" height="58" aria-hidden="true"
-            style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,.45))' }}>
-            <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#FF0000" />
-            <path d="M45,24 27,14 27,34 Z" fill="#fff" />
-          </svg>
-        </a>
-        <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,.6)', textAlign: 'center', margin: '14px 0 0' }}>Opens on YouTube</p>
+        ) : (
+          <button type="button" onClick={() => setPlaying(true)} aria-label="Play the step by step plan" style={{ ...frame, padding: 0, cursor: 'pointer' }}>
+            <img
+              src={`https://img.youtube.com/vi/${PLAN_VIDEO_ID}/maxresdefault.jpg`}
+              onError={(e) => { e.currentTarget.src = `https://img.youtube.com/vi/${PLAN_VIDEO_ID}/hqdefault.jpg` }}
+              alt=""
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+            <span style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.2)' }} />
+            <svg viewBox="0 0 68 48" width="82" height="58" aria-hidden="true"
+              style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,.45))' }}>
+              <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#FF0000" />
+              <path d="M45,24 27,14 27,34 Z" fill="#fff" />
+            </svg>
+          </button>
+        )}
+
+        <div style={{ marginTop: 30 }}>
+          <Link
+            to={`/apply?src=quiz_${bucketKey}`}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: T.vital, color: T.forest, fontFamily: T.body, fontWeight: 700, fontSize: 18, padding: '19px 40px', borderRadius: 100, textDecoration: 'none', boxShadow: '0 10px 26px rgba(70,201,139,.32)' }}
+          >
+            Book a call with Luke
+          </Link>
+        </div>
+        <p style={{ fontFamily: T.mono, fontSize: 12.5, color: 'rgba(255,255,255,.55)', textAlign: 'center', margin: '16px 0 0' }}>
+          Takes 30 seconds · 45 clients at a time, typically 4 to 8 spots open each month
+        </p>
       </div>
       <p style={{ fontSize: 12.5, lineHeight: 1.6, color: T.inkFaint, fontStyle: 'italic', margin: '28px 0 0', textAlign: 'center' }}>
         MetaShift Health · Luke Strassner. For educational purposes based on lived experience and current research. Not medical advice. Always work with a qualified healthcare provider for your specific situation.
@@ -558,10 +586,14 @@ function DocPage({ meta }) {
         <Stakes text={meta.stakes} accent={meta.accent} />
         <MetabolicReframe />
         {macros && <MacroGrid macros={macros} answers={answers} accent={meta.accent} />}
-        {macros && <InsulinResetOffer accent={meta.accent} />}
+        {/* $27 Reset Kit disabled — RESET_KIT_URL is still a placeholder, so the
+            button only fires an alert(). It also competed with booking a call at
+            the highest-intent point on the page. To re-enable: set a real
+            checkout URL at the top of this file and restore the line below.
+        {macros && <InsulinResetOffer accent={meta.accent} />} */}
         <Roadmap phases={meta.roadmap} accent={meta.accent} />
         <MatchedTestimonial t={meta.testimonial} accent={meta.accent} />
-        <ResultsCTA />
+        <ResultsCTA bucketKey={meta.bucketKey} />
       </article>
 
       {/* footer */}

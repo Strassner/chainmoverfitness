@@ -165,9 +165,9 @@ function Header() {
           </p>
 
           <div style={{ marginTop: 26 }}>{APPLY()}</div>
-          <p style={{ marginTop: 16, fontFamily: T.mono, fontSize: 13, color: T.inkFaint }}>
+          {/* <p style={{ marginTop: 16, fontFamily: T.mono, fontSize: 13, color: T.inkFaint }}>
             Plans start as low as {PRICE_FLOOR}
-          </p>
+          </p> */}
         </Wrap>
       </section>
     </>

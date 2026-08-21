@@ -1,0 +1,25 @@
+name = "pudge-score"
+main = "src/index.ts"
+compatibility_date = "2026-08-01"
+
+# The Worker name is kept as-is on purpose: renaming it would change the
+# workers.dev URL, and the live URL is already baked into /bodycomp.
+
+# Rate-limit counters. A Durable Object rather than KV because KV allows 1,000
+# writes/day on the free plan — the limiter would stop counting under exactly
+# the flood it exists to stop.
+[[durable_objects.bindings]]
+name = "LIMITER"
+class_name = "RateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]
+
+# Not a secret. The systeme.io key is set with `wrangler secret put` and is
+# never written to a file.
+[vars]
+ALLOWED_ORIGIN = "https://lukestrassner.com,https://www.lukestrassner.com"
+
+[observability]
+enabled = true

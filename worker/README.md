@@ -1,0 +1,109 @@
+# Lead capture API — Cloudflare Worker
+
+The server half of the `/bodycomp` funnel. It exists because the site is static
+on GitHub Pages, and static hosting can't keep a secret — anything you put in
+the page, a visitor can read. The systeme.io key lives here instead.
+
+One job: take an email address, put it in systeme.io. The photo analysis that
+used to live here was retired when the Gemini Gem took over that work.
+
+> The Worker is still **named** `pudge-score` in `wrangler.toml`. That's
+> deliberate — renaming it would change the `workers.dev` URL, and that URL is
+> baked into `/bodycomp`. Ignore the name; it's just an address now.
+
+## What Cloudflare is here
+
+**A Worker** is a small program Cloudflare runs for you. No server, nothing to
+patch or restart, no cold start. One command ships it.
+
+**A Durable Object** is a small piece of memory that survives between requests.
+This one holds the rate-limit counter so nobody can spam your mailing list.
+Cloudflare's other storage option (KV) allows only 1,000 writes a day on the
+free plan, which would mean the limiter quietly stopped counting during exactly
+the flood it exists to stop.
+
+**Secrets** are your systeme.io API key. Set once by command, encrypted, never
+in a file, never sent to a browser.
+
+**A `workers.dev` URL** is the free public HTTPS address the page calls:
+`https://pudge-score.chainmover.workers.dev`.
+
+## Endpoints
+
+| Method | Path        | Purpose                                  |
+| ------ | ----------- | ---------------------------------------- |
+| `POST` | `/api/lead` | Email in, systeme.io contact out          |
+| `GET`  | `/healthz`  | Uptime check                              |
+
+`POST /api/lead` takes `{ "email": "..." }` and returns:
+
+- `200 {"ok":true}` — captured
+- `202 {"ok":false}` — systeme.io didn't take it, but we have the address. The
+  page lets them through to the Gem anyway; someone who handed over an email
+  should get what they were promised even if the list provider is having a bad
+  day. This shows up as an error in the logs, not to the visitor.
+- `400` — not a valid email address. Two causes: it failed our own syntax check
+  (no API call made), or systeme.io rejected it. systeme.io validates
+  **deliverability**, not just syntax — it turns down typo'd domains with no MX
+  record and mailboxes that don't exist. That's the visitor's mistake and they
+  can fix it, so the page shows an inline error and lets them retry rather than
+  waving them through to the Gem with the lead lost.
+- `429` — more than 10 submissions from one IP in an hour
+
+## Setup
+
+From `worker/`:
+
+```bash
+npm install
+```
+
+```bash
+npx wrangler login
+```
+
+```bash
+npx wrangler deploy
+```
+
+```bash
+npx wrangler secret put SYSTEME_API_KEY
+```
+
+The systeme.io key is the same kind the application form already uses: profile
+picture → Settings → Public API keys → Create. It's shown once.
+
+Check what's stored with `npx wrangler secret list` — names only, never values.
+If you previously set `ANTHROPIC_API_KEY` or any `MAILERLITE_*` secret, they're
+unused now and can be removed with `npx wrangler secret delete <NAME>`.
+
+## Changing things later
+
+```bash
+npx wrangler deploy
+```
+
+That's the whole deploy. Seconds, no downtime. `npm run logs` tails it live.
+`npm run dev` runs it locally on `http://127.0.0.1:8787`, which is what
+`/bodycomp` targets when opened from localhost; local secrets go in
+`worker/.dev.vars`, which is gitignored.
+
+## Tagging
+
+Every lead gets `source-website`, matching the tag your Apps Script already
+applies. There is **no funnel-specific tag** — that was the call for now.
+
+The trade-off: `/bodycomp` signups are indistinguishable from any other website
+lead inside systeme.io, so this funnel's conversion rate can't be read on its
+own. To change that, add a tag to `TAGS` in [`src/systeme.ts`](src/systeme.ts)
+and redeploy. systeme.io creates a tag the first time it's used, so nothing
+needs setting up on that end first.
+
+## Costs
+
+Nothing. The Workers free plan covers 100,000 requests a day and there is no
+per-request AI cost any more.
+
+## What is never stored
+
+Nothing is written on our side. systeme.io holds the lead; there is no database.

@@ -1,0 +1,7 @@
+# Copy this to `.dev.vars` and fill in your key for local development.
+# `.dev.vars` is gitignored; this example file is safe to commit.
+
+SYSTEME_API_KEY=
+
+# Test seam. Leave commented out — it redirects the systeme.io calls to a stub.
+# SYSTEME_BASE_URL=http://localhost:5198

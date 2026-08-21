@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
+import chainmoverLogo from './assets/ChainmoverLogo.png'
 
 /* ─── brand tokens (match the rest of the site) ────────────────────── */
 const T = {
@@ -60,8 +60,9 @@ export default function VisceralFatPage() {
       {/* header */}
       <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,.85)', backdropFilter: 'saturate(180%) blur(14px)', borderBottom: `1px solid ${T.lineSoft}` }}>
         <div style={{ maxWidth: 760, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', height: 72 }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <img src={chainmoverLogo} alt="" style={{ height: 34, width: 'auto', objectFit: 'contain', display: 'block' }} />
+            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em', color: T.ink, whiteSpace: 'nowrap' }}>Chainmover Coaching</span>
           </Link>
         </div>
       </header>
@@ -172,9 +173,9 @@ export default function VisceralFatPage() {
       <footer style={{ background: T.ink, color: '#fff', paddingBlock: 40, marginTop: 64 }}>
         <div style={{ maxWidth: 760, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: T.display, fontWeight: 800, fontSize: 18 }}>
-            MetaShift Health
+            Chainmover Coaching
           </div>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 MetaShift Health. All rights reserved.</span>
+          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>Luke Strassner, Head Coach</span>
         </div>
       </footer>
     </div>

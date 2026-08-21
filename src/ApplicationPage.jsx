@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
+import chainmoverLogo from './assets/ChainmoverLogo.png'
 
 /* ─── shared links ─────────────────────────────────────────────────── */
 const CALENDLY_URL = 'https://calendly.com/luke-strassner-fit/1-1-mentorship-session'
@@ -91,8 +91,9 @@ function Header() {
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,.85)', backdropFilter: 'saturate(180%) blur(14px)', borderBottom: `1px solid ${T.lineSoft}` }}>
       <div style={{ maxWidth: 760, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', height: 72 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
-          <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <img src={chainmoverLogo} alt="" style={{ height: 34, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em', color: T.ink, whiteSpace: 'nowrap' }}>Chainmover Coaching</span>
         </Link>
       </div>
     </header>
@@ -104,9 +105,9 @@ function Footer() {
     <footer style={{ background: T.ink, color: '#fff', paddingBlock: 40, marginTop: 64 }}>
       <div style={{ maxWidth: 760, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: T.display, fontWeight: 800, fontSize: 18 }}>
-          MetaShift Health
+          Chainmover Coaching
         </div>
-        <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 MetaShift Health. All rights reserved.</span>
+        <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>Luke Strassner, Head Coach</span>
       </div>
     </footer>
   )
@@ -368,11 +369,11 @@ export default function ApplicationPage() {
               {fromQuiz ? 'Last step · takes 15 seconds' : 'Application · takes 30 seconds'}
             </span>
             <h1 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(32px,5vw,52px)', lineHeight: 1.05, letterSpacing: '-0.03em', color: T.ink, margin: 0 }}>
-              {fromQuiz ? 'Book your call with Luke' : 'Apply to work with Luke'}
+              Apply to work with Luke
             </h1>
             <p style={{ marginTop: 18, marginBottom: 48, fontSize: 'clamp(16px,1.6vw,19px)', lineHeight: 1.6, color: T.inkSoft, maxWidth: 560 }}>
               {fromQuiz
-                ? 'Your assessment results are already attached, so there is nothing to fill in twice. Just confirm where Luke can reach you and pick a time.'
+                ? 'Your assessment results are already attached, so there is nothing to fill in twice. Just confirm where Luke can reach you.'
                 : 'A few quick questions so we can see if the program is a fit.'}
             </p>
 
@@ -435,7 +436,7 @@ export default function ApplicationPage() {
                 transition: 'all .15s',
               }}
             >
-              {submitting ? 'One moment…' : fromQuiz ? 'Continue to booking →' : 'Submit application →'}
+              {submitting ? 'One moment…' : 'Submit application →'}
             </button>
             <p style={{ fontSize: 12.5, color: T.inkFaint, textAlign: 'center', marginTop: 16 }}>
               We don't sell or share your info. Ever.
@@ -447,10 +448,10 @@ export default function ApplicationPage() {
               Application received
             </span>
             <h1 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(30px,4.6vw,48px)', lineHeight: 1.06, letterSpacing: '-0.03em', color: T.ink, margin: 0 }}>
-              Book your discovery call with Luke
+              You're through. Now pick your time.
             </h1>
             <p style={{ marginTop: 18, marginBottom: 8, fontSize: 'clamp(16px,1.6vw,19px)', lineHeight: 1.6, color: T.inkSoft, maxWidth: 600 }}>
-              We'll go over your results in detail and see if this is the right fit. You'll leave knowing exactly what's not working right inside your body — and the plan to fix it. Grab the time that works best:
+              Luke reviews every application himself, and yours is in. Grab a slot below and he will have your answers in front of him when you speak. You will leave that conversation understanding what is actually driving your numbers, either way.
             </p>
 
             {/* No data-url here on purpose: widget.js auto-initializes any

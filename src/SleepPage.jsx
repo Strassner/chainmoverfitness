@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
+import chainmoverLogo from './assets/ChainmoverLogo.png'
 
 /* ─── video (same deep-link-to-YouTube thumbnail as the results VSL) ── */
 const PLAN_VIDEO_ID = 'ceAIiqaK_Kc'
@@ -39,25 +39,46 @@ function useFonts() {
   }, [])
 }
 
-/* ─── content ──────────────────────────────────────────────────────── */
-const STEPS = [
-  {
-    title: 'Sleep on your side, not your back.',
-    body: "When you lie on your back, your tongue and throat fall backward and close the airway faster. Sleeping on your side keeps it open. Put a firm pillow behind your back so you cannot roll over in your sleep. This one change alone quiets the snoring for a lot of big guys.",
-  },
-  {
-    title: 'No alcohol within 3 hours of bed.',
-    body: "Alcohol relaxes the muscles in your throat even more than normal sleep does. Even two drinks makes the airway collapse harder and blocks your deep sleep. Cut it off 3 hours before bed and you will feel the difference in one night.",
-  },
-  {
-    title: 'Prop the head of your bed up.',
-    body: "Raise the head of your bed 4 to 6 inches. Put a couple of books under the legs, or use a wedge pillow. Sleeping on a slight incline uses gravity to keep the airway open and keeps stomach acid down, which also makes breathing easier. Stacking regular pillows does not work as well, it just bends your neck. If you can't raise the whole top of the bed, stacking pillows is certainly better than nothing.",
-  },
-]
-
 /* ─── shared paragraph style ───────────────────────────────────────── */
 const P = { fontSize: 17, lineHeight: 1.75, color: T.inkSoft, margin: '0 0 18px' }
 const H2 = { fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(24px,3.2vw,34px)', lineHeight: 1.15, letterSpacing: '-0.02em', color: T.ink, margin: '48px 0 20px' }
+
+/* ─── the "do this tonight" card that closes each of the three ─────── */
+function Tonight({ items }) {
+  return (
+    <div style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 14, padding: '22px 24px', margin: '4px 0 8px' }}>
+      <span style={{ fontFamily: T.mono, fontSize: 11.5, letterSpacing: '.16em', textTransform: 'uppercase', color: T.moss, display: 'block', marginBottom: 14 }}>
+        Do this tonight
+      </span>
+      <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {items.map((it) => (
+          <li key={it} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" style={{ flexShrink: 0, marginTop: 3 }}>
+              <circle cx="12" cy="12" r="10" fill={T.vitalSoft} />
+              <path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke={T.forest} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span style={{ fontSize: 16, lineHeight: 1.65, color: T.ink }}>{it}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+/* ─── the numbered heading that opens each of the three ────────────── */
+function Cause({ n, label, children }) {
+  return (
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center', margin: '52px 0 18px' }}>
+      <span style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 12, background: T.forest, color: '#fff', display: 'grid', placeItems: 'center', fontFamily: T.display, fontWeight: 800, fontSize: 18 }}>
+        {n}
+      </span>
+      <div>
+        <span style={{ fontFamily: T.mono, fontSize: 11.5, letterSpacing: '.16em', textTransform: 'uppercase', color: T.moss, display: 'block', marginBottom: 4 }}>{label}</span>
+        <h2 style={{ ...H2, margin: 0 }}>{children}</h2>
+      </div>
+    </div>
+  )
+}
 
 export default function SleepPage() {
   useFonts()
@@ -68,8 +89,9 @@ export default function SleepPage() {
       {/* header */}
       <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,.85)', backdropFilter: 'saturate(180%) blur(14px)', borderBottom: `1px solid ${T.lineSoft}` }}>
         <div style={{ maxWidth: 720, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', height: 72 }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <img src={chainmoverLogo} alt="" style={{ height: 34, width: 'auto', objectFit: 'contain', display: 'block' }} />
+            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em', color: T.ink, whiteSpace: 'nowrap' }}>Chainmover Coaching</span>
           </Link>
         </div>
       </header>
@@ -78,48 +100,61 @@ export default function SleepPage() {
 
         {/* hero */}
         <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.moss, display: 'block', marginBottom: 16 }}>
-          Sleep and snoring
+          Sleep and metabolic health
         </span>
         <h1 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(32px,5vw,52px)', lineHeight: 1.05, letterSpacing: '-0.03em', color: T.ink, margin: 0 }}>
-          Why big guys snore, and 3 things you can do tonight
+          Eight hours in bed. Still exhausted.
         </h1>
         <p style={{ marginTop: 18, fontSize: 'clamp(17px,1.7vw,20px)', lineHeight: 1.55, color: T.inkSoft, fontWeight: 500 }}>
-          Read this before you accept the CPAP for the rest of your life.
+          Three reasons your body never actually recovered last night, and what to do about each one before bed tonight.
         </p>
 
-        {/* Section 1 */}
-        <h2 style={H2}>The truth nobody told you</h2>
-        <p style={P}>You have probably been told the same thing by every doctor. "You snore because you are heavy. Lose the weight or wear the machine."</p>
-        <p style={P}>That is only half true, and the half they left out is the part that actually helps you tonight.</p>
-        <p style={P}>Here is what is really happening. When you carry extra weight, soft tissue builds up around your throat and airway. When you lie down and fall asleep, the muscles there relax. For a big guy, that airway is already crowded, so it collapses and closes. Your breathing stops for a few seconds. Your brain panics, jolts you half awake to open the airway, and you gasp or snore. This happens over and over all night. You never feel it, but it wrecks your deep sleep.</p>
-        <p style={P}>That is why you wake up tired even after 8 hours. That is the brain fog. That is why you are starving and reaching for sugar by 2pm. Your body never got to recover.</p>
-        <p style={P}>The weight is the real root. But there are things you can do tonight to open that airway a little more while you work on losing it.</p>
+        {/* intro */}
+        <h2 style={H2}>Hours in bed are not the same as sleep</h2>
+        <p style={P}>You are doing the thing everyone tells you to do. You are in bed for eight hours. And you still wake up foggy, still need the coffee before you can hold a conversation, still hit a wall in the afternoon and go looking for sugar.</p>
+        <p style={P}>That is not a willpower problem and it is not a schedule problem. It is a recovery problem. Something is interrupting the deep, restorative part of your sleep, and you never feel it happen, because the whole point is that you stay asleep through it.</p>
+        <p style={P}>In my experience there are three usual suspects. Most people reading this have at least two of them.</p>
 
-        {/* Section 2 */}
-        <h2 style={H2}>3 things you can do tonight</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {STEPS.map((s, i) => (
-            <div key={i} style={{ background: T.bone, border: `1px solid ${T.line}`, borderRadius: 14, padding: '22px 24px', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-              <span style={{ flexShrink: 0, width: 36, height: 36, borderRadius: 10, background: T.forest, color: '#fff', display: 'grid', placeItems: 'center', fontFamily: T.display, fontWeight: 800, fontSize: 17 }}>
-                {i + 1}
-              </span>
-              <div>
-                <div style={{ fontFamily: T.display, fontWeight: 700, fontSize: 19, color: T.ink, marginBottom: 8 }}>{s.title}</div>
-                <p style={{ margin: 0, fontSize: 16, lineHeight: 1.65, color: T.inkSoft }}>{s.body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <p style={{ ...P, margin: '22px 0 0' }}>Do these three tonight. You will not fix the root, but you will breathe easier and sleep deeper by the morning.</p>
+        {/* ── 1. sleep apnea ── */}
+        <Cause n="1" label="The one you snore through">Your airway is closing while you sleep</Cause>
+        <p style={P}>When you fall asleep, the muscles around your throat relax. If that airway is already crowded, it narrows or collapses shut. Your breathing stops for a few seconds. Your brain notices the oxygen drop, panics, and jolts you just far enough toward waking to reopen it. You gasp, or snore, or shift, and you go back under with no memory of any of it.</p>
+        <p style={P}>Then it happens again. In moderate cases, dozens of times an hour, all night. You are technically in bed for eight hours and never spend meaningful time in deep sleep.</p>
+        <p style={P}>Worth knowing, because it gets missed constantly: this is not only a loud-snoring, large-man condition. In women it often shows up as fatigue, insomnia, morning headaches, anxiety or low mood rather than the classic thunderous snore, which is a large part of why women go undiagnosed for years. Risk also climbs after menopause. If you have been told you are just tired or just stressed, and nobody has ever asked about your breathing, that is a gap worth closing.</p>
+        <Tonight items={[
+          'Sleep on your side, not your back. On your back, the tongue and soft tissue fall backward and close the airway faster. A firm pillow wedged behind you stops you rolling over.',
+          'Raise the head of the bed 4 to 6 inches. Books under the legs, or a wedge. Gravity helps hold the airway open and keeps stomach acid down. Stacking pillows is a distant second, it mostly just bends your neck.',
+          'Ask your doctor for a sleep study if any of this sounds like you. This is the one item here that needs a real diagnosis, and home tests have made it far easier than it used to be.',
+        ]} />
 
-        {/* Section 3 */}
-        <h2 style={H2}>The part that matters most</h2>
-        <p style={P}>Here is the hard truth, and I am telling you this because no one else will.</p>
-        <p style={P}>These three steps help. But they do not fix the cause. The cause is the extra weight sitting on your airway, and sleep apnea does not stay the same over time. It gets worse.</p>
-        <p style={P}>The worse your sleep gets, the higher your cortisol runs, the more your body holds fat and craves sugar. That extra weight crowds the airway even more. Which makes the apnea worse. Which makes the weight harder to lose. It feeds itself, and every year it gets tighter.</p>
-        <p style={P}>And it is not just about being tired. Untreated sleep apnea is linked to high blood pressure, heart problems, and stroke. This is not a snoring problem. It is a health problem with a clock on it.</p>
-        <p style={P}>The only thing that actually stops the cycle is losing the weight, in a way that fixes the metabolism underneath it instead of starving yourself for a few weeks and gaining it back.</p>
-        <p style={P}>That is exactly what I built the MROI method to do. I put the full breakdown in a short video below. It shows you why the weight came on, why it will not come off with a normal diet, and the exact steps to reverse it so the apnea goes away for good.</p>
+        {/* ── 2. cortisol inversion ── */}
+        <Cause n="2" label="The 2am wake-up">Your cortisol rhythm has flipped</Cause>
+        <p style={P}>Cortisol is supposed to run on a curve. Lowest around midnight, climbing through the early hours, peaking shortly after you wake so you get up with energy. When that curve inverts, you get the opposite: wired at 11pm, then wide awake at 2 or 3am, heart going, mind switched on, staring at the ceiling for an hour.</p>
+        <p style={P}>A common driver is blood sugar. If you go to bed with your blood sugar propped up and it drops steeply overnight, your body treats that dip as an emergency and releases cortisol and adrenaline to push it back up. Those are the same hormones designed to wake you. So you wake, and you wake alert, which is the tell. Genuine insomnia usually feels tired-but-unable-to-sleep. This feels like someone flipped a switch.</p>
+        <p style={P}>Chronic stress flattens and shifts the same curve over time. And for women in perimenopause, falling progesterone removes one of the body's own sleep-supporting signals, which is why night waking so often starts in that window even when nothing else has changed.</p>
+        <Tonight items={[
+          'Eat a real dinner with protein and some carbohydrate. Going to bed underfed is one of the most reliable ways to buy yourself a 2am wake-up.',
+          'Get outside within 30 minutes of waking. Morning light is the strongest lever you have for putting the cortisol peak back where it belongs.',
+          'If you do wake, keep the lights off and stay horizontal. Reaching for your phone tells your brain the day has started and locks the pattern in for tomorrow.',
+        ]} />
+
+        {/* ── 3. alcohol ── */}
+        <Cause n="3" label="The one that feels like it helps">Alcohol is sedation, not sleep</Cause>
+        <p style={P}>Alcohol does put you under faster. That part is real, and it is why so many people use it. What it does after that is the problem.</p>
+        <p style={P}>It suppresses REM sleep in the first half of the night. Then, as your body clears it, you get a rebound: lighter sleep, more waking, often around, yes, 2 or 3am. That is the same window as the cortisol wake-up, and if you are doing both, they stack.</p>
+        <p style={P}>It also relaxes the muscles of the throat more than normal sleep does, so it makes airway collapse worse. If cause one applies to you, a couple of drinks turns a mild night into a bad one. And for the same drink, women generally reach a higher blood alcohol concentration than men do, so "only two glasses of wine" is not the same dose across the room.</p>
+        <Tonight items={[
+          'Nothing within 3 hours of bed. If you are drinking, drink earlier, so your body has cleared most of it before you lie down.',
+          'Match every drink with a glass of water. Dehydration is a share of the 3am wake and the morning headache.',
+          'Take two consecutive nights off and pay attention to how you feel on the third morning. One night is noise. Two is a signal you can actually read.',
+        ]} />
+
+        {/* the loop */}
+        <h2 style={H2}>Why this keeps getting worse on its own</h2>
+        <p style={P}>These three are not separate problems sitting next to each other. They feed each other, and they all feed your metabolism.</p>
+        <p style={P}>Short, broken sleep raises cortisol and pushes your body toward insulin resistance. Insulin resistance makes it easier to store fat and harder to release it. Added weight around the neck and midsection crowds the airway further, which makes the apnea worse, which shortens the sleep further. Every year the loop gets a little tighter, and the effort required to break it goes up.</p>
+        <p style={P}>This is also not only about being tired. Untreated sleep apnea is associated with high blood pressure, heart disease and stroke. It is a health problem with a clock on it, not a snoring inconvenience.</p>
+        <p style={P}>The steps above buy you a better night. What actually breaks the loop is fixing the metabolism underneath it, in that order, rather than starving yourself for six weeks and handing it all back.</p>
+        <p style={P}>That is what I built the MROI Method to do. The short video below walks through why the weight came on, why a normal diet will not take it off, and the sequence that reverses it.</p>
         <p style={{ ...P, fontWeight: 600, color: T.ink }}>Watch it now while this is fresh.</p>
 
         {/* video (deep link out to YouTube) */}
@@ -142,7 +177,7 @@ export default function SleepPage() {
 
         {/* footer note */}
         <p style={{ marginTop: 44, paddingTop: 24, borderTop: `1px solid ${T.line}`, fontSize: 13.5, lineHeight: 1.6, color: T.inkFaint }}>
-          This is not medical advice. Sleep apnea is a serious condition. Keep working with your doctor, and if you use a CPAP, keep using it. These steps stack on top of your care, they do not replace it.
+          This is not medical advice, and nothing here diagnoses a condition. Sleep apnea is serious and is diagnosed with a sleep study, not from a page like this one. Persistent night waking can also have causes worth ruling out with a doctor, including thyroid, hormonal and medication effects. Keep working with your physician, and if you use a CPAP, keep using it. These steps stack on top of your care, they do not replace it.
         </p>
       </main>
 
@@ -150,9 +185,9 @@ export default function SleepPage() {
       <footer style={{ background: T.ink, color: '#fff', paddingBlock: 40, marginTop: 64 }}>
         <div style={{ maxWidth: 720, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: T.display, fontWeight: 800, fontSize: 18 }}>
-            MetaShift Health
+            Chainmover Coaching
           </div>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 MetaShift Health. All rights reserved.</span>
+          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>Luke Strassner, Head Coach</span>
         </div>
       </footer>
     </div>

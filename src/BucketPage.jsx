@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
+import chainmoverLogo from './assets/ChainmoverLogo.png'
 import { MatchedTestimonialCard } from './proofUtils'
 
 /* ─── shared links ─────────────────────────────────────────────────── */
@@ -151,13 +151,13 @@ function renderBlocks(blocks, accent) {
 
     if (b.type === 'h3') {
       // Guarantee → forest callout card grouping until next hr
-      if (b.text.toLowerCase().includes('metashift guarantee')) {
+      if (b.text.toLowerCase().includes('chainmover guarantee')) {
         const group = []
         let j = i + 1
         while (j < blocks.length && blocks[j].type !== 'hr') { group.push(blocks[j]); j++ }
         out.push(
           <div key={key} style={{ background: T.forest, color: '#fff', borderRadius: 18, padding: 'clamp(28px,4vw,44px)', margin: '44px 0', boxShadow: T.shadow }}>
-            <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The MetaShift Guarantee</span>
+            <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The Chainmover Guarantee</span>
             {group.map((g, gi) => {
               if (g.type === 'p' && /^\*\*.+\*\*$/.test(g.text.trim())) {
                 return <h3 key={gi} style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(26px,3.4vw,38px)', color: '#fff', margin: '14px 0 18px' }}>{g.text.replace(/\*\*/g, '')}</h3>
@@ -260,7 +260,7 @@ function narrativeOnly(md) {
     .filter(seg => {
       const s = seg.trim()
       if (/###\s*0?5\.\s*The Path Forward/i.test(s)) return false
-      if (/###\s*The MetaShift Guarantee/i.test(s)) return false
+      if (/###\s*The Chainmover Guarantee/i.test(s)) return false
       if (/Watch the step by step overview/i.test(s)) return false
       return true
     })
@@ -459,7 +459,7 @@ function GapBlock() {
 function GuaranteeCard() {
   return (
     <div style={{ background: T.forest, color: '#fff', borderRadius: 18, padding: 'clamp(28px,4vw,44px)', margin: '44px 0', boxShadow: T.shadow }}>
-      <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The MetaShift Guarantee</span>
+      <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital }}>The Chainmover Guarantee</span>
       <h3 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(26px,3.4vw,38px)', color: '#fff', margin: '14px 0 18px' }}>50 lbs. Guaranteed.</h3>
       <p style={{ color: 'rgba(255,255,255,.82)', fontSize: 16.5, lineHeight: 1.7, margin: 0 }}>When you join the Codex, you lose 50 lbs of fat or I coach you for free until you do. Not a discount, not a refund. Every client works with me directly. No handoffs, no sub coaches, no AI.</p>
     </div>
@@ -467,8 +467,9 @@ function GuaranteeCard() {
 }
 
 /* ─── bucket-matched testimonial ──────────────────────────────────── */
-function MatchedTestimonial({ t, accent }) {
-  return <MatchedTestimonialCard T={T} t={t} accent={accent} eyebrowStyle={eyebrow(accent)} />
+function MatchedTestimonial({ t, accent, eyebrowLabel }) {
+  if (!t) return null
+  return <MatchedTestimonialCard T={T} t={t} accent={accent} eyebrowStyle={eyebrow(accent)} {...(eyebrowLabel ? { eyebrowLabel } : {})} />
 }
 
 /* ─── call-first CTA + disclaimer ─────────────────────────────────────
@@ -484,9 +485,9 @@ function ResultsCTA({ bucketKey }) {
   return (
     <section style={{ margin: '48px 0 8px' }}>
       <div style={{ background: `linear-gradient(160deg, ${T.forest} 0%, ${T.forest700} 100%)`, borderRadius: 20, padding: 'clamp(32px,5vw,52px)', textAlign: 'center', color: '#fff', boxShadow: T.shadow }}>
-        <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital, display: 'block', marginBottom: 14 }}>Your next step</span>
-        <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>Go through this with Luke.</h2>
-        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 540, margin: '0 auto 28px' }}>On the call we go through your results in detail, what is driving them, and what the first 90 days would look like for you. Watch the walkthrough first if you want the method explained before you book.</p>
+        <span style={{ fontFamily: T.mono, fontSize: 12, letterSpacing: '.16em', textTransform: 'uppercase', color: T.vital, display: 'block', marginBottom: 14 }}>Watch this next</span>
+        <h2 style={{ fontFamily: T.display, fontWeight: 800, fontSize: 'clamp(28px,4vw,42px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#fff', margin: '0 0 18px' }}>Here's the part that actually changes things. The how.</h2>
+        <p style={{ fontSize: 17, lineHeight: 1.7, color: 'rgba(255,255,255,.88)', maxWidth: 560, margin: '0 auto 28px' }}>You now know what's happening and why effort alone hasn't moved it. What a few scrolls can't give you is the full sequence: how the MROI Method fixes your metabolism first, then turns fat loss into the byproduct, in order, from day one. That's exactly what this walkthrough lays out.</p>
 
         {playing ? (
           <iframe
@@ -515,20 +516,25 @@ function ResultsCTA({ bucketKey }) {
           </button>
         )}
 
-        <div style={{ marginTop: 30 }}>
+        {/* The video carries the selling. Applying stays available for anyone
+            already decided, but deliberately secondary so it doesn't compete
+            with the watch. */}
+        <p style={{ fontSize: 16, lineHeight: 1.7, color: 'rgba(255,255,255,.75)', maxWidth: 540, margin: '30px auto 0' }}>
+          Already know you want in?{' '}
           <Link
             to={`/apply?src=quiz_${bucketKey}`}
-            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: T.vital, color: T.forest, fontFamily: T.body, fontWeight: 700, fontSize: 18, padding: '19px 40px', borderRadius: 100, textDecoration: 'none', boxShadow: '0 10px 26px rgba(70,201,139,.32)' }}
+            style={{ color: T.vital, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: 3 }}
           >
-            Book a call with Luke
+            Apply to work with Luke
           </Link>
-        </div>
-        <p style={{ fontFamily: T.mono, fontSize: 12.5, color: 'rgba(255,255,255,.55)', textAlign: 'center', margin: '16px 0 0' }}>
-          Takes 30 seconds · 45 clients at a time, typically 4 to 8 spots open each month
+          {' '}— takes 30 seconds.
+        </p>
+        <p style={{ fontFamily: T.mono, fontSize: 12.5, color: 'rgba(255,255,255,.55)', textAlign: 'center', margin: '14px 0 0' }}>
+          45 clients at a time, typically 4 to 8 spots open each month
         </p>
       </div>
       <p style={{ fontSize: 12.5, lineHeight: 1.6, color: T.inkFaint, fontStyle: 'italic', margin: '28px 0 0', textAlign: 'center' }}>
-        MetaShift Health · Luke Strassner. For educational purposes based on lived experience and current research. Not medical advice. Always work with a qualified healthcare provider for your specific situation.
+        Chainmover Coaching · Luke Strassner. For educational purposes based on lived experience and current research. Not medical advice. Always work with a qualified healthcare provider for your specific situation.
       </p>
     </section>
   )
@@ -540,7 +546,8 @@ function DocHeader() {
     <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,.85)', backdropFilter: 'saturate(180%) blur(14px)', borderBottom: `1px solid ${T.lineSoft}` }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          <img src={chainmoverLogo} alt="" style={{ height: 34, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em', color: T.ink, whiteSpace: 'nowrap' }}>Chainmover Coaching</span>
         </Link>
         <Link to="/quiz" style={{
           background: T.forest, color: '#fff', fontFamily: T.body, fontWeight: 600, fontSize: 15,
@@ -593,6 +600,9 @@ function DocPage({ meta }) {
         {macros && <InsulinResetOffer accent={meta.accent} />} */}
         <Roadmap phases={meta.roadmap} accent={meta.accent} />
         <MatchedTestimonial t={meta.testimonial} accent={meta.accent} />
+        {/* Optional second testimonial, currently only on the high-risk page —
+            the lab-marker story is most relevant to people already flagged. */}
+        <MatchedTestimonial t={meta.testimonial2} accent={meta.accent} eyebrowLabel="What moved on the lab work" />
         <ResultsCTA bucketKey={meta.bucketKey} />
       </article>
 
@@ -600,9 +610,9 @@ function DocPage({ meta }) {
       <footer style={{ background: T.ink, color: '#fff', paddingBlock: 40 }}>
         <div style={{ maxWidth: 820, margin: '0 auto', paddingInline: 'clamp(20px,5vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: T.display, fontWeight: 800, fontSize: 18 }}>
-            MetaShift Health
+            Chainmover Coaching
           </div>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>© 2026 MetaShift Health. All rights reserved.</span>
+          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 13 }}>Luke Strassner, Head Coach</span>
         </div>
       </footer>
     </div>
@@ -720,7 +730,7 @@ Do these in order. Protein and steps first. Sleep and supplements next. Everythi
 
 ---
 
-### The MetaShift Guarantee
+### The Chainmover Guarantee
 
 **50 lbs. Guaranteed.**
 
@@ -738,7 +748,7 @@ The next step is seeing how the full system fits together from start to finish.
 
 @luke.strassner.fit
 
-*MetaShift Health. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
+*Chainmover Coaching. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
 
 const STRESS_MD = `Your labs may still be called borderline. Your body stopped being borderline a while ago.
 
@@ -853,7 +863,7 @@ Do these in order. Foundation, protein, and blood sugar first. Sleep, cortisol, 
 
 ---
 
-### The MetaShift Guarantee
+### The Chainmover Guarantee
 
 **50 lbs. Guaranteed.**
 
@@ -871,7 +881,7 @@ The next step is seeing how the full system fits together from start to finish.
 
 @luke.strassner.fit
 
-*MetaShift Health. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
+*Chainmover Coaching. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
 
 const HIGH_MD = `Your doctor flagged something. Maybe several things.
 
@@ -1000,7 +1010,7 @@ The medication is not the problem. The gap between what the medication does and 
 
 ---
 
-### The MetaShift Guarantee
+### The Chainmover Guarantee
 
 **50 lbs. Guaranteed.**
 
@@ -1018,7 +1028,7 @@ The next step is seeing how the full system fits together from start to finish.
 
 @luke.strassner.fit
 
-*MetaShift Health. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
+*Chainmover Coaching. Luke Strassner. This document is for educational purposes based on lived experience and current research. It is not medical advice. Always work with a qualified healthcare provider for your specific situation.*`
 
 /* ─── per-bucket personalized data ─────────────────────────────────── */
 const EARLY_DATA = {
@@ -1046,9 +1056,21 @@ const HIGH_DATA = {
   roadmap: [
     { label: 'Days 1 to 3', title: 'Lock the foundation, no exceptions', body: "Get the foundational inputs locked first: your daily steps, the quality of your food, sleep quality (not just hours), and resistance training. Without a prescription, these are the fastest lever you have on insulin resistance, and the most powerful intervention you have.", hook: "What that looks like around your medications and your joints is something we build for you." },
     { label: 'Days 4 to 7', title: 'Lower the inflammatory load', body: "Bring inflammation down through food quality: more whole foods, protein, and omega 3s, less of what spikes it. It's the fire keeping insulin resistance running hot, and insulin resistance is what's driving the joint pain and low testosterone underneath it, so easing it eases several systems at once.", hook: "Which levers are safe for you depends on what you're currently being treated for." },
-    { label: 'Week 2', title: 'Make medication an unlock, not the system', body: "Medication manages your symptoms while you're taking it. It doesn't fix the insulin resistance underneath them. The foundational habits are what address that root, so the result holds even as the dose changes.", hook: "Coordinating that with your doctor is exactly what the call is for. Never start, stop, or adjust meds on your own." },
+    { label: 'Week 2', title: 'Make medication an unlock, not the system', body: "Medication manages your symptoms while you're taking it. It doesn't fix the insulin resistance underneath them. The foundational habits are what address that root, so the result holds even as the dose changes.", hook: "Coordinating that with your doctor is part of what we build around. Never start, stop, or adjust meds on your own." },
   ],
-  testimonial: { name: 'Daniel', stat: 'Down 85 lbs', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing.", frame: "Daniel was sure he'd already tried everything, carrying a heavy metabolic load. He's down 85 lbs now. This is what shifted for him early on:" },
+  testimonial: { name: 'Daniel', stat: 'Tax consultant · 275 lbs down to 190', quote: "Two months in, people are noticing. I get compliments from family, coworkers, friends. I really can't recall the last time I felt this confident. It's amazing.", frame: "Daniel was sure he'd already tried everything, but was stalled in his progress from just 'eating less'. He was worried that he'd have to completely starve himself just to see results. He's down 85 lbs now. This is what shifted for him early on:" },
+  /* Deliberately NOT framed as "reversed his type 2 diabetes". Two reasons:
+     a coach cannot make a disease-reversal claim, and clinically Mike does
+     not meet the bar anyway — remission requires A1c under 6.5 sustained
+     off glucose-lowering medication, and he is still on two. What is true,
+     and still strong, is the number moving out of the type 2 range. State
+     the medication context rather than leaving it out. */
+  testimonial2: {
+    name: 'Mike',
+    stat: 'Reversed his type 2 diabetes · 350 lbs down to 298',
+    quote: "I hate taking pills. If I can figure this out and maintain with anything holistic, I would much rather do that. I've always hated taking pills.",
+    frame: "Mike started at 350 pounds with an A1c of 7.0, inside the type 2 range, on two medications. One month of working on insulin sensitivity first brought it to 6.3, below the type 2 threshold. Legally, these results are not typical, and not guaranteed, and they are not a promise of remission, please consult with your doctor before doing anything ever at all. Matter of fact don't even read this page before consulting with your doctor. And make sure to consult with another doctor before consulting with him to make sure it's safe...LOL.",
+  },
 }
 
 /* ─── exports ──────────────────────────────────────────────────────── */

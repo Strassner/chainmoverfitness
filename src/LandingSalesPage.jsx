@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
+import chainmoverLogo from './assets/ChainmoverLogo.png'
 import coachPhoto from './assets/coachesphoto.png'
 import larryTransformation from './assets/LarryBeforeAfterJuly28.jpg'
 import danielTransformation from './assets/DanielBeforeAfterJuly28.jpg'
@@ -103,7 +103,8 @@ function Header() {
         <Wrap>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72, gap: 16 }}>
             <Link to="/landing" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain' }} />
+              <img src={chainmoverLogo} alt="" style={{ height: 34, width: 'auto', objectFit: 'contain', display: 'block' }} />
+              <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em', color: T.ink, whiteSpace: 'nowrap' }}>Chainmover Coaching</span>
             </Link>
             <Link to="/buy" className="btn btn-vital" style={{ padding: '12px 24px', fontSize: 15 }}>Start Now</Link>
           </div>
@@ -112,7 +113,7 @@ function Header() {
 
       <section style={{ background: `radial-gradient(120% 120% at 50% -10%,${T.mist} 0%,rgba(232,241,234,0) 55%),${T.paper}`, paddingTop: 'clamp(40px,6vw,72px)', paddingBottom: 'clamp(24px,3vw,32px)' }}>
         <Wrap style={{ textAlign: 'center' }}>
-          <span className="eyebrow center" style={{ marginBottom: 18 }}>MetaShift Health · Coach Luke Strassner</span>
+          <span className="eyebrow center" style={{ marginBottom: 18 }}>Chainmover Coaching · Luke Strassner, Head Coach</span>
           <h1 style={{ fontSize: 'clamp(38px,6vw,62px)' }}>Redefine your health.</h1>
           <p style={{ marginTop: 16, fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(18px,2.2vw,25px)', color: T.forest, lineHeight: 1.25, letterSpacing: '-0.01em', maxWidth: 640, marginInline: 'auto' }}>
             Get the weight off and your energy back in 6 months, without starving, cutting carbs, or living in the gym.
@@ -597,12 +598,12 @@ function Footer() {
       <Wrap>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', paddingBottom: 24, borderBottom: '1px solid rgba(255,255,255,.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 17 }}>MetaShift Health</span>
+            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 17 }}>Chainmover Coaching</span>
           </div>
           <Link to="/buy" className="btn btn-vital">Start Now</Link>
         </div>
         <p style={{ marginTop: 20, color: 'rgba(255,255,255,.4)', fontSize: 12.5, lineHeight: 1.55 }}>
-          © 2026 MetaShift Health. Coaching, not medical advice. Always work with your doctor for your own situation.
+          Luke Strassner, Head Coach. Coaching, not medical advice. Always work with your doctor for your own situation.
         </p>
       </Wrap>
     </footer>

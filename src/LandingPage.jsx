@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
+import chainmoverLogo from './assets/ChainmoverLogo.png'
 import coachPhoto from './assets/coachesphoto.png'
 import larryTransformation from './assets/LarryBeforeAfterJuly28.jpg'
 import danielTransformation from './assets/DanielBeforeAfterJuly28.jpg'
@@ -171,8 +171,9 @@ function Header() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 76, gap: 24 }}>
           {/* Brand */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: T.display, fontWeight: 800, fontSize: 20, letterSpacing: '-0.03em', color: T.ink, textDecoration: 'none' }}>
-            <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain', display: 'block' }} />
-            {/* Brand name lives in the wordmark itself — this is just the descriptor. */}
+            <img src={chainmoverLogo} alt="" style={{ height: 34, width: 'auto', objectFit: 'contain', display: 'block' }} />
+            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em', color: T.ink, whiteSpace: 'nowrap' }}>Chainmover Coaching</span>
+            {/* Descriptor sits beside the brand name. */}
             <small style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: '.18em', color: T.inkFaint, textTransform: 'uppercase', fontWeight: 500, borderLeft: `1px solid ${T.line}`, paddingLeft: 12 }}>MROI Method</small>
           </Link>
 
@@ -326,7 +327,7 @@ function VSL() {
           ) : (
             <iframe
               src={`https://www.loom.com/embed/${VSL_LOOM_ID}?${LOOM_PARAMS}`}
-              title="MetaShift Health — VSL"
+              title="Chainmover Coaching — VSL"
               frameBorder="0"
               allowFullScreen
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
@@ -689,7 +690,7 @@ function Footer() {
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 'clamp(32px,4vw,56px)', paddingBottom: 48, borderBottom: '1px solid rgba(255,255,255,.1)' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: T.display, fontWeight: 800, fontSize: 20, letterSpacing: '-0.03em' }}>
-              <span>MetaShift Health</span>
+              <span>Chainmover Coaching</span>
             </div>
             <p style={{ marginTop: 16, color: 'rgba(255,255,255,.6)', fontSize: 15, maxWidth: 320, lineHeight: 1.65 }}>
               High-touch 1-on-1 coaching for men ready to lose 50+ pounds for good — using the MROI Method. Backed by a guarantee.
@@ -717,7 +718,7 @@ function Footer() {
           </div>
         </div>
         <div style={{ paddingTop: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>© 2026 MetaShift Health. All rights reserved.</span>
+          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: 14 }}>Luke Strassner, Head Coach</span>
           <span style={{ color: 'rgba(255,255,255,.3)', fontSize: 12.5, maxWidth: 700, lineHeight: 1.55 }}>
             Results vary. Coaching is not medical advice and does not replace your physician. The 50 lb guarantee requires full program completion and 80% adherence to coaching.
           </span>

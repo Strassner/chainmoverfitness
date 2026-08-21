@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import metashiftLogo from './assets/MetaShiftLogoTrimmed.png'
+import chainmoverLogo from './assets/ChainmoverLogo.png'
 import coachTransformation from './assets/CoachLukeBeforeAfter.jpg'
 import larryTransformation from './assets/LarryBeforeAfterJuly28.jpg'
 import danielTransformation from './assets/DanielBeforeAfterJuly28.jpg'
@@ -11,7 +11,7 @@ import timTransformation from './assets/TimBeforeAfterJuly28.jpg'
 import { QuoteGrid, FeaturedTransformation, TransformationPhoto } from './proofUtils'
 
 /* ══════════════════════════════════════════════════════════════════════
-   / — MetaShift Health home. Metabolic health / insulin resistance
+   / — Chainmover Coaching home. Metabolic health / insulin resistance
    positioning, call-booking funnel: every CTA goes to /apply.
 
    Deliberately short. Six sections: say what this is, prove it heavily,
@@ -132,7 +132,8 @@ function Header() {
         <Wrap>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72, gap: 16 }}>
             <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <img src={metashiftLogo} alt="MetaShift Health" style={{ height: 28, width: 'auto', objectFit: 'contain' }} />
+              <img src={chainmoverLogo} alt="" style={{ height: 34, width: 'auto', objectFit: 'contain', display: 'block' }} />
+              <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 18, letterSpacing: '-0.02em', color: T.ink, whiteSpace: 'nowrap' }}>Chainmover Coaching</span>
             </Link>
             <Link to={APPLY_URL} className="btn btn-vital" style={{ padding: '12px 24px', fontSize: 15 }}>Apply now</Link>
           </div>
@@ -146,7 +147,7 @@ function Header() {
               subhead below does that work, including the "eat more" claim. */}
           <h1 style={{ fontSize: 'clamp(40px,6.4vw,68px)' }}>Lose it once. Keep it for good.</h1>
           <p style={{ marginTop: 18, fontFamily: T.display, fontWeight: 700, fontSize: 'clamp(18px,2.2vw,25px)', color: T.forest, lineHeight: 1.3, letterSpacing: '-0.01em', maxWidth: 660, marginInline: 'auto' }}>
-            1-on-1 coaching that works on insulin sensitivity first. You eat more food, not less, and the loss holds instead of rebounding.
+            Improve your labs, reduce your insulin resistance, and lose fat for the long term.
           </p>
 
           {/* VSL does the job the sales call used to do, so it sits above
@@ -154,7 +155,7 @@ function Header() {
           <div style={{ marginTop: 34, position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: 18, overflow: 'hidden', boxShadow: T.shadowLg, border: `1px solid ${T.line}`, background: '#000' }}>
             <iframe
               src={`https://www.loom.com/embed/${VSL_LOOM_ID}?${LOOM_PARAMS}`}
-              title="MetaShift Health — how the MROI Method works"
+              title="Chainmover Coaching — how the MROI Method works"
               frameBorder="0"
               allowFullScreen
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
@@ -200,9 +201,9 @@ function WhatWeDo() {
       <Wrap>
         <div style={{ textAlign: 'center', maxWidth: 620, marginInline: 'auto', marginBottom: 36 }}>
           <span className="eyebrow center">What this is</span>
-          <h2 style={{ fontSize: 'clamp(27px,3.8vw,42px)', marginTop: 16 }}>1-on-1 coaching that treats fat loss as a metabolic health problem.</h2>
+          <h2 style={{ fontSize: 'clamp(27px,3.8vw,42px)', marginTop: 16 }}>1-on-1 coaching that prioritizes your metabolic health markers. </h2>
           <p style={{ marginTop: 16, fontSize: 17, color: T.inkSoft, lineHeight: 1.6 }}>
-            Built on established metabolic science, the same markers your physician tracks, and adjusted with your own weekly data rather than a template.
+            Built on established metabolic science, the same markers your physician tracks, and adjusted with your own weekly data rather than a template. The weight comes off as a byproduct.
           </p>
         </div>
 
@@ -238,7 +239,7 @@ const WALL = [
 ]
 
 const QUOTES = [
-  { name: 'Mike', stat: 'Retired, 55 · A1c 7.0 to 6.3 in one month', quote: "I'd been through three different doctors and two medications and nobody could tell me why the weight wouldn't move or help me. I used to be 350. After hiring Luke, I broke 300 for the first time without a drug doing it for me." },
+  { name: 'Mike', stat: 'Retired, 55 · A1c 7.0 to 6.3', quote: "I'd been through three different doctors and two medications and nobody could tell me why the weight wouldn't move or help me. I used to be 350. After hiring Luke, I broke 300 for the first time without a drug doing it for me." },
   { name: 'JD', stat: 'Father of two, 47', quote: "I was 280 when I got married in 2005. In 2025 I was 380. Now I'm very close to leaving the 300 lbs club and coming into the 200 club." },
   { name: 'Sascha', stat: 'Father, entrepreneur', quote: "First time in years the scale is going the right way. I broke 230 in the first couple of weeks. Can't tell you the last time I've been this low. My nutrition is dialed in and the weight is moving." },
   { name: 'Wyatt', stat: 'Doctor of Chiropractic Medicine, down 14 lbs in 7 weeks', quote: "You're not just doing a little bit of exercise and a little bit of nutrition. You get down to the details. That's what makes me think you know what you're doing." },
@@ -344,17 +345,17 @@ function Results() {
    Absorbs what used to be standalone sections: pricing, the guarantee
    and its conditions, and the scope-of-practice answer.               */
 const FAQS = [
-  { q: 'How much does it cost?', a: 'Plans start as low as $47 a week. I run several programs and the right one depends on how much support you need, so we settle that on the call rather than putting you into a tier you did not pick. I would never want money to be the reason I could not help someone.' },
+  { q: 'How much does it cost?', a: 'Plans start as low as $47 a week. I run several programs and the right one depends on how much support you need, so we settle that together once you are accepted, rather than putting you into a tier you did not pick. I would never want money to be the reason I could not help someone.' },
   { q: 'What if it is not right for me?', a: 'Two things. Your first week is on me: get accepted today and your program clock starts the following Monday, so you get the app, your intake and your first week before you are paying for any of it. And you have seven days from your start date to change your mind, message me directly and I refund you in full, processed within 5 business days. After day seven, refunds are at my discretion.' },
   { q: 'Do I have to cut carbs?', a: 'No, and that is the point. The goal is to have you eating more carbs than you are eating right now and still losing weight. Being afraid of rice or bread for the rest of your life is not a plan.' },
   { q: 'Do I have to count calories forever?', a: 'No. You will track for the first month or two, because that is the fastest way to understand what is actually in your food. After that we move you to eating intuitively.' },
   { q: 'What if my bloodwork came back normal?', a: 'That is common, and it is exactly why this gets missed. Fasting glucose and A1c are lagging indicators, so they only move once insulin can no longer compensate. Reduced energy, afternoon crashes and easier fat gain can all appear years before a lab value shifts.' },
   { q: 'Can you reverse my insulin resistance or pre-diabetes?', a: 'I am a coach, not a doctor, so I will not promise that and you should be careful with anyone who does. What I do is coach the daily behaviors, food, training, sleep, stress and steps, that support better metabolic health. Clients have seen real changes in their markers. You keep your physician in the loop the whole way.' },
-  { q: 'What if I am on medication, or on a GLP-1?', a: 'Plenty of clients start on blood pressure medication, metformin or a GLP-1. Nothing here asks you to stop or change a prescription, that is between you and your doctor. Tell me on the call what you are taking and I will build around it.' },
+  { q: 'What if I am on medication, or on a GLP-1?', a: 'Plenty of clients start on blood pressure medication, metformin or a GLP-1. Nothing here asks you to stop or change a prescription, that is between you and your doctor. Tell me on your application what you are taking and I will build around it.' },
   { q: 'I am too busy for this.', a: 'If a plan only works during the calm weeks of your life, it does not work. Your plan gets built for your worst week, not your best one, because those are the weeks that decide whether this holds.' },
   { q: 'Do I need a gym?', a: 'No. Home setup, full gym or nothing at all, the training gets built around the equipment you actually have.' },
   { q: 'Do I work with you, or a sub coach?', a: 'Me. Capacity stays at 45 clients on purpose so every check in and every adjustment comes from me directly.' },
-  { q: 'What happens on the call?', a: 'We go through where you are, what you have tried and what your bloodwork looks like if you have it. You leave understanding what is actually going on in your body. If we both think it is a fit, we talk about which program makes sense.' },
+  { q: 'What happens after I apply?', a: 'I read every application myself. If it looks like a fit, you hear back and we take it from there. Capacity is capped at 45 clients, so not every application gets accepted, and I would rather tell you that up front than waste your time.' },
 ]
 
 function FAQ() {
@@ -384,7 +385,7 @@ function Closer() {
     <section style={{ background: T.forest, color: '#fff', paddingBlock: 'clamp(52px,7vw,96px)' }}>
       <Wrap style={{ maxWidth: 620, textAlign: 'center' }}>
         <span className="eyebrow center vital">Your move</span>
-        <h2 style={{ color: '#fff', fontSize: 'clamp(27px,3.8vw,42px)', marginTop: 16 }}>One call. You will understand your own body better either way.</h2>
+        <h2 style={{ color: '#fff', fontSize: 'clamp(27px,3.8vw,42px)', marginTop: 16 }}>This only gets harder the longer you wait. Start today.</h2>
         <div style={{ marginTop: 30 }}>{APPLY()}</div>
         <p style={{ marginTop: 18, fontFamily: T.mono, fontSize: 12.5, color: 'rgba(255,255,255,.5)' }}>
           Takes 30 seconds · {CAPACITY_LINE}
@@ -400,12 +401,12 @@ function Footer() {
       <Wrap>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', paddingBottom: 24, borderBottom: '1px solid rgba(255,255,255,.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 17 }}>MetaShift Health</span>
+            <span style={{ fontFamily: T.display, fontWeight: 800, fontSize: 17 }}>Chainmover Coaching</span>
           </div>
           <Link to={APPLY_URL} className="btn btn-vital">Apply now</Link>
         </div>
         <p style={{ marginTop: 20, color: 'rgba(255,255,255,.4)', fontSize: 12.5, lineHeight: 1.55 }}>
-          © 2026 MetaShift Health. Coaching, not medical advice. Nothing here diagnoses, treats or replaces care from your physician. Always work with your doctor on your own situation, and never start, stop or change a medication based on anything on this page.
+          Luke Strassner, Head Coach. Coaching, not medical advice. Nothing here diagnoses, treats or replaces care from your physician. Always work with your doctor on your own situation, and never start, stop or change a medication based on anything on this page.
         </p>
       </Wrap>
     </footer>

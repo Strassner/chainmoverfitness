@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /booked/
+
+Sitemap: https://lukestrassner.com/sitemap.xml

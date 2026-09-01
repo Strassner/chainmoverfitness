@@ -5,11 +5,21 @@
  * piece that can: the systeme.io key lives in Worker secrets and never reaches
  * a browser.
  *
- * One job now. The photo analysis that used to live here was retired when the
- * Gemini Gem took over that work — /bodycomp captures the email, then hands the
- * visitor to Google.
+ * Two jobs: analyse a physique photo with Claude Haiku 4.5 (/pudgescore), and
+ * capture an email into systeme.io (/bodycomp and /pudgescore both use it).
+ *
+ * No photo is ever stored. It exists in memory for one request and is gone.
  */
 
+import { analyse } from './claude';
+import {
+  MAX_BASE64_CHARS,
+  MAX_IMAGE_BYTES,
+  decodedByteLength,
+  isAllowedMediaType,
+  matchesDeclaredType,
+  normaliseBase64
+} from './image';
 import { setApiBase, subscribe } from './systeme';
 import { Limiter } from './ratelimiter';
 
@@ -18,9 +28,11 @@ export { RateLimiter } from './ratelimiter';
 export interface Env {
   LIMITER: DurableObjectNamespace;
   SYSTEME_API_KEY: string;
+  ANTHROPIC_API_KEY: string;
   ALLOWED_ORIGIN: string;
-  /** Test seam only — points the systeme.io calls at a stub. Unset in production. */
+  /** Test seams only — point the upstream calls at stubs. Unset in production. */
   SYSTEME_BASE_URL?: string;
+  ANTHROPIC_BASE_URL?: string;
 }
 
 /**
@@ -35,6 +47,13 @@ export interface Env {
  * rejects most of that. Erring toward letting real people through.
  */
 const LEADS_PER_IP_PER_HOUR = 30;
+
+/** Each analysis costs real money, so this one stays tight. Refusals and our
+ *  own failures are refunded, so only useful results count against it. */
+const ANALYSES_PER_IP_PER_HOUR = 5;
+
+/** The hard ceiling on spend. Never refunded — a refusal still cost a token. */
+const GLOBAL_ANALYSES_PER_HOUR = 200;
 
 const DEV_ORIGINS = [
   'http://localhost:5173',
@@ -63,7 +82,22 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === 'GET' && url.pathname === '/healthz') {
-      return json({ ok: true }, 200, cors);
+      // Reports whether each key is configured — booleans only, never values.
+      // A bare {ok:true} once told us the Worker was fine while it was silently
+      // dropping every lead for want of a key. This makes that visible.
+      return json(
+        {
+          ok: true,
+          anthropic: Boolean(env.ANTHROPIC_API_KEY),
+          systeme: Boolean(env.SYSTEME_API_KEY)
+        },
+        200,
+        cors
+      );
+    }
+
+    if (request.method === 'POST' && url.pathname === '/api/pudge-score') {
+      return handleAnalysis(request, env, cors);
     }
 
     if (request.method === 'POST' && url.pathname === '/api/lead') {
@@ -74,7 +108,88 @@ export default {
   }
 } satisfies ExportedHandler<Env>;
 
-// --- endpoint --------------------------------------------------------------
+// --- endpoints -------------------------------------------------------------
+
+async function handleAnalysis(
+  request: Request,
+  env: Env,
+  cors: Record<string, string>
+): Promise<Response> {
+  let body: any;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'Send a photo.' }, 400, cors);
+  }
+
+  // Everything cheap happens first. Nothing below this point spends a token.
+  if (!body || typeof body.imageBase64 !== 'string' || !body.imageBase64) {
+    return json({ error: 'Send a photo.' }, 400, cors);
+  }
+
+  if (!isAllowedMediaType(body.mediaType)) {
+    return json({ error: "That image type isn't supported. Use JPEG, PNG or WebP." }, 400, cors);
+  }
+
+  if (body.imageBase64.length > MAX_BASE64_CHARS) {
+    return json({ error: 'That photo is too large. Keep it under 5MB.' }, 413, cors);
+  }
+
+  const base64 = normaliseBase64(body.imageBase64);
+  if (base64 === null) {
+    return json({ error: "That wasn't a readable image." }, 400, cors);
+  }
+
+  if (decodedByteLength(base64) > MAX_IMAGE_BYTES) {
+    return json({ error: 'That photo is too large. Keep it under 5MB.' }, 413, cors);
+  }
+
+  // The declared media type is just a claim. Check the bytes.
+  if (!matchesDeclaredType(base64, body.mediaType)) {
+    return json({ error: "That file isn't the image type it claims to be." }, 400, cors);
+  }
+
+  if (!env.ANTHROPIC_API_KEY) {
+    console.error('ANTHROPIC_API_KEY is not set — run: wrangler secret put ANTHROPIC_API_KEY');
+    return json({ error: "The analyser couldn't finish that one. Try again in a minute." }, 502, cors);
+  }
+
+  const ip = clientIp(request);
+  const limiter = new Limiter(env.LIMITER);
+  const ipKey = `analysis:${ip}`;
+
+  // Global ceiling first, so a request the ceiling rejects never eats into
+  // somebody's personal allowance.
+  const global = await limiter.acquire('analysis:global', GLOBAL_ANALYSES_PER_HOUR);
+  if (!global.ok) {
+    console.warn(`global analysis ceiling hit: ${global.used}/${global.limit}`);
+    return json({ error: 'This is busier than usual right now. Try again a bit later.' }, 429, cors);
+  }
+
+  const personal = await limiter.acquire(ipKey, ANALYSES_PER_IP_PER_HOUR);
+  if (!personal.ok) {
+    console.warn(
+      `rate limited ${ip}: ${personal.used}/${personal.limit} analyses, ${personal.minutesLeft}m left`
+    );
+    return json({ error: "You've used your analyses for this hour. Come back later." }, 429, cors);
+  }
+
+  const result = await analyse(base64, body.mediaType, env.ANTHROPIC_API_KEY, env.ANTHROPIC_BASE_URL);
+
+  // Only the personal window is refunded. A refusal still cost a token, so it
+  // has to keep counting against the global ceiling — that window exists to cap
+  // spend, not to be fair to anyone.
+  if (result === null) {
+    await limiter.refund(ipKey); // our failure, not theirs
+    return json({ error: "The analyser couldn't finish that one. Try again in a minute." }, 502, cors);
+  }
+
+  if (result.pudgeScore === 0) {
+    await limiter.refund(ipKey); // a refusal gave them nothing
+  }
+
+  return json(result, 200, cors);
+}
 
 async function handleLead(
   request: Request,

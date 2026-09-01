@@ -28,8 +28,33 @@ export class RateLimiter implements DurableObject {
   constructor(private readonly ctx: DurableObjectState) {}
 
   async fetch(request: Request): Promise<Response> {
-    const { key, limit } = (await request.json()) as { key: string; limit: number };
-    return Response.json(await this.acquire(key, limit));
+    const body = (await request.json()) as {
+      action?: 'acquire' | 'refund';
+      key: string;
+      limit: number;
+    };
+
+    if (body.action === 'refund') {
+      await this.refund(body.key);
+      return Response.json({ ok: true, used: 0, limit: body.limit, minutesLeft: 0 });
+    }
+
+    return Response.json(await this.acquire(body.key, body.limit));
+  }
+
+  /**
+   * Hands a slot back. Only called when the request produced nothing of value —
+   * a photo the model refused to read, or our own upstream failure. Neither
+   * should cost a visitor one of their few attempts.
+   */
+  private async refund(key: string): Promise<void> {
+    const now = Date.now();
+    const stored = await this.ctx.storage.get<Window>(key);
+
+    if (stored && stored.endsAt > now && stored.used > 0) {
+      stored.used--;
+      await this.ctx.storage.put(key, stored);
+    }
   }
 
   /** Reports used/limit alongside the verdict — a bare false gives you nothing
@@ -63,8 +88,15 @@ export class Limiter {
   async acquire(key: string, limit: number): Promise<LimitVerdict> {
     const response = await this.stub.fetch('https://limiter/', {
       method: 'POST',
-      body: JSON.stringify({ key, limit })
+      body: JSON.stringify({ action: 'acquire', key, limit })
     });
     return (await response.json()) as LimitVerdict;
+  }
+
+  async refund(key: string): Promise<void> {
+    await this.stub.fetch('https://limiter/', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'refund', key, limit: 0 })
+    });
   }
 }

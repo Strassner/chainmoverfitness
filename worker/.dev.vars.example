@@ -1,7 +1,9 @@
-# Copy this to `.dev.vars` and fill in your key for local development.
+# Copy this to `.dev.vars` and fill in your keys for local development.
 # `.dev.vars` is gitignored; this example file is safe to commit.
 
+ANTHROPIC_API_KEY=
 SYSTEME_API_KEY=
 
-# Test seam. Leave commented out — it redirects the systeme.io calls to a stub.
+# Test seams. Leave commented out — they redirect the upstream calls to stubs.
+# ANTHROPIC_BASE_URL=http://localhost:5199
 # SYSTEME_BASE_URL=http://localhost:5198

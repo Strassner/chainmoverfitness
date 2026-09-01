@@ -4,14 +4,38 @@
     {
       "name": "chainmover",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 5173
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3000
     },
     {
       "name": "pudge-worker",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "worker", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "worker",
+        "run",
+        "dev"
+      ],
       "port": 8787
+    },
+    {
+      "name": "anthropic-stub",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "C:/Users/straz/AppData/Local/Temp/claude/C--Users-straz-Desktop-bigfourcalculator/41125100-71ba-4050-aabc-56cb4666091e/scratchpad/anthropic-stub.js"
+      ],
+      "port": 5199
+    },
+    {
+      "name": "systeme-stub",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "C:/Users/straz/AppData/Local/Temp/claude/C--Users-straz-Desktop-bigfourcalculator/41125100-71ba-4050-aabc-56cb4666091e/scratchpad/systeme-stub.js"
+      ],
+      "port": 5198
     }
   ]
 }

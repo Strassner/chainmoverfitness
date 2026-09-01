@@ -8,8 +8,14 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
+
+# Next.js build output
+.next/
+out/
+
+# Test output
+coverage/
+
 *.local
 
 # Large video source files — host on Loom/YouTube, never commit (GitHub rejects >100MB)

@@ -1,11 +1,12 @@
-# Lead capture API — Cloudflare Worker
+# Pudge Score API — Cloudflare Worker
 
-The server half of the `/bodycomp` funnel. It exists because the site is static
-on GitHub Pages, and static hosting can't keep a secret — anything you put in
-the page, a visitor can read. The systeme.io key lives here instead.
+The server half of `/pudgescore` and `/bodycomp`. It exists because the site is
+static on GitHub Pages, and static hosting can't keep a secret — anything you
+put in the page, a visitor can read. Both API keys live here instead.
 
-One job: take an email address, put it in systeme.io. The photo analysis that
-used to live here was retired when the Gemini Gem took over that work.
+Two jobs: analyse a physique photo with Claude Haiku 4.5, and put an email
+address into systeme.io. No photo is ever stored — it exists in memory for one
+request and is gone.
 
 > The Worker is still **named** `pudge-score` in `wrangler.toml`. That's
 > deliberate — renaming it would change the `workers.dev` URL, and that URL is
@@ -22,18 +23,37 @@ Cloudflare's other storage option (KV) allows only 1,000 writes a day on the
 free plan, which would mean the limiter quietly stopped counting during exactly
 the flood it exists to stop.
 
-**Secrets** are your systeme.io API key. Set once by command, encrypted, never
-in a file, never sent to a browser.
+**Secrets** are your Anthropic and systeme.io API keys. Set once by command,
+encrypted, never in a file, never sent to a browser.
 
 **A `workers.dev` URL** is the free public HTTPS address the page calls:
 `https://pudge-score.chainmover.workers.dev`.
 
 ## Endpoints
 
-| Method | Path        | Purpose                                  |
-| ------ | ----------- | ---------------------------------------- |
-| `POST` | `/api/lead` | Email in, systeme.io contact out          |
-| `GET`  | `/healthz`  | Uptime check                              |
+| Method | Path               | Purpose                                     |
+| ------ | ------------------ | ------------------------------------------- |
+| `POST` | `/api/pudge-score` | Photo in, body fat estimate + score out      |
+| `POST` | `/api/lead`        | Email in, systeme.io contact out             |
+| `GET`  | `/healthz`         | Uptime check                                 |
+
+### `POST /api/pudge-score`
+
+Takes `{ "imageBase64": "...", "mediaType": "image/jpeg" }` and returns
+`{ bfLow, bfHigh, pudgeScore, headline, explanation, markers }`.
+
+`pudgeScore: 0` is the refusal shape — not a person, a minor, or explicit. The
+page renders that as a "try another photo" state rather than an error.
+
+Failures: `400` bad or non-image payload, `413` over 5MB decoded, `429` rate
+limited, `502` upstream failure or output that didn't survive validation. A
+`502` never carries any part of the Anthropic response.
+
+**Response shape is enforced by structured outputs**, not by asking the model
+nicely — no assistant prefill, no "return only JSON" instruction, no
+brace-matching extractor. If the model returns something that doesn't fit the
+schema, the SDK reports it and we return a 502 rather than rendering nonsense
+as though it were real.
 
 `POST /api/lead` takes `{ "email": "..." }` and returns:
 
@@ -67,15 +87,19 @@ npx wrangler deploy
 ```
 
 ```bash
+npx wrangler secret put ANTHROPIC_API_KEY
+```
+
+```bash
 npx wrangler secret put SYSTEME_API_KEY
 ```
 
-The systeme.io key is the same kind the application form already uses: profile
-picture → Settings → Public API keys → Create. It's shown once.
+The Anthropic key comes from [console.anthropic.com](https://console.anthropic.com)
+→ API keys, and the account needs credit on it. The systeme.io key is the same
+kind the application form already uses: profile picture → Settings → Public API
+keys → Create. It's shown once.
 
 Check what's stored with `npx wrangler secret list` — names only, never values.
-If you previously set `ANTHROPIC_API_KEY` or any `MAILERLITE_*` secret, they're
-unused now and can be removed with `npx wrangler secret delete <NAME>`.
 
 ## Changing things later
 
@@ -101,8 +125,22 @@ needs setting up on that end first.
 
 ## Costs
 
-Nothing. The Workers free plan covers 100,000 requests a day and there is no
-per-request AI cost any more.
+**Cloudflare: nothing.** The free plan covers 100,000 requests a day.
+
+**Anthropic: about a third of a cent per analysis.** Claude Haiku 4.5 is $1 per
+million input tokens and $5 per million output. A 1024px photo is ~1,100 tokens,
+the system prompt ~600, the reply ~200 — so roughly $0.0027 a go, or about $2.70
+per thousand leads.
+
+Two windows cap the damage if someone tries to burn your credit: 5 analyses per
+IP per hour, and 200 globally per hour. That ceiling is about $0.60/hour, or $14
+across a full day of sustained abuse. Lower `GLOBAL_ANALYSES_PER_HOUR` in
+[`src/index.ts`](src/index.ts) if that worst case bothers you.
+
+Refusals and our own failures refund the personal window — a photo the model
+wouldn't read gave the visitor nothing, so it shouldn't cost them one of their
+five. The global ceiling is never refunded, because a refusal still spent a
+token.
 
 ## What is never stored
 
